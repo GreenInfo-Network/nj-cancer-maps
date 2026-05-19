@@ -57,6 +57,7 @@ var DATA_URL_DEMOGS = 'static/data/allDemographics.csv';
 // Our JSON files
 var DATA_URL_CTAGEOM = 'static/data/cta.json'; // zones
 var DATA_URL_COUNTYGEOM = 'static/data/countybounds.json'; // counties
+var DATA_URL_PLACEGEOM = 'static/data/placebounds.json'; // zones
 
 // These files are updated by running the python scripts
 var DATA_URL_CTACITY = 'static/data/cities_by_cta.csv'; // zones
@@ -237,6 +238,7 @@ var CHOROPLETH_OPTIONS = [
 // the style to use for the MAP_LAYERS.county GeoJSON overlay
 var COUNTYBOUNDS_STYLE = { fill: false, color: 'black', weight: 5 };
 var ZONEBOUNDS_STYLE = { fill: false, color: 'black', weight: 1 };
+var PLACEBOUNDS_STYLE = { fill: false, color: 'black', weight: 2 };
 
 // map layers to be offered in the lower-right Map Layers control
 // we have some complicated desires for layer stacking, such as labels and streets (L.TileLayer raster tiles) showing above CTA Zones (L.GeoJSON paths in overlayPane)
@@ -271,13 +273,13 @@ var MAP_LAYERS = [
         id: 'zones',
         label: "Zones",
         checked: false,
-        layer: undefined,  // see initFixCountyOverlay() where we patch this in to become a L.GeoJSON layer, since that comes after startup promises but before initMap()
+        layer: undefined,  // see initFixZoneOverlay() where we patch this in to become a L.GeoJSON layer, since that comes after startup promises but before initMap()
     },
-    // {
-    //     id: 'places',
-    //     label: "Places",
-    //     layer: undefined,  // see initFixCountyOverlay() where we patch this in to become a L.GeoJSON layer, since that comes after startup promises but before initMap()
-    // },
+    {
+        id: 'places',
+        label: "Cities and Towns",
+        layer: undefined,  // see initFixPlaceOverlay() where we patch this in to become a L.GeoJSON layer, since that comes after startup promises but before initMap()
+    },
     // {
     //     id: 'streets',
     //     label: "Streets",
@@ -289,7 +291,7 @@ var MAP_LAYERS = [
     // },
 ];
 
-var CTATOPOJSONDATA, COUNTYTOPOJSONDATA;
+var CTATOPOJSONDATA, COUNTYTOPOJSONDATA, PLACETOPOJSONDATA;
 var DATA_CANCER, DATA_DEMOGS, DATA_CTACITY, DATA_CTACOUNTY;
 
 // a cache of geocoder results, so we don't have to re-geocode every time the form changes
@@ -304,6 +306,9 @@ $(document).ready(function () {
         new Promise(function(resolve) {
             $.get(DATA_URL_COUNTYGEOM, (data) => { resolve(data); }, 'json');
         }),
+        new Promise(function(resolve) {
+            $.get(DATA_URL_PLACEGEOM, (data) => { resolve(data); }, 'json');
+        }),
         Papa.parsePromise(DATA_URL_DEMOGS),
         Papa.parsePromise(DATA_URL_CANCER),
         Papa.parsePromise(DATA_URL_CTACOUNTY),
@@ -313,10 +318,12 @@ $(document).ready(function () {
     Promise.all(waitforparsing).then(function (data) {
         CTATOPOJSONDATA = data[0];
         COUNTYTOPOJSONDATA = data[1];
-        DATA_DEMOGS = data[2];
-        DATA_CANCER = data[3];
-        DATA_CTACOUNTY = data[4];
-        DATA_CTACITY = data[5];
+        PLACETOPOJSONDATA = data[2];
+        DATA_DEMOGS = data[3];
+        DATA_CANCER = data[4];
+        DATA_CTACOUNTY = data[5];
+        DATA_CTACITY = data[6];
+
         initRenameState(SITE_CONSTANTS.stateName);
         initNumberOfCancerSites(SITE_CONSTANTS.numOfCancerSites);
         initNumberOfZones(SITE_CONSTANTS.numOfZones);
@@ -337,7 +344,7 @@ $(document).ready(function () {
         initValidateIncidenceDataset();
         initFixCountyOverlay();
         initFixZoneOverlay();
-        // initFixPlaceOverlay();
+        initFixPlaceOverlay();
         initDemographicTables();
         initMapAndPolygonData();
         initDataFilters(SITE_CONSTANTS.startingLocation);
@@ -698,14 +705,14 @@ function initFixZoneOverlay () {
     });
 }
 
-// function initFixPlaceOverlay () {
-//     const maplayerinfo = MAP_LAYERS.filter(function (maplayerinfo) { return maplayerinfo.id == 'places'; })[0];
-//     maplayerinfo.layer = L.topoJson(PlaceTOPOJSONDATA, {
-//         pane: 'tooltipPane',
-//         zIndex: 500,
-//         style: COUNTYBOUNDS_STYLE,  // see performSearchMap() where these are reassigned based on filters
-//     });
-// }
+function initFixPlaceOverlay () {
+    const maplayerinfo = MAP_LAYERS.filter(function (maplayerinfo) { return maplayerinfo.id == 'places'; })[0];
+    maplayerinfo.layer = L.topoJson(PLACETOPOJSONDATA, {
+        pane: 'tooltipPane',
+        zIndex: 500,
+        style: PLACEBOUNDS_STYLE,  // see performSearchMap() where these are reassigned based on filters
+    });
+}
 
 
 function initPrintPage () {
@@ -1207,7 +1214,6 @@ function performSearch () {
     $addrbox.data('hasbeenchanged', false);
 
     const params = compileParams();
-    console.log('params: ', params)
     params.ctaid = SITE_CONSTANTS.ctaid;
     params.ctaname = SITE_CONSTANTS.stateName;
     if (params.address) {
@@ -1425,7 +1431,6 @@ function performSearchIncidenceReadout (searchparams) {
     let cancerdata_cta = DATA_CANCER.filter(row => row.GeoID == searchparams.ctaid && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
     if (searchparams.type == 'County'){
         const cancerdata_county = DATA_CANCER.filter(row => row.GeoID == searchparams.countyId && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
-        console.log('cancerdata_county: ', cancerdata_county)
         cancerdata_cta = cancerdata_county
     }
 
@@ -1562,6 +1567,15 @@ function performSearchIncidenceReadout (searchparams) {
     updateCandleChart($candlechart_cta, 'Selected Area', cta_aair, cta_lci, cta_uci, minlci, maxuci);
     updateCandleChart($candlechart_state, SITE_CONSTANTS.ctaid, state_aair, state_lci, state_uci, minlci, maxuci);
     updateCandleChart($candlechart_nation, 'US', nation_aair, nation_lci, nation_uci, minlci, maxuci);
+
+    // fill in some text describing the filtering applied to the data
+    {
+        const yearText = getLabelFor('year', searchparams.year);
+        const siteText = getLabelFor('site', searchparams.site);
+        const sexText = getLabelFor('sex', searchparams.sex);
+        const raceText = getLabelFor('race', searchparams.race);
+        $('#incidence-readouts-description').text(`Filtered to ${siteText}, ${yearText}, ${sexText}, ${raceText}`);
+    }
 }
 
 
@@ -1726,6 +1740,15 @@ function performSearchIncidenceBarChart (searchparams) {
         },
         series: chartseries,
     });
+
+    // fill in some text describing the filtering applied to the data
+    {
+        const yearText = getLabelFor('year', searchparams.year);
+        const siteText = getLabelFor('site', searchparams.site);
+        const sexText = getLabelFor('sex', searchparams.sex);
+        const raceText = getLabelFor('race', searchparams.race);
+        $('#incidence-barchart-description').text(`Filtered to ${siteText}, ${yearText}, ${sexText}, ${raceText}`);
+    }
 }
 
 
