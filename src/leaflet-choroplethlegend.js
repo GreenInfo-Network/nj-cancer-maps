@@ -15,7 +15,7 @@ L.Control.ChoroplethLegend = L.Control.extend({
 		this._map = map;
 
 		// create our container
-		this.container = L.DomUtil.create('div', 'leaflet-control leaflet-bar leaflet-choroplethlegend-control leaflet-choroplethlegend-collapsed');
+		this.container = L.DomUtil.create('div', 'leaflet-control leaflet-choroplethlegend-control leaflet-choroplethlegend-collapsed');
 		this.content_collapsed = L.DomUtil.create('div', 'leaflet-choroplethlegend-button', this.container);
 		this.content_expanded = L.DomUtil.create('div', 'leaflet-choroplethlegend-content', this.container);
 
@@ -42,9 +42,16 @@ L.Control.ChoroplethLegend = L.Control.extend({
 		});
 
         // the gradient legend and the min/max value words
-        this.legendgradient = L.DomUtil.create('div', 'leaflet-choroplethlegend-legendgradient', this.content_expanded);
-        this.legendminvalue = L.DomUtil.create('div', 'leaflet-choroplethlegend-minvalue', this.content_expanded);
-        this.legendmaxvalue = L.DomUtil.create('div', 'leaflet-choroplethlegend-maxvalue', this.content_expanded);
+        this.legend = L.DomUtil.create('div', 'leaflet-choroplethlegend-legend', this.content_expanded);
+        this.legendgradient = L.DomUtil.create('div', 'leaflet-choroplethlegend-legendgradient', this.legend);
+        this.legendminvalue = L.DomUtil.create('div', 'leaflet-choroplethlegend-minvalue', this.legend);
+        this.legendmaxvalue = L.DomUtil.create('div', 'leaflet-choroplethlegend-maxvalue', this.legend);
+
+        this.legendnodata = L.DomUtil.create('div', 'leaflet-choroplethlegend-nodata', this.content_expanded);
+        this.legendnodata.innerHTML = '<span class="leaflet-choroplethlegend-nodata-swatch"></span> Data Suppressed';
+
+        this.legendnodata_explanation = L.DomUtil.create('div', 'leaflet-choroplethlegend-nodata-explanation', this.content_expanded);
+        this.legendnodata_explanation.innerHTML = 'Data has been <a href="https://statecancerprofiles.cancer.gov/suppressed.html" target="_blank" rel="noopener">suppressed</a> to ensure confidentiality and stability of rate estimates. Counts are suppressed if fewer than 16 records were reported in a specific area-sex-race category.';
 
 		// stop mouse events from falling through (Leaflet 1.x)
         L.DomEvent.disableClickPropagation(this.container);

@@ -1741,6 +1741,17 @@ function performSearchIncidenceBarChart (searchparams) {
         series: chartseries,
     });
 
+    // the table of the same data as in the barchart
+    const $tableslots = $('#incidence-barchart-table span[data-statistic]');
+    SEARCHOPTIONS_RACE.map(function (raceoption) {
+        SEARCHOPTIONS_SEX.map(function (sexoption) {
+            const slotname = `AAIR-${raceoption.value}-${sexoption.value}`;
+            const aair = raceoption.value ? incidencebysex[sexoption.value][`${raceoption.value}_AAIR`] : incidencebysex[sexoption.value].AAIR;
+            $tableslots.filter(`[data-statistic="${slotname}"]`).text(aair ? aair.toFixed(1) : "");
+
+        });
+    });
+
     // fill in some text describing the filtering applied to the data
     {
         const yearText = getLabelFor('year', searchparams.year);
@@ -1973,9 +1984,11 @@ function performSearchMap (searchparams) {
             ctascores[row.GeoID] = choropleth_score;
         });
     }
+
     const filteredDataWithoutZones = Object.fromEntries(
         Object.entries(ctascores).filter(([key, value]) => !key.includes("A"))
     );
+
     // find the min and max, and send it to the control for display
     const allscores = Object.values(filteredDataWithoutZones).filter(function (score) { return score; });
     const scoringmin = Math.min(...allscores);
@@ -2050,45 +2063,45 @@ function performSearchUpdateDataDownloadLinks (searchparams) {
 
 
 function geocodeAddress(address, callback) {
-  const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
+    const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
 
-  // If it's already lat,lng coordinates
-  const islatlng = address.match(/\s*(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)\s*/);
-  if (islatlng) {
-    const coordinates = [parseFloat(islatlng[1]), parseFloat(islatlng[2])];
-    return callback(coordinates);
-  }
-
-  // Cached results
-  if (GEOCODE_CACHE[address]) {
-    return callback(GEOCODE_CACHE[address]);
-  }
-
-  if (!MAPBOX_ACCESS_TOKEN) {
-    alert("Cannot look up addresses because MAPBOX_ACCESS_TOKEN has not been set.");
-    return;
-  }
-
-  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${MAPBOX_ACCESS_TOKEN}`;
-
-  $.ajax({
-    url: url,
-    dataType: 'json',
-    success: function(data) {
-      if (data.features && data.features.length > 0) {
-        const [lon, lat] = data.features[0].center;
-        const coordinates = [lat, lon];
-        GEOCODE_CACHE[address] = coordinates;
-        callback(coordinates);
-      } else {
-        callback(null);
-      }
-    },
-    error: function(xhr, status, error) {
-      console.error('Error fetching geocode data:', error);
-      alert("There was a problem finding that address. Please try again.");
+    // If it's already lat,lng coordinates
+    const islatlng = address.match(/\s*(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)\s*/);
+    if (islatlng) {
+        const coordinates = [parseFloat(islatlng[1]), parseFloat(islatlng[2])];
+        return callback(coordinates);
     }
-  });
+
+    // Cached results
+    if (GEOCODE_CACHE[address]) {
+        return callback(GEOCODE_CACHE[address]);
+    }
+
+    if (!MAPBOX_ACCESS_TOKEN) {
+        alert("Cannot look up addresses because MAPBOX_ACCESS_TOKEN has not been set.");
+        return;
+    }
+
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${MAPBOX_ACCESS_TOKEN}`;
+
+    $.ajax({
+        url: url,
+        dataType: 'json',
+        success: function(data) {
+            if (data.features && data.features.length > 0) {
+                const [lon, lat] = data.features[0].center;
+                const coordinates = [lat, lon];
+                GEOCODE_CACHE[address] = coordinates;
+                callback(coordinates);
+            } else {
+                callback(null);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching geocode data:', error);
+            alert("There was a problem finding that address. Please try again.");
+        }
+    });
 }
 
 
@@ -2140,6 +2153,7 @@ function compileParams (addextras=false) {
     return params;
 }
 
+
 function updateUrlParams () {
     const baseurl = document.location.href.indexOf('?') == -1 ? document.location.href : document.location.href.substr(0, document.location.href.indexOf('?'));
     const params = compileParams(true);
@@ -2153,6 +2167,7 @@ function findCTAContainingLatLng (inputlatlng) {
     const containingcta = leafletPip.pointInLayer(latlng, MAP.ctapolygonfills);
     return containingcta[0];
 }
+
 
 function findCountyContainingLatLng (inputlatlng) {
     const latlng = inputlatlng.hasOwnProperty('length') ? L.latLng(inputlatlng[0], inputlatlng[1]) : inputlatlng;
@@ -2275,6 +2290,7 @@ function updateCandleChart($candlediv, subtitle, aair, lci, uci, minlci, maxuci)
     $candlediv.attr('aria-label', charttooltip).prop('title', charttooltip);
 }
 
+
 function downloadDataAsZip() {
     const zip = new JSZip();
 
@@ -2303,6 +2319,7 @@ function downloadDataAsZip() {
         });
     });
 }
+
 
 // Attach event listener to the download link
 document.addEventListener("DOMContentLoaded", function () {

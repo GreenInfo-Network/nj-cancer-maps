@@ -69,6 +69,14 @@
 			margin-bottom: 5px;
 		}
 
+        .leaflet-choroplethlegend-legend {
+        }
+        .leaflet-choroplethlegend-legend::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
 		.leaflet-choroplethlegend-legendgradient {
 			width: 200px;
 			height: 20px;
@@ -84,6 +92,21 @@
 		.leaflet-choroplethlegend-maxvalue {
 			float: right;
 		}
+
+        .leaflet-choroplethlegend-nodata {
+            font-size: 16px;
+            margin-top: .5em;
+        }
+        .leaflet-choroplethlegend-nodata-swatch {
+            display: inline-block;
+            height: 1em;
+            width: 1em;
+            background-color: #cccccc;
+        }
+        .leaflet-choroplethlegend-nodata-explanation {
+            font-size: 12px;
+            max-width: 200px;
+        }
 	}
 
 	/* hacks for print mode */

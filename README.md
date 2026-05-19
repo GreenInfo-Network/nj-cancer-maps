@@ -1,4 +1,3 @@
-
 # Cancer Mapping Template
 
 This is a template for web developers to set up a website that displays cancer statistics by cancer reporting zone. Note that throughout the template, cancer reporting zones are often referred to as CTAs (Cancer Tabulation Areas).
