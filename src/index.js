@@ -1318,7 +1318,7 @@ function performSearchDemographics (searchparams) {
     const ctaidtext = searchparams.ctaid == SITE_CONSTANTS.ctaid ? '' : `(${demogdata_cta.GeoID})`;
     $demographics_section.find('span[data-statistics="ctaname"]').text(ctanametext);
     // $demographics_section.find('span[data-statistics="ctaid"]').text(ctaidtext);
-    $demographics_section.find('span[data-statistics="ctaname"]').closest('span.subtitle').prop('aria-label', ctanametext + ' ' + ctaidtext);
+    $demographics_section.find('span[data-statistics="ctaname"]').closest('span.subtitle');
 
     // fill in the blanks: demographics
     // go over the DEMOGRAPHIC_TABLES which we used to construct the table, and fill in the corresponding values for CTA & Statewide demographics
@@ -1349,28 +1349,28 @@ function performSearchPlaces (searchparams) {
     const cities = DATA_CTACITY.filter(row => row.ZoneIDOrig == searchparams.ctaid).map(row => row.City);
     counties.sort();
     cities.sort();
-    const $putafterthisone = $('div.places-area');
-    $putafterthisone.empty()
-    $("<h3 class='title'></h3>").text('Location Details').appendTo($putafterthisone);
+
+    const $placesslot = $('#places-area');
+    $placesslot.empty();
+    $("<h3 class='title'></h3>").text('Location Details').appendTo($placesslot);
 
     if (searchparams.type == 'Zone') {
         const text = searchparams.ctaname + ' (' + searchparams.ctaid + ')'
-        const $block = $("<div ></div>").html(`<b class='subtitle'>Zone: </b>`).appendTo($putafterthisone);
+        const $block = $("<div ></div>").html(`<b class='subtitle'>Zone: </b>`).appendTo($placesslot);
         $("<span></span>").text(text).appendTo($block);
     }
     if (counties.length) {
         const text = counties.join(', ');
-        const $block = $('<div></div>').html(`<b class='subtitle'>Counties: </b>`).appendTo($putafterthisone);
+        const $block = $('<div></div>').html(`<b class='subtitle'>Counties: </b>`).appendTo($placesslot);
         $('<span></span>').text(text).appendTo($block);
     }
     if (cities.length && searchparams.type == "Zone") {
         const text = cities.join(', ');
-        const $block = $('<div></div>').html(`<b class='subtitle'>Places: </b>`).appendTo($putafterthisone);
+        const $block = $('<div></div>').html(`<b class='subtitle'>Places: </b>`).appendTo($placesslot);
         $('<span></span>').text(text).appendTo($block);
     }
 
-    updateFilterSummary(searchparams)
-    
+    updateFilterSummary(searchparams);    
 }
 
 function updateFilterSummary(searchparams) {
@@ -2284,10 +2284,6 @@ function updateCandleChart($candlediv, subtitle, aair, lci, uci, minlci, maxuci)
         width: `${cirangeidthpercent}%`,
         left: `${cirangeleftpercent}%`,
     });
-
-    // some accessibility and user-friendliness touches
-    const charttooltip = `${subtitle} LCI ${lci}, UCI ${uci}, AAIR ${aair}`;
-    $candlediv.attr('aria-label', charttooltip).prop('title', charttooltip);
 }
 
 
