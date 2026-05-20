@@ -140,43 +140,43 @@ var BARCHART_COLORS_SEX = {
 // see initDemographicTables() which creates the tables in DOM during setup
 // see performSearchDemographics() which fills them in with demographic data when an area is selected
 // each table defintion is a title for the table, and a set of rows for the table
-// each row is the demographics CSV field to use, its text label, a choice of formatting for the value, and optional tooltip_id from #tooltip_contents
+// each row is the demographics CSV field to use, its text label, a choice of formatting for the value
 // see formatFieldValue() for a list of supported format types
 var DEMOGRAPHIC_TABLES = [
     {
         title: "Population",
         rows: [
-            { field: 'TotalPop', label: "Total Population", format: 'integer', tooltip_id: undefined },
-            { field: 'PctRural', label: "% Living in Rural Area", format: 'percent', tooltip_id: 'PctRural' },
+            { field: 'TotalPop', label: "Total Population", format: 'integer' },
+            { field: 'PctRural', label: "% Living in Rural Area", format: 'percent' },
         ],
     },
     {
         title: "Race & Ethnicity",
         rows: [
-            { field: 'PctMinority', label: "% Minority (other than non-Hispanic White)", format: 'percent', tooltip_id: 'PctMinority' },
-            { field: 'PctHispanic', label: "% Hispanic", format: 'percent', tooltip_id: 'PctHispanic' },
-            { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', tooltip_id: 'PctBlackNH' },
-            { field: 'PctAPINH', label: "% Asian/Pacific Islander(non-Hispanic)", format: 'percent', tooltip_id: 'PctAPINH' },
+            { field: 'PctMinority', label: "% Minority (other than non-Hispanic White)", format: 'percent' },
+            { field: 'PctHispanic', label: "% Hispanic", format: 'percent' },
+            { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent' },
+            { field: 'PctAPINH', label: "% Asian/Pacific Islander(non-Hispanic)", format: 'percent' },
         ],
     },
     {
         title: "Income",
         rows: [
-            { field: 'Pct100Pov', label: "% Below Poverty", format: 'percent', tooltip_id: 'PctBelowPov' }, 
-            { field: 'PctNoHealthIns', label: "% Without Health Insurance", format: 'percent', tooltip_id: 'PctNoHealthIns' },
+            { field: 'Pct100Pov', label: "% Below Poverty", format: 'percent' }, 
+            { field: 'PctNoHealthIns', label: "% Without Health Insurance", format: 'percent' },
         ],
     },
     {
         title: "Education",
         rows: [
-            { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", format: 'percent', tooltip_id: 'PctEducBchPlus' },
-            { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent', tooltip_id: 'PctEducLHS' },
+            { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", format: 'percent' },
+            { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent' },
         ],
     },
     {
         title: "Disability Status",
         rows: [
-            { field: 'PctDisabled', label: "% With a Disability", format: 'percent', tooltip_id: 'PctDisabled' }, 
+            { field: 'PctDisabled', label: "% With a Disability", format: 'percent' }, 
         ],
     }
 ];
@@ -346,7 +346,6 @@ $(document).ready(function () {
         initDemographicTables();
         initMapAndPolygonData();
         initDataFilters();
-        initTooltips();
         initPrintPage();
         initDownloadButtons();
         initFaqAccordion();
@@ -522,33 +521,6 @@ function initLoadInitialState () {
     if (anythingchanged) {
         performSearch();
     }
-}
-
-
-function initTooltips () {
-    $('i[data-tooltip]').each(function () {
-        const $trigger = $(this);
-        const tooltipid = $(this).attr('data-tooltip');
-
-        $trigger
-        .attr('data-tooltip-content', `#tooltip_contents > div[data-tooltip="${tooltipid}"]`)
-        .tooltipster({
-            trigger: 'click',
-            animation: 'fade',
-            animationDuration: 150,
-            distance: 0,
-            maxWidth: 400,
-            minWidth: 300,
-            side: [ 'right', 'left', 'bottom', 'top' ],
-            contentCloning: true,
-            interactive: true, // don't auto-dismiss on mouse activity inside, let user copy text, follow links, ...
-            functionBefore: function (instance, helper) {  // close open ones before opening this one
-                jQuery.each(jQuery.tooltipster.instances(), function (i, instance) {
-                    instance.close();
-                });
-            },
-        });
-    });
 }
 
 
@@ -865,11 +837,9 @@ function initDemographicTables () {
 
         const $tbody = $table.children('tbody');
         tableinfo.rows.forEach(function (tablerowinfo) {
-            const tooltiphtml = tablerowinfo.tooltip_id ? `<i class="fa fa-info-circle"  data-tooltip="${tablerowinfo.tooltip_id}"></i>` : '';
-
             $(`
                 <tr>
-                    <th scope="row">${tablerowinfo.label} ${tooltiphtml}</th>
+                    <th scope="row">${tablerowinfo.label}</th>
                     <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="${tablerowinfo.field}"></span></td>
                     <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="${tablerowinfo.field}"></span></td>
                     <td class="right nowrap" data-region="nation"><span data-region="nation" data-statistic="${tablerowinfo.field}"></span></td>
@@ -2208,7 +2178,7 @@ function findCTAById (ctaid) {
 
 
 function toggleAddressSearchFailure (message) {
-    const $textarea = $('div.data-filters label[for="data-filters-address"] span');
+    const $textarea = $('#data-filters-address').siblings('.warnmessage');
 
     if (message) {
         $textarea.text(message).removeClass('d-none');

@@ -45,10 +45,6 @@
     <!-- Montserrat font -->
     <link rel="stylesheet" type="text/css" media="all" href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap" />
 
-    <!-- Tooltipster for awesome tooltips -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/tooltipster@4.2.6/dist/css/tooltipster.bundle.min.css" />
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/tooltipster@4.2.6/dist/js/tooltipster.bundle.min.js"></script>
-
     <!-- jszip for zipping files for download -->
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.7.1/dist/jszip.min.js"></script>
 
@@ -59,8 +55,8 @@
     <script type="text/javascript" src="https://unpkg.com/es7-object-polyfill"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/polyfill-object-assign@1.0.0/index.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="index.css?Wed_May_20_2026_12_00_11_GMT_0700__Pacific_Daylight_Time_" />
-    <script type="text/javascript" src="index.js?Wed_May_20_2026_12_00_11_GMT_0700__Pacific_Daylight_Time_"></script>
+    <link rel="stylesheet" type="text/css" href="index.css?Wed_May_20_2026_12_38_39_GMT_0700__Pacific_Daylight_Time_" />
+    <script type="text/javascript" src="index.js?Wed_May_20_2026_12_38_39_GMT_0700__Pacific_Daylight_Time_"></script>
 </head>
 
 <body>
@@ -99,9 +95,7 @@
         <div class="container noprint" id="above-map">
             <div class="row">
                 <div class="col-md-4">
-                    <h2 class="nomargin" tabindex="0"><span class="title">Cancer Incidence</span>
-                        <i class="fa fa-info-circle"  data-tooltip="cases"></i>
-                    </h2>
+                    <h2 class="nomargin" tabindex="0"><span class="title">Cancer Incidence</span></h2>
                 </div>
                 <div class="col-md-8 right">
                     <button class="btn" id="downloadbutton" aria-label="Show options for downloading the map and data" aria-haspopup="true" aria-controls="downloadoptions">
@@ -128,11 +122,10 @@
                             </select>
                         </div>
                         <div class="input-group">
-                            <label class="subtitle" for="data-filters-address">Location Search
-                                <i class="fa fa-info-circle"  data-tooltip="location"></i>
-                                <span class="warnmessage d-none" style="padding: 1px 5px; display: block; margin: 0 0 5px 0;"></span>
-                            </label>
+                            <label class="subtitle" for="data-filters-address">Location Search</label>
                             <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-label="Enter address to select an area to report" />
+                            <div class="warnmessage d-none" aria-live="assertive"></div>
+                            <p class="small mb-0">Include street name and number and city, at a minimum. For example, &quot;258 Chapman Rd, Newark, NJ&quot;.</p>
                         </div>
                         <div class="input-group">
                             <label class="subtitle" for="data-filters-site">Time Period</label>
@@ -145,12 +138,12 @@
                             </select>
                         </div>
                         <div class="input-group">
-                            <label class="subtitle" for="data-filters-sex">Sex <i class="fa fa-info-circle" data-tooltip="sex"></i></label>
+                            <label class="subtitle" for="data-filters-sex">Sex</label>
                             <select name="sex" id="data-filters-sex" aria-label="Select the sex to report">
                             </select>
                         </div>
                         <div class="input-group">
-                            <label class="subtitle" for="data-filters-race">Race/Ethnicity <i class="fa fa-info-circle" data-tooltip="race"></i></label>
+                            <label class="subtitle" for="data-filters-race">Race/Ethnicity</label>
                             <select name="race" id="data-filters-race" aria-label="Select the race/ethnicity to report">
                             </select>
                         </div>
@@ -239,7 +232,7 @@
         </div>
 
         <div class="container" id="incidence-title">
-            <span class="title" tabindex="0">Cancer Statistics - <span data-statistics="ctaname"></span> <i class="fa fa-info-circle" data-tooltip="source"></i></span>
+            <span class="title" tabindex="0">Cancer Statistics - <span data-statistics="ctaname"></span></span>
         </div>
         <div class="container" id="incidence-readouts">
             <p id="incidence-readouts-description" aria-live="polite" aria-atomic="true"></p>
@@ -249,7 +242,7 @@
                     <tr>
                         <th class="left">Zone or Statewide</th>
                         <th scope="col">Cases</th>
-                        <th scope="col" colspan="2">Age-Adjusted Incidence Rates (95% LCI, 95% UCI) <i class="fa fa-info-circle"  data-tooltip="aaircitable"></i></th>
+                        <th scope="col" colspan="2">Age-Adjusted Incidence Rates (95% LCI, 95% UCI)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -274,6 +267,17 @@
                 </tbody>
             </table>
 
+            <br />
+
+            <p>
+                Zone and statewide incidence data come from <span class="stateName">[REPLACE STATE/REGISTRY]</span> State Cancer
+                Registry. National Program of Cancer Registries and Surveillance, Epidemiology and End Results Program
+                SEER*Stat Database: NPCR and SEER Incidence - U.S. Cancer Statistics Public Use Research Database, 2021
+                Submission (2001-2019). United States Department of Health and Human Services, Centers for Disease Control
+                and Prevention and National Cancer Institute. Released June 2022.
+                Accessed at <a target="_blank" href="https://www.cdc.gov/cancer/uscs/public-use">www.cdc.gov/cancer/uscs/public-use</a>.
+            </p>
+
             <p>
                 Distributions of selected population demographic factors are also provided for each zone. These data are from the decennial U.S. Census or the Census’s American Community Survey.
                 * To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on fewer than <span class="reportingMinCases">[REPLACE REPORTING MIN CASES]</span> cancer cases.
@@ -284,9 +288,8 @@
             <span role="heading" aria-level="2">
                 <span class="title" tabindex="0" aria-label="Name of area reported">
                     Demographics - <span data-statistics="ctaname"></span>
-                    <i class="fa fa-info-circle" data-tooltip="demographic"></i>
                     <span data-statistics="ctaid"></span>
-                    </span>
+                </span>
                 <br />
             </span>
             <!-- tables inserted here via initDemographicTables() -->
@@ -562,52 +565,103 @@
                     </div><!--/accordion-->
                 </div><!--/tab-pane -->
                 <div class="tab-pane container" id="learn-glossary">
-                    <!--
-                    note that these are the same as the #tooltips_contents ... mostly
-                    because some terms do not have a tooltip and some terms have slightly different text, they are maintained separately
-                    -->
                     <p>
-                        <b>Aggregation:</b> The process of combining smaller units into a single, summarized value  for statistical reporting. See Methodology for more information.
+                        <b>Aggregation:</b>
+                        The process of combining smaller units into a single, summarized value  for statistical reporting. See Methodology for more information.
                     </p>
                     <p>
-                        <b>Age-Adjusted Incidence Rate (AAIR):</b> The rate of new cancers per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution.
-                        In the <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps, incidence rates are
-                        age-adjusted using the <a href="https://www.cdc.gov/nchs/data/statnt/statnt20.pdf"
-                            target="_blank">U.S. 2000 Standard Population</a>. This statistical measure allows for the fair comparison of incidence rates between populations with different age structures, reducing the impact of age as a confounder. This is important because the incidence of most cancers increases with age.
+                        <b>Age-Adjusted Incidence Rate (AAIR):</b>
+                        The rate of new cancers per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution.
+                        In the <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps, incidence rates are age-adjusted using the <a href="https://www.cdc.gov/nchs/data/statnt/statnt20.pdf" target="_blank">U.S. 2000 Standard Population</a>. This statistical measure allows for the fair comparison of incidence rates between populations with different age structures, reducing the impact of age as a confounder. This is important because the incidence of most cancers increases with age.
                     </p>
                     <p>
-                        <b>Confidence Interval:</b> A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers of cases are subject to narrower, more precise, confidence intervals.
+                        <b>Confidence Interval:</b>
+                        A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers of cases are subject to narrower, more precise, confidence intervals.
                     </p>
                     <p>
-                        <b>Data Suppression:</b> To ensure confidentiality and stable statistical rates, cancer incidence
-                        rates are suppressed and reported as * when there are <span class="reportingMinCases">[REPLACE REPORTING MIN
-                            CASES]</span> or fewer cancer cases.
+                        <b>Data Suppression:</b>
+                        To ensure confidentiality and stable statistical rates, cancer incidence rates are suppressed and reported as * when there are <span class="reportingMinCases">[REPLACE REPORTING MIN CASES]</span> or fewer cancer cases.
                     </p>
                     <p>
-                        <b>Demographics:</b> Statistical data relating to the population and particular groups within it. Demographic variables such as race, sex, and education are generally thought to influence many outcomes of interest, including cancer incidence.
+                        <b>Demographics:</b>
+                        Statistical data relating to the population and particular groups within it. Demographic variables such as race, sex, and education are generally thought to influence many outcomes of interest, including cancer incidence. These data are from the 2010 U.S. Census and the 2015-2019 American Community Survey.
                     </p>
                     <p>
-                        <b>Incidence:</b> The number of new cases of cancer diagnosed in the selected time period.
+                        <b>Incidence:</b>
+                        The number of new cases of cancer diagnosed in the selected time period.
                     </p>
                     <p>
-                        <b>Invasive Cancer:</b> Cancer that has spread beyond the layer of tissue in which it developed and is growing into surrounding, healthy tissues. Also called infiltrating cancer.
+                        <b>Invasive Cancer:</b>
+                        Cancer that has spread beyond the layer of tissue in which it developed and is growing into surrounding, healthy tissues. Also called infiltrating cancer.
                     </p>
                     <p>
-                        <b>Race/Ethnicity:</b> :  Race/ethnicity is categorized as: All races/ethnicities, Non-Hispanic (NH) White, NH Black, NH Asian/Pacific Islander or Hispanic. All race/ethnicity includes all of the above, as well as American Indian/Alaskan Native, other and unknown race/ethnicity. The
-                        American Indian/Alaska Nativegroup is not reported separately due to small numbers for many cancer sites in
+                        <b>Race/Ethnicity:</b>
+                        Race/ethnicity is categorized as: All races/ethnicities, Non-Hispanic (NH) White, NH Black, NH Asian/Pacific Islander or Hispanic. All race/ethnicity includes all of the above, as well as American Indian/Alaskan Native, other and unknown race/ethnicity. The American Indian/Alaska Nativegroup is not reported separately due to small numbers for many cancer sites in
                         <span class="stateName">[REPLACE STATE/REGISTRY]</span>.
                     </p>
                     <p>
-                        <b>Racial/Ethnic Composition:</b> Distribution of residents’ race/ethnicity (e.g., % Hispanic, %
-                        non-Hispanic White, % non-Hispanic Black).<br>
+                        <b>Racial/Ethnic Composition:</b>
+                        Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black).<br>
                         <span class="source">Source: US Census, 2010.</span>
                     </p>
                     <p>
-                        <b>Rural:</b> Percent of residents who reside in blocks that are designated as rural.<br>
+                        <b>Rural:</b>
+                        Percent of residents who reside in blocks that are designated as rural.<br>
                         <span class="source">Source: US Census, 2010.</span>
                     </p>
                     <p>
-                        <b>Sex:</b> <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
+                        <b>Sex:</b>
+                        <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
+                    </p>
+                    <p>
+                        <b>% Minority:</b>
+                        Percent of residents whose race/ethnicity is not non-Hispanic White.<br>
+                        <span class="source">Source: US Census, 2010.</span>
+                    </p>
+                    <p>
+                        <b>% Hispanic:</b>
+                        Percent of residents whose race/ethnicity is Hispanic of any race.<br>
+                        <span class="source">Source: US Census, 2010.</span>
+                    </p>
+                    <p>
+                        <b>% Black (non-Hispanic):</b>
+                        Percent of residents whose race/ethnicity is non-Hispanic Black.<br>
+                        <span class="source">Source: US Census, 2010.</span>
+                    </p>
+                    <p>
+                        <b>% Asian/Pacific Islander(non-Hispanic):</b>
+                        Percent of residents whose race/ethnicity is non-Hispanic Asian/Pacific Islander.<br>
+                        <span class="source">Source: US Census, 2010.</span>
+                    </p>
+                    <p>
+                        <b>% Living in Rural Area:</b>
+                        Percent of residents who reside in blocks that are designated as rural.<br>
+                        <span class="source">Source: US Census, 2010.</span>
+                    </p>
+                    <p>
+                        <b>% Without Health Insurance:</b>
+                        Percent of population without health insurance.<br>
+                        <span class="source">Sources: 5-year time period: American Community Survey, 2015-2019; 10-year time period: American Community Survey, 2010-2014 and 2015-2019.</span>
+                    </p>
+                    <p>
+                        <b>% Below Poverty:</b>
+                        Percent of population below poverty level in the past 12 months.<br>
+                        <span class="source">Sources: 5-year time period: American Community Survey, 2015-2019; 10-year time period: American Community Survey, 2010-2014 and 2015-2019.</span>
+                    </p>
+                    <p>
+                        <b>% With Bachelors Degree or Higher:</b>
+                        Percent of population with a bachelor’s degree or higher.<br>
+                        <span class="source">Sources: 5-year time period: American Community Survey, 2015-2019; 10-year time period: American Community Survey, 2010-2014 and 2015-2019.</span>
+                    </p>
+                    <p>
+                        <b>% Did Not Finish High School:</b>
+                        Percent of population with less than a high school graduate education.<br>
+                        <span class="source">Sources: 5-year time period: American Community Survey, 2015-2019; 10-year time period: American Community Survey, 2010-2014 and 2015-2019.</span>
+                    </p>
+                    <p>
+                        <b>% With a Disability:</b>
+                        Percent of population with a disability.<br>
+                        <span class="source">Sources: 5-year time period: American Community Survey, 2015-2019; 10-year time period: American Community Survey, 2010-2014 and 2015-2019.</span>
                     </p>
                     <!-- end of Definitions P items -->
                 </div><!--/tab-pane -->
@@ -615,6 +669,7 @@
         </div><!--/container section-->
 
     </main>
+
 
     <!--
     section: footer
@@ -635,146 +690,6 @@
         </div>
     </footer>
 
-
-    <!--
-    not a visible section: HTML blocks for the tooltips; see initLayerTooltips()
-    note that other glossaries exist, and they are all managed separately because that's how it is
-    - the Glossary section of the Learn section, HTML above
-    - the data download ZIP files metadata, makedownloadzip.py
-    -->
-    <div id="tooltip_contents" tabindex="-1">
-        <div data-tooltip="demographic">
-            Distributions of selected population demographic factors are provided for the zone. These data are from the 2010 U.S. Census and the 2015-2019 American Community Survey.
-        </div>
-        <div  data-tooltip="source">
-            Zone and statewide incidence data come from <span class="stateName">[REPLACE STATE/REGISTRY]</span> State Cancer
-            Registry. National Program of Cancer Registries and Surveillance, Epidemiology and End Results Program
-            SEER*Stat Database: NPCR and SEER Incidence - U.S. Cancer Statistics Public Use Research Database, 2021
-            Submission (2001-2019). United States Department of Health and Human Services, Centers for Disease Control
-            and Prevention and National Cancer Institute. Released June 2022. Accessed at <a target="_blank"
-                href="https://www.cdc.gov/cancer/uscs/public-use">www.cdc.gov/cancer/uscs/public-use</a>.
-        </div>
-        <div  data-tooltip="race">
-            Race/ethnicity is categorized as: non-Hispanic White, non-Hispanic Black, and Hispanic. “All races/ethnicities”
-            includes all of the above as well as non-Hispanic Asian/Pacific Islander, non-Hispanic American Indian/Alaskan
-            Native, and other or unknown race/ethnicity.
-            <!--Race/ethnicity is categorized as: <span class="confirmRaceList">[CONFIRM RACE LIST]</span>. "All races"
-            includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native.
-            The latter two groups are not reported separately due to small numbers for many cancer sites.-->
-        </div>
-        <div  data-tooltip="location">
-            To be able to accurately search for an address, please include components of an address including street
-            name and number and city, at a minimum. For example, “258 Chapman Rd, Newark".
-        </div>
-        <div  data-tooltip="sex">
-            <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps defines this field as the sex or gender
-            of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal
-            male, natal female, or not specified). However, categories beyond male and female are not consistently coded
-            by medical reporting facilities, and population estimates for gender categories beyond male and female are
-            not available. Thus, cancer incidence data are reported for only male and female sex at this time.
-        </div>
-        <div  data-tooltip="cases">
-
-            <!--To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on
-            fewer than <span class="reportingMinCases">[REPLACE REPORTING MIN CASES]</span> cancer cases.-->
-            To ensure confidentiality and stable statistical rates, cancer incidence rates are suppressed and reported as
-            “0” or “No Data” when there are 15 or fewer cancer cases.
-        </div>
-        <div  data-tooltip="aaircitable">
-            <b>Age-Adjusted Incidence Rate (AAIR):</b> Age-adjustment is a statistical method that allows comparisons of
-            incidence rates to be made between populations with different age distributions. This is important since the
-            incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as
-            the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if
-            that population had a ‘standard’ age distribution. In the <span class="stateName">[REPLACE
-                STATE/REGISTRY]</span> Cancer Maps, incidence rates are age-adjusted using the <a target="_blank"
-                rel="nofollow" href="https://www.census.gov/census2000/states/us.html">U.S. 2000 Standard
-                Population</a>.
-            <br />
-            <br />
-            <b>LCI and UCI:</b> A statistical measure of the precision of the observed incidence rate. The lower
-            confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is
-            thought to be with 95% confidence. Rates based on larger numbers of cases are subject to less variation.
-        </div>
-        <div  data-tooltip="PctMinority">
-            Percent of residents whose race/ethnicity is not non-Hispanic White.<br>
-            <span class="source">Source: US Census, 2010.</span>
-        </div>
-        <div  data-tooltip="PctHispanic">
-            Percent of residents whose race/ethnicity is Hispanic of any race.<br>
-            <span class="source">Source: US Census, 2010.</span>
-        </div>
-        <div  data-tooltip="PctBlackNH">
-            Percent of residents whose race/ethnicity is non-Hispanic Black.<br>
-            <span class="source">Source: US Census, 2010.</span>
-        </div>
-        <div  data-tooltip="PctAPI">
-            Percent of residents whose race/ethnicity is non-Hispanic Asian/Pacific Islander.<br>
-            <span class="source">Source: US Census, 2010.</span>
-        </div>
-        <div  data-tooltip="PctRural">
-            Percent of residents who reside in blocks that are designated as rural.<br>
-            <span class="source">Source: US Census, 2010.</span>
-        </div>
-        <div  data-tooltip="PctNoHealthIns">
-            Percent of population without health insurance.<br>
-            <span class="source">Sources:
-                <ul>
-                    <li>5-year time period: American Community Survey, 2015-2019</li>
-                    <li>10-year time period: American Community Survey, 2010-2014 and 2015-2019</li>
-                </ul>
-            </span>
-        </div>
-        <div  data-tooltip="PctBelowPov">
-            Percent of population below poverty level in the past 12 months.<br>
-            <span class="source">Sources:
-                <ul>
-                    <li>5-year time period: American Community Survey, 2015-2019</li>
-                    <li>10-year time period: American Community Survey, 2010-2014 and 2015-2019</li>
-                </ul>
-            </span>
-        </div>
-
-        <div  data-tooltip="PctEducBchPlus">
-            Percent of population with a bachelor’s degree or higher.<br>
-            <span class="source">Sources:
-                <ul>
-                    <li>5-year time period: American Community Survey, 2015-2019</li>
-                    <li>10-year time period: American Community Survey, 2010-2014 and 2015-2019</li>
-                </ul>
-            </span>
-        </div>
-
-        <div  data-tooltip="PctEducLHS">
-            Percent of population with less than a high school graduate education.<br>
-            <span class="source">Sources:
-                <ul>
-                    <li>5-year time period: American Community Survey, 2015-2019</li>
-                    <li>10-year time period: American Community Survey, 2010-2014 and 2015-2019</li>
-                </ul>
-            </span>
-        </div>
-
-        <div  data-tooltip="PctDisabled">
-            Percent of population with a disability.<br>
-            <span class="source">Sources:
-                <ul>
-                    <li>5-year time period: American Community Survey, 2015-2019</li>
-                    <li>10-year time period: American Community Survey, 2010-2014 and 2015-2019</li>
-                </ul>
-            </span>
-        </div>
-
-        <div  data-tooltip="Pct_forborn">
-            Percent of population that is foreign born.<br>
-            <span class="source">Sources:
-                <ul>
-                    <li>5-year time period: American Community Survey, 2015-2019</li>
-                    <li>10-year time period: American Community Survey, 2010-2014 and 2015-2019</li>
-                </ul>
-            </span>
-        </div>
-
-    </div>
 
     <!--
     terms of use modal
