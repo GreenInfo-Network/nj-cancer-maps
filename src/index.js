@@ -8,38 +8,35 @@ require('./leaflet-choroplethlegend.scss');
 require('./leaflet-choroplethlegend.js');
 require('./leaflet-layerpicker.scss');
 require('./leaflet-layerpicker.js');
-require('./leaflet-boxzoom.scss');
-require('./leaflet-boxzoom.js');
 require('./leaflet-singleclick.js');
 require('./printing-leaflet-easyPrint.js');
 
 
 const SITE_CONSTANTS = {
-    startingLocation: [40.47593163423407, -74.42895767340794] , // Replace with your desired default location
     ctaid: 34, // Starting state for site to start up
-     stateName: "New Jersey", // The name of your state, project, or cancer registry. Commonly used with the phrase "Cancer Maps" after it, indicating the name of this website.
-     numOfCancerSites: "23", // The number of cancer sites by which data may be searched. Usually the same as the number of SEARCHOPTIONS_CANCERSITE entries.
-     numOfZones: "150", // The number of zones for your state.
-     minZonePop: "50,676", // The minimum population of a zone in your state/registry catchment area. Used in a statement describing zones.
-     maxZonePop: "97,265", // The maximum population of a zone in your state/registry catchment area. Used in a statement describing zones.
-     minTractsPerZone: "11", // The minimum number of census tracts forming any zone. Used in a statement describing zones.
-     maxTractsPerZone: "32", // The maximum number of census tracts forming any zone. Used in a statement describing zones.
-     raceList: [
-         "non-Hispanic White",
-         "non-Hispanic Black",
-         "non-Hispanic Asian/Pacific Islander",
-         "non-Hispanic American Indian/Alaska Native",
-         "Hispanic"
-     ], // A list of the races/ethnicities by which data may be displayed. This should reflect the SEARCHOPTIONS_RACE entries.
-     reportingMinCases: "15", // The minimum number of cancer cases in a zone to be reported (i.e., suppression threshold).
-     registry: "New Jersey State Cancer Registry", //Name of registry that will be listed under “Project Team” in the About section.
-     registryLink: "https://www.nj.gov/health/ces/reporting-entities/njscr/", //A hyperlink URL to this website's parent agency, cancer registry, etc. The URL associated with the text specified in ‘registry’ field above.
-     fundingSource: "Cancer data used in this study were provided by the New Jersey State Cancer Registry, Cancer Epidemiology Services, New Jersey Department of Health, which is funded by the National Cancer Institute under contract #75N91021D00009, the National Program of Cancer Registries (NPCR), Centers for Disease Control and Prevention under grant #5NU58DP007117, as well as the State of New Jersey and the Rutgers Cancer Institute.", //A statement/description of who funded the website. Displayed in the About section.
-     citationInfo: "New Jersey State Cancer Registry", //A statement/description of how this website should be cited in literature.
-     nationalCancerDataSource: "this is your national cancer data source info", //A statement/description of the national cancer data source, including data years. This should be reviewed with subsequent data updates to verify whether it needs to be updated as well (e.g., during annual data updates). An example of this statement applicable to national cancer data through 2018 is: "National incidence data come from the National Program of Cancer Registries and Surveillance, Epidemiology, and End Results SEER*Stat Database: U.S. Cancer Statistics Incidence Analytic file - 1998-2018. United States Department of Health and Human Services, Centers for Disease Control and Prevention. Released June 2021, based on the 2020 submission."
-     aboutBlurb: "This is your about blurb", //A statement/description of the website, in "What is the XXX Cancer Registry" section of the FAQ.
-     incidenceDataDate: "2016", //Last year of available incidence data. Used in one of the FAQs.
-     sociodemographicDataDateRange: "2012-2016", //Data range for ACS data used. Used in one of the FAQs.
+    stateName: "New Jersey", // The name of your state, project, or cancer registry. Commonly used with the phrase "Cancer Maps" after it, indicating the name of this website.
+    numOfCancerSites: "23", // The number of cancer sites by which data may be searched. Usually the same as the number of SEARCHOPTIONS_CANCERSITE entries.
+    numOfZones: "150", // The number of zones for your state.
+    minZonePop: "50,676", // The minimum population of a zone in your state/registry catchment area. Used in a statement describing zones.
+    maxZonePop: "97,265", // The maximum population of a zone in your state/registry catchment area. Used in a statement describing zones.
+    minTractsPerZone: "11", // The minimum number of census tracts forming any zone. Used in a statement describing zones.
+    maxTractsPerZone: "32", // The maximum number of census tracts forming any zone. Used in a statement describing zones.
+    raceList: [
+        "non-Hispanic White",
+        "non-Hispanic Black",
+        "non-Hispanic Asian/Pacific Islander",
+        "non-Hispanic American Indian/Alaska Native",
+        "Hispanic"
+    ], // A list of the races/ethnicities by which data may be displayed. This should reflect the SEARCHOPTIONS_RACE entries.
+    reportingMinCases: "15", // The minimum number of cancer cases in a zone to be reported (i.e., suppression threshold).
+    registry: "New Jersey State Cancer Registry", //Name of registry that will be listed under “Project Team” in the About section.
+    registryLink: "https://www.nj.gov/health/ces/reporting-entities/njscr/", //A hyperlink URL to this website's parent agency, cancer registry, etc. The URL associated with the text specified in ‘registry’ field above.
+    fundingSource: "Cancer data used in this study were provided by the New Jersey State Cancer Registry, Cancer Epidemiology Services, New Jersey Department of Health, which is funded by the National Cancer Institute under contract #75N91021D00009, the National Program of Cancer Registries (NPCR), Centers for Disease Control and Prevention under grant #5NU58DP007117, as well as the State of New Jersey and the Rutgers Cancer Institute.", //A statement/description of who funded the website. Displayed in the About section.
+    citationInfo: "New Jersey State Cancer Registry", //A statement/description of how this website should be cited in literature.
+    nationalCancerDataSource: "this is your national cancer data source info", //A statement/description of the national cancer data source, including data years. This should be reviewed with subsequent data updates to verify whether it needs to be updated as well (e.g., during annual data updates). An example of this statement applicable to national cancer data through 2018 is: "National incidence data come from the National Program of Cancer Registries and Surveillance, Epidemiology, and End Results SEER*Stat Database: U.S. Cancer Statistics Incidence Analytic file - 1998-2018. United States Department of Health and Human Services, Centers for Disease Control and Prevention. Released June 2021, based on the 2020 submission."
+    aboutBlurb: "This is your about blurb", //A statement/description of the website, in "What is the XXX Cancer Registry" section of the FAQ.
+    incidenceDataDate: "2016", //Last year of available incidence data. Used in one of the FAQs.
+    sociodemographicDataDateRange: "2012-2016", //Data range for ACS data used. Used in one of the FAQs.
     MAP_BBOX: [[38.93, -75.56], [41.36, -73.89]],  // [[s, w], [n, e]] Starting Location
     MIN_ZOOM: 6,
     MAX_ZOOM: 15,
@@ -340,6 +337,7 @@ $(document).ready(function () {
         initAboutBlurb(SITE_CONSTANTS.aboutBlurb);
         initIncidenceDataDate(SITE_CONSTANTS.incidenceDataDate);
         initSociodemographicDataDateRange(SITE_CONSTANTS.sociodemographicDataDateRange);
+
         initValidateDemographicDataset();
         initValidateIncidenceDataset();
         initFixCountyOverlay();
@@ -347,16 +345,15 @@ $(document).ready(function () {
         initFixPlaceOverlay();
         initDemographicTables();
         initMapAndPolygonData();
-        initDataFilters(SITE_CONSTANTS.startingLocation);
+        initDataFilters();
         initTooltips();
         initPrintPage();
         initDownloadButtons();
         initFaqAccordion();
         initGoogleAnalyticsHooks();
         initTermsOfUse();
+
         initLoadInitialState();
-        performSearch();
-        initUrlParamUpdater();
     });   
 });
 
@@ -399,12 +396,6 @@ window.onload = function () {
 };
 
 
-
-function initUrlParamUpdater () {
-    setInterval(() => {
-        updateUrlParams();
-    }, 1 * 1000);
-}
 
 function initRenameState(name) {
     const elements = document.querySelectorAll('.stateName');
@@ -467,40 +458,48 @@ function initFundingSource(text) {
     if (text){ elements.forEach(element => { element.innerText = text })}
 }
 
+
 function initCitationInfo(text) {
     const elements = document.querySelectorAll('.citationInfo');
     if (text){ elements.forEach(element => { element.innerText = text })}
 }
+
 
 function initNationalCancerDataSourceInfo(text) {
     const elements = document.querySelectorAll('.nationalCancerDataSource');
     if (text){ elements.forEach(element => { element.innerText = text })}
 }
 
+
 function initAboutBlurb(text) {
     const elements = document.querySelectorAll('.aboutBlurb');
     if (text){ elements.forEach(element => { element.innerText = text })}
 }
+
 
 function initIncidenceDataDate(text) {
     const elements = document.querySelectorAll('.incidenceDateDate');
     if (text){ elements.forEach(element => { element.innerText = text })}
 }
 
+
 function initSociodemographicDataDateRange(text) {
     const elements = document.querySelectorAll('.sociodemographicDataDateRange');
     if (text){ elements.forEach(element => { element.innerText = text })}
 }
 
+
 function initLoadInitialState () {
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
     const params = new URLSearchParams(window.location.search);
+    let anythingchanged = false;
 
     ['address', 'site', 'sex', 'race', 'time'].forEach((fieldname) => {
         const $widget = $searchwidgets.filter(`[name="${fieldname}"]`);
         const value = params.get(fieldname);
         if (value) {
             $widget.val(value);
+            anythingchanged = true;
         }
     });
 
@@ -509,13 +508,19 @@ function initLoadInitialState () {
         MAP.layerpicker.getLayerStates().forEach(function (layerinfo) {
             const turnon = enablethese.indexOf(layerinfo.id) != -1;
             MAP.layerpicker.toggleLayer(layerinfo.id, turnon);
+            if (turnon) anythingchanged = true;
         });
     }
     if (params.get('choropleth')) {
         MAP.choroplethcontrol.setSelection(params.get('choropleth'));
+        anythingchanged = true;
     }
     else {
         MAP.choroplethcontrol.setSelection('AAIR');
+    }
+
+    if (anythingchanged) {
+        performSearch();
     }
 }
 
@@ -731,7 +736,6 @@ function initPrintPage () {
         leafletControls = [
             document.querySelector('.leaflet-control-attribution'),
             document.querySelector('.leaflet-control-zoom'),
-            document.querySelector('.leaflet-control-boxzoom'),
             document.querySelector('.leaflet-control-scale'),
             document.querySelector('.leaflet-layerpicker-control')
         ];
@@ -884,14 +888,15 @@ function initMapAndPolygonData () {
     MAP = L.map('map', {
         minZoom: SITE_CONSTANTS.MIN_ZOOM,
         maxZoom: SITE_CONSTANTS.MAX_ZOOM,
+        keyboard: false,
+        dragging: false,
+        scrollWheelZoom: false,
+        touchZoom: false,
+        zoomControl: false,
     })
     .fitBounds(SITE_CONSTANTS.MAP_BBOX);
 
     L.control.scale().addTo(MAP);
-
-    L.Control.boxzoom({
-        position:'topleft',
-    }).addTo(MAP);
 
     // a marker for address searches
     var blackIcon = L.icon({
@@ -937,7 +942,7 @@ function initMapAndPolygonData () {
         hideClasses: [
             // hide these other controls
             'leaflet-layerpicker-control', 'leaflet-control-attribution',
-            'leaflet-control-zoom', 'leaflet-control-boxzoom',
+            'leaflet-control-zoom',
             // within the choroplethlegend control which we do not hide, setPrintMode() sets certain CSS to show/hide those items
         ],
     }).addTo(MAP);
@@ -981,19 +986,11 @@ function initMapAndPolygonData () {
             logGoogleAnalyticsEvent('map', 'choropleth', picked);
         },
     }).addTo(MAP);
-
-    // clicking the map = find latlng, set this as a latlng address search, and let performSearch() take its course
-    MAP.on('singleclick', function (event) {
-        const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
-        const $addressbox = $searchwidgets.filter('[name="address"]');
-        const address = `${event.latlng.lat.toFixed(5)},${event.latlng.lng.toFixed(5)}`;
-        $addressbox.val(address).change();
-    });
 }
 
 
-function initDataFilters (location) {
-    // part 1: fill in the SELECT options from the configurable constants
+function initDataFilters () {
+    // fill in the SELECT options from the configurable constants
     const $searchwidgets_site = $('div.data-filters select[name="site"]');
     const $searchwidgets_sex = $('div.data-filters select[name="sex"]');
     const $searchwidgets_race = $('div.data-filters select[name="race"]');
@@ -1019,10 +1016,8 @@ function initDataFilters (location) {
     if (getOptionCount('time') < 2) {  // since some datasets have only 1 option
         $searchwidgets_time.closest('div.input-group').hide();
     }
-    
-    $('#data-filters-address').val(location);
 
-    // part 2: add actions to the search widgets
+    // add actions to the search widgets
     // the search widgets: select race/sex/cancer/time and trigger a search
     // some selections may need to force others, e.g. some cancer selections will force a sex selection
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
@@ -1037,21 +1032,6 @@ function initDataFilters (location) {
                 $searchwidgets_sex.val(autopick_sex);
             }
         }
-
-        // go ahead and search
-        performSearch();
-    });
-
-
-    // performSearch() will zoom the map to the searched CTA Zone, but only if the reason for the search was a changed address search
-    // e.g. changing sex should not re-zoom the map
-    // this hasbeenchanged datum is how we detect that an address change is the reason for the re-search
-    $searchwidgets.filter('[name="address"]')
-    .keydown(function (event) {
-        // don't update our flag if the keypress was a tab; it was probably a screenreader just passing through
-        if (event.keyCode != 9) $(this).data('hasbeenchanged', true);
-
-        if (event.keyCode == 13) $(this).blur();
     });
 
     // the anti-filters: Xs in the div.data-filters-summary which will clear a specific filter
@@ -1076,6 +1056,18 @@ function initDataFilters (location) {
         else {
             throw "Clear filter: unknown filter type";
         }
+    });
+
+    // submit button and clear button
+    const $submitbutton = $('#data-filters-submit');
+    const $resetbutton = $('#data-filters-reset');
+
+    $submitbutton.click(function () {
+        performSearch();
+    });
+
+    $resetbutton.click(function () {
+        resetFilters();
     });
 }
 
@@ -1205,13 +1197,30 @@ function initGoogleAnalyticsHooks () {
 // FUNCTIONS
 //
 
+function resetFilters() {
+    const $searchwidgets_site = $('div.data-filters select[name="site"]');
+    const $searchwidgets_sex = $('div.data-filters select[name="sex"]');
+    const $searchwidgets_race = $('div.data-filters select[name="race"]');
+    const $searchwidgets_time = $('div.data-filters select[name="time"]');
+    const $searchwidgets_type = $('div.data-filters select[name="type"]');
+    const $searchwidgets_address = $('div.data-filters input[name="address"]');
+
+    $searchwidgets_site.val('AllSite');
+    $searchwidgets_sex.val('Both');
+    $searchwidgets_race.val('');
+    $searchwidgets_time.val('05yrs');
+    $searchwidgets_type.val('Zone');
+    $searchwidgets_address.val('');
+
+    performSearch();
+}
+
+
 function performSearch () {
     toggleAddressSearchFailure(false);
     MAP.addressmarker.setLatLng([0, 0]).removeFrom(MAP);
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
     const $addrbox = $searchwidgets.filter('[name="address"]');
-    const causedbyaddresschange = $addrbox.data('hasbeenchanged');
-    $addrbox.data('hasbeenchanged', false);
 
     const params = compileParams();
     params.ctaid = SITE_CONSTANTS.ctaid;
@@ -1225,7 +1234,7 @@ function performSearch () {
             if (cta) {
                 params.ctaid = cta.feature.properties.ZoneIDOrig;
                 params.ctaname = cta.feature.properties.ZoneName.replace(/\_\d+$/, '');
-                params.bbox = causedbyaddresschange ? cta.getBounds() : null;
+                params.bbox = cta.getBounds();
                 performSearchReally(params);
             }
             else {
@@ -1242,7 +1251,7 @@ function performSearch () {
                     params.ctaid = zone.feature.properties.ZoneIDOrig;
                     params.ctaname = zone.feature.properties.ZoneName.replace(/\_\d+$/, '');
                     params.latlng = searchlatlng;
-                    params.bbox = causedbyaddresschange ? zone.getBounds() : null;
+                    params.bbox = zone.getBounds();
                     params.countyId = county.feature.properties.GEOID
                     params.countyName = county.feature.properties.Name
                     performSearchReally(params);
@@ -1273,6 +1282,7 @@ function performSearchReally (searchparams) {
             typeNames[i].innerHTML = "County"
         }
     }
+
     performSearchMap(searchparams);
     performSearchDemographics(searchparams);
     performSearchPlaces(searchparams);
@@ -1280,7 +1290,11 @@ function performSearchReally (searchparams) {
     performSearchIncidenceBarChart(searchparams);
     
     // performSearchUpdateDataDownloadLinks(searchparams); // commented out until file downloads addressed
+
+    // done, update the URL params that got us here
+    updateUrlParams();
 }
+
 
 function performSearchDemographics (searchparams) {
     let demogdata_cta = DATA_DEMOGS.filter(function (row) { return row.GeoID == searchparams.ctaid && row.Years == searchparams.time; })[0];
@@ -1372,6 +1386,7 @@ function performSearchPlaces (searchparams) {
 
     updateFilterSummary(searchparams);    
 }
+
 
 function updateFilterSummary(searchparams) {
     const $summaryContainer = $('#data-filters-summary');
@@ -1746,9 +1761,13 @@ function performSearchIncidenceBarChart (searchparams) {
     SEARCHOPTIONS_RACE.map(function (raceoption) {
         SEARCHOPTIONS_SEX.map(function (sexoption) {
             const slotname = `AAIR-${raceoption.value}-${sexoption.value}`;
-            const aair = raceoption.value ? incidencebysex[sexoption.value][`${raceoption.value}_AAIR`] : incidencebysex[sexoption.value].AAIR;
+            let aair;
+            try {
+                // will fail if there is no data at all e.g. female prostate cancer
+                aair = raceoption.value ? incidencebysex[sexoption.value][`${raceoption.value}_AAIR`] : incidencebysex[sexoption.value].AAIR;
+            } catch {
+            }
             $tableslots.filter(`[data-statistic="${slotname}"]`).text(aair ? aair.toFixed(1) : "");
-
         });
     });
 
@@ -1785,6 +1804,8 @@ function performSearchMap (searchparams) {
     // if we were given a bbox, zoom to it
     if (searchparams.bbox) {
         MAP.fitBounds(searchparams.bbox);
+    } else {
+        MAP.fitBounds(SITE_CONSTANTS.MAP_BBOX);
     }
 
     // highlight the selected CTA

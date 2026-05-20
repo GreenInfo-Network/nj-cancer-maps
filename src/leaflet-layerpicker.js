@@ -15,11 +15,11 @@ L.Control.LayerPicker = L.Control.extend({
 
 		// create our container
 		this.container = L.DomUtil.create('div', 'leaflet-control leaflet-bar leaflet-layerpicker-control leaflet-layerpicker-collapsed');
-		this.content_collapsed = L.DomUtil.create('div', 'leaflet-layerpicker-button', this.container);
+		this.openbutton = L.DomUtil.create('div', 'leaflet-layerpicker-button', this.container);
 		this.content_expanded = L.DomUtil.create('div', 'leaflet-layerpicker-content', this.container);
 
         // our closed state: a button to open
-		this.content_collapsed.innerHTML = '<i class="fa fa-layer-group"></i>';
+		this.openbutton.innerHTML = '<i class="fa fa-layer-group"></i>';
 
         // expanded content
 
@@ -70,14 +70,28 @@ L.Control.LayerPicker = L.Control.extend({
 
 		// click X to close & click closed version to open
         // ARIA/508 translate hitting enter as clicking
-		L.DomEvent.addListener(this.content_collapsed, 'keydown', (event) => {
-            if (event.keyCode == 13) this.content_collapsed.click();
+		L.DomEvent.addListener(this.openbutton, 'keydown', (event) => {
+            if (event.keyCode == 13) {
+                this.openbutton.click();
+
+                // then focus the close button, so keyboard users are in the same place
+                setTimeout(() => {
+                    this.closebutton.focus();
+                }, 0.1 * 1000);
+            }
 		});
 		L.DomEvent.addListener(this.closebutton, 'keydown', (event) => {
-            if (event.keyCode == 13) this.closebutton.click();
+            if (event.keyCode == 13) {
+                this.closebutton.click();
+
+                // then focus the open button, so keyboard users are in the same place
+                setTimeout(() => {
+                    this.openbutton.focus();
+                }, 0.1 * 1000);
+            }
 		});
 
-		L.DomEvent.addListener(this.content_collapsed, 'click', () => {
+		L.DomEvent.addListener(this.openbutton, 'click', () => {
 			this.expand();
 		});
 		L.DomEvent.addListener(this.closebutton, 'click', () => {
@@ -91,7 +105,7 @@ L.Control.LayerPicker = L.Control.extend({
 
 		// enable keyboard interactions
         if (this._map.options.keyboard) {
-            this.content_collapsed.tabIndex = 0;
+            this.openbutton.tabIndex = 0;
 			this.closebutton.tabIndex = 0;
         }
 

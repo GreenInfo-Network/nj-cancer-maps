@@ -132,10 +132,7 @@
                                 <i class="fa fa-info-circle"  data-tooltip="location"></i>
                                 <span class="warnmessage d-none" style="padding: 1px 5px; display: block; margin: 0 0 5px 0;"></span>
                             </label>
-                            <input class="form-control" type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-label="Enter address to select an area to report" />
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fa fa-search"></i></span>
-                            </div>
+                            <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-label="Enter address to select an area to report" />
                         </div>
                         <div class="input-group">
                             <label class="subtitle" for="data-filters-site">Time Period</label>
@@ -148,16 +145,21 @@
                             </select>
                         </div>
                         <div class="input-group">
-                            <label class="subtitle" for="data-filters-sex">Sex <i class="fa fa-info-circle"
-                                    data-tooltip="sex"></i></label>
+                            <label class="subtitle" for="data-filters-sex">Sex <i class="fa fa-info-circle" data-tooltip="sex"></i></label>
                             <select name="sex" id="data-filters-sex" aria-label="Select the sex to report">
                             </select>
                         </div>
                         <div class="input-group">
-                            <label class="subtitle" for="data-filters-race">Race/Ethnicity <i class="fa fa-info-circle"
-                                    data-tooltip="race"></i></label>
+                            <label class="subtitle" for="data-filters-race">Race/Ethnicity <i class="fa fa-info-circle" data-tooltip="race"></i></label>
                             <select name="race" id="data-filters-race" aria-label="Select the race/ethnicity to report">
                             </select>
+                        </div>
+
+                        <div class="input-group">
+                            <button type="button" class="btn btn-alternate w-100" id="data-filters-submit">Search</button>
+                        </div>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-default w-100" id="data-filters-reset">Reset Filters</button>
                         </div>
                     </div>
 
