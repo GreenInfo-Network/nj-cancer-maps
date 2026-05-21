@@ -1996,9 +1996,8 @@ function performSearchMap (searchparams) {
     $readout_table_tbody.empty();
 
     const $thr = $('<tr></tr>').appendTo($readout_table_thead);
-    $('<th class="left">Zone</th>').appendTo($thr);
+    $('<th class="left"></th>').text(searchparams.type).appendTo($thr);
     $('<th class="right"></th>').text(rankthemby_text).appendTo($thr);
-    $('<th class="right">Select</th>').appendTo($thr);
 
     tabularscores.forEach(function (row) {
         let name = row.GeoName;
@@ -2010,18 +2009,33 @@ function performSearchMap (searchparams) {
             if (searchparams.type == 'Zone') name = `${xrow.GeoName} (${xrow.GeoID})`;
         }
 
-        let score = row[rankthemby];
+        const score = row[rankthemby];
+        let scoretext = score;
         if (optiontype == 'demographic') {
-            score = formatFieldValue(score, 'percent');
+            scoretext = formatFieldValue(score, 'percent');
         }
 
         const $tr = $('<tr></tr>');
-        $('<th scope="row" class="left"></th>').text(name).appendTo($tr);
-        $('<td class="right"></td>').text(score).appendTo($tr);
-        $('<td class="right"></td>').text("BUTTON").appendTo($tr);
+        const $cell1 = $('<th scope="row" class="left"></th>').text(name).appendTo($tr);
+        const $cell2 = $('<td class="right"></td>').text(scoretext).appendTo($tr);
 
-// GDA color swatch
-// GDA button to select this area... centroid maybe?
+        // add a color swatch
+        let bucket = 'Q5';
+        if (score <= q1brk) bucket = 'Q1';
+        else if (score <= q2brk) bucket = 'Q2';
+        else if (score <= q3brk) bucket = 'Q3';
+        else if (score <= q4brk) bucket = 'Q4';
+
+        const $swatch = $('<span></span>').css({
+            'display': 'inline-block',
+            'width': '1em',
+            'height': '1em',
+            'opacity': vizopt.colorramp[bucket].fillOpacity,
+            'background-color': vizopt.colorramp[bucket].fillColor,
+            'margin-left': '1em',
+            'border': '1px solid black',
+        });
+        $swatch.appendTo($cell2);
 
         $tr.appendTo($readout_table_tbody);
     });

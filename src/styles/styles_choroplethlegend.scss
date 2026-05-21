@@ -2,15 +2,10 @@
 }
 
 .choropleth-legend .choropleth-legend-picker {
-        width: 200px;
-        border-radius: 5px;
-        background-color: white;
-        color: #000000;
-        border: 1px solid #666666;
-        padding: 2px 5px;
-        font-size: 16px;
+}
 
-        margin-bottom: 5px;
+.choropleth-legend .choroplethlegend-picker-wrapper {
+    margin-bottom: 1em;
 }
 
 .choropleth-legend .choropleth-legend-gradientlegend {
@@ -52,4 +47,5 @@
 }
 .choropleth-legend .choropleth-legend-nodata-explanation {
     font-size: 12px;
+    line-height: 1.5;
 }
