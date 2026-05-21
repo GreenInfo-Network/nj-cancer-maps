@@ -23,25 +23,6 @@ div.container.learn-text {
         margin-top: -20px;
     }
 
-    li.nav-item {
-        .nav-link {
-            padding: .5rem;
-        }
-
-        a {
-            background-color: #e6eaff;
-            color: #000000;
-            border-radius: 0;
-            text-decoration: none;
-            margin-right: 10px;
-        }
-
-        a.active {
-            background-color: #293985;
-            color: white;
-        }
-    }
-
     @media (max-width: 436px) {  /* form a preferred line-break point for the Learn tabs on really tiny screens */
         .break {
             flex-basis: 100%;

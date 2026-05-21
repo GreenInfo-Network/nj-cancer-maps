@@ -163,7 +163,7 @@
                 <div class="col">
                     <div class="choropleth-legend" id="choroplethlegend">
                         <div>
-                            <label for="choroplethlegend-picker" class="noprint">Select the variable to show on the map: </label>
+                            <label for="choroplethlegend-picker" class="noprint">Select the variable to show on the map and table: </label>
                             <select class="choropleth-legend-picker" id="choroplethlegend-picker">
                             </select>
                         </div>
@@ -185,7 +185,62 @@
                         </div>
                     </div>
 
-                    <div class="map" id="map" ></div>
+                    <ul class="nav nav-pills nav-justified mb-2" role="tablist">
+                        <li class="nav-item" role="presentation"><a class="nav-link active" data-toggle="tab" role="tab" aria-controls="map-or-table-map" href="#map-or-table-map" aria-selected="true">Map</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="tab" role="tab" aria-controls="map-or-table-table" href="#map-or-table-table" aria-selected="false">Table</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane container px-0 active" id="map-or-table-map">
+                            <div class="map" id="map" ></div>
+                        </div>
+                        <div class="tab-pane container px-0" id="map-or-table-table">
+                            <table class="table-sm table-colorscheme1" id="map-table" aria-live="polite" aria-atomic="true">
+                                <thead>
+                                    <tr>
+                                        <th>GDA 1</th>
+                                        <th>GDA 2</th>
+                                        <th>GDA 3</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+<tr><td>map equivalent</td><td>coming soon</td><td>select button</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -204,7 +259,7 @@
                     <div id="incidence-barchart" aria-label="Chart of AAIR by race and sex for the selected filters"></div>
                 </div>
                 <div class="tab-pane container pl-0" id="incidence-barchart-tablemode">
-                    <table class="table-sm" id="incidence-barchart-table" aria-live="polite" aria-atomic="true">
+                    <table class="table-sm table-colorscheme1" id="incidence-barchart-table" aria-live="polite" aria-atomic="true">
                         <thead>
                             <tr>
                                 <th scope="col">Race/Ethnicity</th>
@@ -261,7 +316,7 @@
         <div class="container" id="incidence-readouts">
             <p id="incidence-readouts-description" aria-live="polite" aria-atomic="true"></p>
 
-            <table class="table-sm" aria-live="polite" aria-atomic="true">
+            <table class="table-sm table-colorscheme1" aria-live="polite" aria-atomic="true">
                 <thead>
                     <tr>
                         <th class="left">Zone or Statewide</th>

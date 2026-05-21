@@ -813,7 +813,7 @@ function initDemographicTables () {
     const $demographics_section = $('#demographic-tables');
     DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
         const $table = $(`
-            <table class="table-striped table-sm">
+            <table class="table-sm table-colorscheme2">
                 <thead>
                     <tr>
                         <th class="nowrap left"><span class="subtitle" tabindex="0">${tableinfo.title}</span></th>
@@ -1194,8 +1194,6 @@ function performSearch () {
     const $addrbox = $searchwidgets.filter('[name="address"]');
 
     const params = compileParams();
-    params.ctaid = SITE_CONSTANTS.ctaid;
-    params.ctaname = SITE_CONSTANTS.stateName;
     if (params.address) {
         const isctaid = params.address.match(/^\s*((A|B)\d\d\d\d)\s*$/);
         const conainsctaid = params.address.match(/\(((A|B)\d\d\d\d)\)/);
@@ -1242,16 +1240,12 @@ function performSearch () {
 
 
 function performSearchReally (searchparams) {
-    const typeNames = $('.typeName')
-    if(searchparams.type == 'Zone'){
-        for (let i=0; i < typeNames.length; i++){
-            typeNames[i].innerHTML = "Zone"
-        }
+    const typeNames = $('.typeName');
+    if (searchparams.type == 'Zone') {
+        typeNames.text("Zone");
     }
-    if(searchparams.type == 'County'){
-        for (let i=0; i < typeNames.length; i++){
-            typeNames[i].innerHTML = "County"
-        }
+    if (searchparams.type == 'County') {
+        typeNames.text("County");
     }
 
     performSearchMap(searchparams);
@@ -1268,11 +1262,15 @@ function performSearchReally (searchparams) {
 
 
 function performSearchDemographics (searchparams) {
-    let demogdata_cta = DATA_DEMOGS.filter(function (row) { return row.GeoID == searchparams.ctaid && row.Years == searchparams.time; })[0];
-    if (searchparams.type == 'County'){
-        const demogdata_county = DATA_DEMOGS.filter(function (row) { return row.GeoID == searchparams.countyId && row.Years == searchparams.time; })[0];
-        demogdata_cta = demogdata_county
+    let demogdata_zone;
+    if (searchparams.ctaid) {
+        demogdata_zone = DATA_DEMOGS.filter(function (row) { return row.GeoID == searchparams.ctaid && row.Years == searchparams.time; })[0];
+    } else if (searchparams.countyId) {
+        demogdata_zone = DATA_DEMOGS.filter(function (row) { return row.GeoID == searchparams.countyId && row.Years == searchparams.time; })[0];
+    } else {
+        demogdata_zone = DATA_DEMOGS.filter(function (row) { return row.GeoType == 'State' && row.Years == searchparams.time; })[0];
     }
+
     const demogdata_state = DATA_DEMOGS.filter(function (row) { return row.GeoID == SITE_CONSTANTS.ctaid && row.Years == searchparams.time; })[0];
     const demogdata_nation = DATA_DEMOGS.filter(function (row) { return row.GeoID == 'US' && row.Years == searchparams.time; })[0];
     const $demographics_section = $('#demographic-tables');
@@ -1297,10 +1295,13 @@ function performSearchDemographics (searchparams) {
 
     // fill in the blanks: the CTA name and ID
     let ctanametext = searchparams.ctaname;
-    if (searchparams.type == 'County'){
-        ctanametext = searchparams.countyName + ' County'
+    if (searchparams.countyId){
+        ctanametext = searchparams.countyName + ' County';
     }
-    const ctaidtext = searchparams.ctaid == SITE_CONSTANTS.ctaid ? '' : `(${demogdata_cta.GeoID})`;
+    if (! searchparams.countyId && ! searchparams.ctaid) {
+        ctanametext = SITE_CONSTANTS.stateName;
+    }
+    const ctaidtext = searchparams.ctaid == SITE_CONSTANTS.ctaid ? '' : `(${demogdata_zone.GeoID})`;
     $demographics_section.find('span[data-statistics="ctaname"]').text(ctanametext);
     // $demographics_section.find('span[data-statistics="ctaid"]').text(ctaidtext);
     $demographics_section.find('span[data-statistics="ctaname"]').closest('span.subtitle');
@@ -1310,8 +1311,7 @@ function performSearchDemographics (searchparams) {
     DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
         tableinfo.rows.forEach(function (tablerowinfo) {
             const $slots_cta = $demographics_section.find(`span[data-region="cta"][data-statistic="${tablerowinfo.field}"]`);
-            const value_cta = formatFieldValue(demogdata_cta[tablerowinfo.field], tablerowinfo.format);
-            // console.log('value_cta', value_cta)
+            const value_cta = formatFieldValue(demogdata_zone[tablerowinfo.field], tablerowinfo.format);
             $slots_cta.text(value_cta);
 
             const $slots_state = $demographics_section.find(`span[data-region="state"][data-statistic="${tablerowinfo.field}"]`);
@@ -1329,7 +1329,8 @@ function performSearchDemographics (searchparams) {
 
 
 function performSearchPlaces (searchparams) {
-    if (searchparams.ctaid == SITE_CONSTANTS.ctaid) return;
+    if (! searchparams.ctaid && ! searchparams.countyId) return;
+
     const counties = DATA_CTACOUNTY.filter(row => row.ZoneIDOrig == searchparams.ctaid).map(row => `${row.County} County`);
     const cities = DATA_CTACITY.filter(row => row.ZoneIDOrig == searchparams.ctaid).map(row => row.City);
     counties.sort();
@@ -1339,7 +1340,7 @@ function performSearchPlaces (searchparams) {
     $placesslot.empty();
     $("<h3 class='title'></h3>").text('Location Details').appendTo($placesslot);
 
-    if (searchparams.type == 'Zone') {
+    if (searchparams.ctaid) {
         const text = searchparams.ctaname + ' (' + searchparams.ctaid + ')'
         const $block = $("<div ></div>").html(`<b class='subtitle'>Zone: </b>`).appendTo($placesslot);
         $("<span></span>").text(text).appendTo($block);
@@ -1349,7 +1350,7 @@ function performSearchPlaces (searchparams) {
         const $block = $('<div></div>').html(`<b class='subtitle'>Counties: </b>`).appendTo($placesslot);
         $('<span></span>').text(text).appendTo($block);
     }
-    if (cities.length && searchparams.type == "Zone") {
+    if (cities.length && searchparams.ctaid) {
         const text = cities.join(', ');
         const $block = $('<div></div>').html(`<b class='subtitle'>Places: </b>`).appendTo($placesslot);
         $('<span></span>').text(text).appendTo($block);
@@ -1401,13 +1402,14 @@ function updateFilterSummary(searchparams) {
 }
 
 
-
-
 function performSearchIncidenceReadout (searchparams) {
     const $incidence_section = $('#incidence-title');
     let ctanametext = searchparams.ctaname;
-    if (searchparams.type == 'County'){
-        ctanametext = searchparams.countyName + ' County'
+    if (searchparams.countyId) {
+        ctanametext = searchparams.countyName + ' County';
+    }
+    if (! searchparams.countyId && ! searchparams.ctaid) {
+        ctanametext = SITE_CONSTANTS.stateName;
     }
     $incidence_section.find('span[data-statistics="ctaname"]').text(ctanametext);
 
@@ -1416,10 +1418,13 @@ function performSearchIncidenceReadout (searchparams) {
     //
     // note that we could end up with 0 rows e.g. there is no row for Male Uterine nor Female Prostate
     // we could also end up with null values for some data, e.g. low sample sizes so they chose not to report a value
-    let cancerdata_cta = DATA_CANCER.filter(row => row.GeoID == searchparams.ctaid && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
-    if (searchparams.type == 'County'){
-        const cancerdata_county = DATA_CANCER.filter(row => row.GeoID == searchparams.countyId && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
-        cancerdata_cta = cancerdata_county
+    let cancerdata_cta;
+    if (searchparams.ctaid) {
+        cancerdata_cta = DATA_CANCER.filter(row => row.GeoID == searchparams.ctaid && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
+    } else if (searchparams.countyId) {
+        cancerdata_cta = DATA_CANCER.filter(row => row.GeoID == searchparams.countyId && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
+    } else {
+        cancerdata_cta = DATA_CANCER.filter(row => row.GeoType == 'State' && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
     }
 
     const cancerdata_state = DATA_CANCER.filter(row => row.GeoID == SITE_CONSTANTS.ctaid && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
@@ -1558,7 +1563,7 @@ function performSearchIncidenceReadout (searchparams) {
 
     // fill in some text describing the filtering applied to the data
     {
-        const yearText = getLabelFor('year', searchparams.year);
+        const yearText = getLabelFor('time', searchparams.time);
         const siteText = getLabelFor('site', searchparams.site);
         const sexText = getLabelFor('sex', searchparams.sex);
         const raceText = getLabelFor('race', searchparams.race);
@@ -1571,19 +1576,24 @@ function performSearchIncidenceBarChart (searchparams) {
     const $chart_section  = $('#filters-and-aairbarchart');
     $chart_section.find('span[data-statistic="cancersite"]').text( getLabelFor('site', searchparams.site) );
     $chart_section.find('span[data-statistics="ctaname"]').text(searchparams.ctaname);
-    if (searchparams.type == 'County'){
-        // const countiesCode = DATA_CTACOUNTY.filter(row => row.ZoneIDOrig == searchparams.ctaid).map(row => row.CountyCode);
-        // const county = DATA_CTACOUNTY.filter(row => row.ZoneIDOrig == searchparams.ctaid).map(row => row.County);
-
+    if (searchparams.countyId){
         $chart_section.find('span[data-statistics="ctaname"]').text(searchparams.countyName + ' County');
+    }
+    if (! searchparams.countyId && ! searchparams.ctaid) {
+        $chart_section.find('span[data-statistics="ctaname"]').text(SITE_CONSTANTS.stateName);
     }
 
     // incidence chart is multiple rows: filter by CTA+cancer+time, but keep data for all sexes
     // note that we could end up with 0 rows for some of these, e.g. Male Uterine nor Female Prostate, so undefined is a condition to handle
-    let incidencedata = DATA_CANCER.filter(row => row.GeoID == searchparams.ctaid && row.Years == searchparams.time && row.Cancer == searchparams.site);
-    if (searchparams.type == 'County'){
+    let incidencedata;
+    if (searchparams.ctaid) {
+        incidencedata = DATA_CANCER.filter(row => row.GeoID == searchparams.ctaid && row.Years == searchparams.time && row.Cancer == searchparams.site);
+    } else if (searchparams.countyId) {
         incidencedata = DATA_CANCER.filter(row => row.GeoID == searchparams.countyId && row.Years == searchparams.time && row.Cancer == searchparams.site);
+    } else {
+        incidencedata = DATA_CANCER.filter(row => row.GeoType == 'State' && row.Years == searchparams.time && row.Cancer == searchparams.site);
     }
+
     const incidencebysex = {};
     SEARCHOPTIONS_SEX.forEach(function (sexoption) {
         incidencebysex[sexoption.value] = incidencedata.filter(row => row.Sex == sexoption.value)[0];
@@ -1746,7 +1756,7 @@ function performSearchIncidenceBarChart (searchparams) {
 
     // fill in some text describing the filtering applied to the data
     {
-        const yearText = getLabelFor('year', searchparams.year);
+        const yearText = getLabelFor('time', searchparams.time);
         const siteText = getLabelFor('site', searchparams.site);
         const sexText = getLabelFor('sex', searchparams.sex);
         const raceText = getLabelFor('race', searchparams.race);
@@ -1787,6 +1797,76 @@ function performSearchMap (searchparams) {
         MAP.addressmarker.setLatLng([0, 0]).removeFrom(MAP);
     }
 
+    // choropleth calculations
+    // whether this applies to counties or zones or whatever on map, calculations are still from DATA_CANCER and DATA_DEMOGS
+    // the choice of value used to calculate and color, is selected by the choropleth selection
+
+    const rankthemby = choroplethGetSelectionValue();
+    const vizopt = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0];
+    const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor, vizopt.colorramp.Q4.fillColor, vizopt.colorramp.Q5.fillColor ];
+
+    // make up a dict of CTA scores for all CTA Zones, ZoneID => score
+    const ctascores = {};
+
+    if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {  // the special case for AAIR/Cases incidence data
+        DATA_CANCER
+        .filter(row => row.GeoID != 'US')
+        .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)
+        .filter(row => row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)
+        .forEach((row) => {
+            let choropleth_score;
+            switch (rankthemby) {
+                case 'Cases':
+                    choropleth_score = searchparams.race ? row[`${searchparams.race}_Cases`] : row.Cases;
+                    break;
+                case 'AAIR':
+                    choropleth_score = searchparams.race ? row[`${searchparams.race}_AAIR`] : row.AAIR;
+                    break;
+            }
+            ctascores[row.GeoID] = choropleth_score;
+        });
+    }
+    else {  // demographic data
+        DATA_DEMOGS
+        .filter(row => row.GeoID != 'US')
+        .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)  // only 1 demog row per CTZ Zone, so only filtering is Not Statewide
+        .forEach((row) => {
+            const choropleth_score = row[rankthemby];  // the control's selected value = a CHOROPLETH_OPTIONS "field" = a literal CSV column name
+            ctascores[row.GeoID] = choropleth_score;
+        });
+    }
+    // find the min and max, and send it to the control for display
+    const allscores = Object.values(ctascores).filter(function (score) { return score; });
+    const scoringmin = Math.min(...allscores);
+    const scoringmax = Math.max(...allscores);
+    const legendformat = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0].format;
+    const scoremintext = scoringmin == Infinity ? 'No Data' : formatFieldValue(scoringmin, legendformat);
+    const scoremaxtext = scoringmax == -Infinity ? 'No Data' : formatFieldValue(scoringmax, legendformat);
+    choroplethSetMinMax(scoremintext, scoremaxtext);
+
+    // update the color ramp gradient in the control
+    choroplethSetGradientColors(colors);
+
+    // find quantiles to make up 5 classes, for use in the choropleth assignments coming up
+    // thanks to buboh at https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
+    const asc = arr => arr.sort((a, b) => a - b);
+    const quantile = (arr, q) => {
+        const sorted = asc(arr);
+        const pos = ((sorted.length) - 1) * q;
+        const base = Math.floor(pos);
+        const rest = pos - base;
+        if ((sorted[base + 1] !== undefined)) {
+            return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+        } else {
+            return sorted[base];
+        }
+    };
+
+    const q1brk = quantile(allscores, .20);
+    const q2brk = quantile(allscores, .40);
+    const q3brk = quantile(allscores, .60);
+    const q4brk = quantile(allscores, .80);
+
     if (searchparams.type == 'Zone') {
         // highlight the selected CTA
         MAP.ctapolygonbounds.eachLayer((layer) => {
@@ -1800,82 +1880,6 @@ function performSearchMap (searchparams) {
                 layer.setStyle(CHOROPLETH_BORDER_DEFAULT);
             }
         });
-
-        //
-        // PART 2: choropleth
-        // the map has a CTA polygons layer, showing all CTAs colored to form a choropleth map
-        // the choice of value used to calculate and color, is selected by the choropleth selection
-        // which doesn't actually do the updating, but provides the UI for selection
-        // this-here function is what does the real choropleth work, as well as telling the control to update the legend
-        //
-
-        // rank the CTAs by what...
-        // depends on that map control; could be incidence data or demographic data
-        const rankthemby = choroplethGetSelectionValue();
-        const vizopt = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0];
-        const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor, vizopt.colorramp.Q4.fillColor, vizopt.colorramp.Q5.fillColor ];
-
-        // make up a dict of CTA scores for all CTA Zones, ZoneID => score
-        const ctascores = {};
-
-        if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {  // the special case for AAIR/Cases incidence data
-            DATA_CANCER
-            .filter(row => row.GeoID != 'US')
-            .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)
-            .filter(row => row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)
-            .forEach((row) => {
-                let choropleth_score;
-                switch (rankthemby) {
-                    case 'Cases':
-                        choropleth_score = searchparams.race ? row[`${searchparams.race}_Cases`] : row.Cases;
-                        break;
-                    case 'AAIR':
-                        choropleth_score = searchparams.race ? row[`${searchparams.race}_AAIR`] : row.AAIR;
-                        break;
-                }
-                ctascores[row.GeoID] = choropleth_score;
-            });
-        }
-        else {  // demographic data
-            DATA_DEMOGS
-            .filter(row => row.GeoID != 'US')
-            .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)  // only 1 demog row per CTZ Zone, so only filtering is Not Statewide
-            .forEach((row) => {
-                const choropleth_score = row[rankthemby];  // the control's selected value = a CHOROPLETH_OPTIONS "field" = a literal CSV column name
-                ctascores[row.GeoID] = choropleth_score;
-            });
-        }
-        // find the min and max, and send it to the control for display
-        const allscores = Object.values(ctascores).filter(function (score) { return score; });
-        const scoringmin = Math.min(...allscores);
-        const scoringmax = Math.max(...allscores);
-        const legendformat = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0].format;
-        const scoremintext = scoringmin == Infinity ? 'No Data' : formatFieldValue(scoringmin, legendformat);
-        const scoremaxtext = scoringmax == -Infinity ? 'No Data' : formatFieldValue(scoringmax, legendformat);
-        choroplethSetMinMax(scoremintext, scoremaxtext);
-
-        // update the color ramp gradient in the control
-        choroplethSetGradientColors(colors);
-
-        // find quantiles to make up 5 classes, for use in the choropleth assignments coming up
-        // thanks to buboh at https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
-        const asc = arr => arr.sort((a, b) => a - b);
-        const quantile = (arr, q) => {
-            const sorted = asc(arr);
-            const pos = ((sorted.length) - 1) * q;
-            const base = Math.floor(pos);
-            const rest = pos - base;
-            if ((sorted[base + 1] !== undefined)) {
-                return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
-            } else {
-                return sorted[base];
-            }
-        };
-
-        const q1brk = quantile(allscores, .20);
-        const q2brk = quantile(allscores, .40);
-        const q3brk = quantile(allscores, .60);
-        const q4brk = quantile(allscores, .80);
 
         // assign the color/style to each CTA Zone polygon
         MAP.ctapolygonfills.eachLayer((layer) => {
@@ -1919,86 +1923,6 @@ function performSearchMap (searchparams) {
             }
         });
 
-        //
-        // PART 2: choropleth
-        // the map has a CTA polygons layer, showing all CTAs colored to form a choropleth map
-        // which doesn't actually do the updating, but provides the UI for selection
-        // this-here function is what does the real choropleth work, as well as telling the control to update the legend
-        //
-
-        // rank the CTAs by what...
-        // depends on that map control; could be incidence data or demographic data
-        const rankthemby = choroplethGetSelectionValue();
-        const vizopt = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0];
-        const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor, vizopt.colorramp.Q4.fillColor, vizopt.colorramp.Q5.fillColor ];
-
-        // make up a dict of CTA scores for all CTA Zones, ZoneID => score
-        const ctascores = {};
-
-        if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {  // the special case for AAIR/Cases incidence data
-            DATA_CANCER
-            .filter(row => row.GeoID != 'US')
-            .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)
-            .filter(row => row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)
-            .forEach((row) => {
-                let choropleth_score;
-                switch (rankthemby) {
-                    case 'Cases':
-                        choropleth_score = searchparams.race ? row[`${searchparams.race}_Cases`] : row.Cases;
-                        break;
-                    case 'AAIR':
-                        choropleth_score = searchparams.race ? row[`${searchparams.race}_AAIR`] : row.AAIR;
-                        break;
-                }
-                ctascores[row.GeoID] = choropleth_score;
-            });
-        }
-        else {  // demographic data
-            DATA_DEMOGS
-            .filter(row => row.GeoID != 'US')
-            .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)  // only 1 demog row per CTZ Zone, so only filtering is Not Statewide
-            .forEach((row) => {
-                const choropleth_score = row[rankthemby];  // the control's selected value = a CHOROPLETH_OPTIONS "field" = a literal CSV column name
-                ctascores[row.GeoID] = choropleth_score;
-            });
-        }
-
-        const filteredDataWithoutZones = Object.fromEntries(
-            Object.entries(ctascores).filter(([key, value]) => !key.includes("A"))
-        );
-
-        // find the min and max, and send it to the control for display
-        const allscores = Object.values(filteredDataWithoutZones).filter(function (score) { return score; });
-        const scoringmin = Math.min(...allscores);
-        const scoringmax = Math.max(...allscores);
-        const legendformat = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0].format;
-        const scoremintext = scoringmin == Infinity ? 'No Data' : formatFieldValue(scoringmin, legendformat);
-        const scoremaxtext = scoringmax == -Infinity ? 'No Data' : formatFieldValue(scoringmax, legendformat);
-        choroplethSetMinMax(scoremintext, scoremaxtext);
-
-        // update the color ramp gradient in the control
-        choroplethSetGradientColors(colors);
-
-        // find quantiles to make up 5 classes, for use in the choropleth assignments coming up
-        // thanks to buboh at https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
-        const asc = arr => arr.sort((a, b) => a - b);
-        const quantile = (arr, q) => {
-            const sorted = asc(arr);
-            const pos = ((sorted.length) - 1) * q;
-            const base = Math.floor(pos);
-            const rest = pos - base;
-            if ((sorted[base + 1] !== undefined)) {
-                return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
-            } else {
-                return sorted[base];
-            }
-        };
-
-        const q1brk = quantile(allscores, .20);
-        const q2brk = quantile(allscores, .40);
-        const q3brk = quantile(allscores, .60);
-        const q4brk = quantile(allscores, .80);
-
         // assign the color/style to each CTA Zone polygon
         MAP.countypolygonfills.eachLayer((layer) => {
             // const ctaid = layer.feature.properties.Zone;
@@ -2021,7 +1945,7 @@ function performSearchMap (searchparams) {
 
             layer.setStyle(style);
         });
-    }  // end of the if/elseif by area type
+    }  // end of the if/elseif coloring by area type
 }
 
 
