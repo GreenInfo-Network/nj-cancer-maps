@@ -509,12 +509,21 @@ function initLoadInitialState () {
             if (turnon) anythingchanged = true;
         });
     }
+
     if (params.get('choropleth')) {
         choroplethSetSelection(params.get('choropleth'));
         anythingchanged = true;
     }
     else {
         choroplethSetSelection('AAIR');
+    }
+
+    if (params.get('type')) {
+        const areatype = params.get('type');
+        if (areatype != 'Zone') {
+            $searchwidgets.filter('[name="type"]').val(areatype);
+            anythingchanged = true;
+        }
     }
 
     if (anythingchanged) {
@@ -1806,7 +1815,7 @@ function performSearchMap (searchparams) {
     const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor, vizopt.colorramp.Q4.fillColor, vizopt.colorramp.Q5.fillColor ];
 
     // make up a dict of CTA scores for all CTA Zones, ZoneID => score
-    const ctascores = {};
+    let ctascores = {};
 
     if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {  // the special case for AAIR/Cases incidence data
         DATA_CANCER
@@ -1835,6 +1844,19 @@ function performSearchMap (searchparams) {
             ctascores[row.GeoID] = choropleth_score;
         });
     }
+
+    // filter the ctascores, which are used to make the color ramp, to either counties or zones
+    // otherwise, county-level stats will skew the scoring/coloring for zones, and vice versa
+    if (searchparams.type == 'Zone') {
+        ctascores = Object.fromEntries(
+            Object.entries(ctascores).filter(([key, value]) => key.match(/^A\d+/))
+        );
+    } else if (searchparams.type == 'County') {
+        ctascores = Object.fromEntries(
+            Object.entries(ctascores).filter(([key, value]) => !key.match(/^A\d+/))
+        );
+    }
+
     // find the min and max, and send it to the control for display
     const allscores = Object.values(ctascores).filter(function (score) { return score; });
     const scoringmin = Math.min(...allscores);
