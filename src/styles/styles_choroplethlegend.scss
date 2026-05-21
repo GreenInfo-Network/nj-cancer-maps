@@ -1,0 +1,55 @@
+.choropleth-legend {
+}
+
+.choropleth-legend .choropleth-legend-picker {
+        width: 200px;
+        border-radius: 5px;
+        background-color: white;
+        color: #000000;
+        border: 1px solid #666666;
+        padding: 2px 5px;
+        font-size: 16px;
+
+        margin-bottom: 5px;
+}
+
+.choropleth-legend .choropleth-legend-gradientlegend {
+    display: flex;
+}
+
+.choropleth-legend .choropleth-legend-twoparts {
+    display: flex;
+}
+
+.choropleth-legend .choropleth-legend-legendgradient {
+    width: 200px;
+    height: 20px;
+    background-image: linear-gradient(to right, white, black); /* this is a fallback; colors will be set by performSearchMap() and CHOROPLETH_OPTIONS */
+}
+.choropleth-legend .choropleth-legend-legendgradient::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.choropleth-legend .choropleth-legend-minvalue {
+    float: left;
+    padding-right: 1em;
+}
+.choropleth-legend .choropleth-legend-maxvalue {
+    float: right;
+    padding-left: 1em;
+}
+
+.choropleth-legend .choropleth-legend-nodata {
+    padding-left: 3em;
+}
+.choropleth-legend .choropleth-legend-swatch-nodata {
+    display: inline-block;
+    height: 1em;
+    width: 1em;
+    background-color: #cccccc;
+}
+.choropleth-legend .choropleth-legend-nodata-explanation {
+    font-size: 12px;
+}

@@ -55,8 +55,8 @@
     <script type="text/javascript" src="https://unpkg.com/es7-object-polyfill"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/polyfill-object-assign@1.0.0/index.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="index.css?Wed_May_20_2026_12_38_39_GMT_0700__Pacific_Daylight_Time_" />
-    <script type="text/javascript" src="index.js?Wed_May_20_2026_12_38_39_GMT_0700__Pacific_Daylight_Time_"></script>
+    <link rel="stylesheet" type="text/css" href="index.css?Thu_May_21_2026_08_34_26_GMT_0700__Pacific_Daylight_Time_" />
+    <script type="text/javascript" src="index.js?Thu_May_21_2026_08_34_26_GMT_0700__Pacific_Daylight_Time_"></script>
 </head>
 
 <body>
@@ -80,7 +80,7 @@
             <img src="./static/ribbon_purple.png" alt="Health Maps Logo" />
             <div style="display:block">
                 <h1 class="site-title-1" aria-label="Health Maps" tabindex="0"><span class="stateName">[REPLACE STATE/REGISTRY]</span></h1>
-                <h1 class="site-title-2" >Health Maps</h1>
+                <h1 class="site-title-2">Health Maps</h1>
             </div>
         </div>
 
@@ -161,6 +161,30 @@
                 <div class="col-4 printonly" id="data-filters-summary">
                 </div>
                 <div class="col">
+                    <div class="choropleth-legend" id="choroplethlegend">
+                        <div>
+                            <label for="choroplethlegend-picker" class="noprint">Select the variable to show on the map: </label>
+                            <select class="choropleth-legend-picker" id="choroplethlegend-picker">
+                            </select>
+                        </div>
+                        <div>
+                            Legend:
+                        </div>
+                        <div class="choropleth-legend-twoparts">
+                            <div class="choropleth-legend-gradientlegend">
+                                <div class="choropleth-legend-minvalue">-</div>
+                                <div class="choropleth-legend-legendgradient"></div>
+                                <div class="choropleth-legend-maxvalue">-</div>
+                            </div>
+                            <div class="choropleth-legend-nodata">
+                                <span class="choropleth-legend-swatch-nodata"></span> Data Suppressed
+                            </div>
+                        </div>
+                        <div class="choropleth-legend-nodata-explanation">
+                            Data has been <a href="https://statecancerprofiles.cancer.gov/suppressed.html" target="_blank" rel="noopener">suppressed</a> to ensure confidentiality and stability of rate estimates. Counts are suppressed if fewer than 16 records were reported in a specific area-sex-race category.
+                        </div>
+                    </div>
+
                     <div class="map" id="map" ></div>
                 </div>
             </div>
@@ -351,7 +375,6 @@
                     </p>
                     <p class="title">Project Team</p>
                     <p>
-                        <!-- <a target="_blank" href="https://dhss.delaware.gov/dph/dcr/home.html">Delaware Cancer Registry</a> -->
                         <a target="_blank" href="https://www.nj.gov/health/ces/reporting-entities/njscr/"><span class="stateRegistry">[REPLACE REGISTRY]</span></a>
                         <br />
                         <a traget="_blank" href="http://www.cinj.org">Rutgers Cancer Institute</a>
@@ -373,7 +396,6 @@
                     </p>
                     <p class="title">Funding</p>
                     <p class="fundingSource">[REPLACE FUNDING SOURCE]</p>
-                    <!--<p>National Cancer Institute</p>-->
                 </div><!--/tab-pane -->
                 <div class="tab-pane container" id="learn-method">
                     <p>
@@ -426,16 +448,6 @@
                         </p>
                     </p>
                     <div class="usa-accordion">
-                    <!-- RUBRIC
-                        <h2 class="usa-accordion__heading">
-                            <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq1">
-
-                            </button>
-                        </h2>
-                        <div id="faq1" class="usa-accordion__content" hidden="">
-
-                        </div>
-                    -->
                         <h2 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq1">
                                 What is the New Jersey State Cancer Registry?
@@ -458,15 +470,6 @@
                         <div id="faq2" class="usa-accordion__content" hidden="">
                             We used the cancer sites reported on by the CDC’s <a target="_blank" href ="https://www.cdc.gov/united-states-cancer-statistics/index.html">United States Cancer Statistics</a> (USCS, “The Official Federal Cancer Statistics”).
                         </div>
-                        <!--<h2 class="usa-accordion__heading">
-                            <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq3">
-                                Why are cancer incidence data available only through 2016? Why are population sociodemographic data only reported for 2012-2016?
-                            </button>
-                        </h2>
-                        <div id="faq3" class="usa-accordion__content" hidden="">
-                            <p>In order to estimate cancer incidence rates, estimates of the population size from which the cancers are diagnosed must be used. At the time of this writing (April 2025), population size estimates at the Census Tract Aggregation Zone level were only available through 2016. Population data through 2022 are expected in the near future and the additional years of incidence data will be updated then.</p>
-                            <p>Selected population sociodemographic data and population estimates for calculating cancer incidence rates are from the SEER census tract estimates by race/origin. Additional sociodemographic data are from the Census 2010 and American Community Survey 2015-2019 for zones and counties.</p>
-                        </div>-->
                         <h2 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq4">
                                 Will the cancer incidence data be updated?
@@ -663,6 +666,12 @@
                         Percent of population with a disability.<br>
                         <span class="source">Sources: 5-year time period: American Community Survey, 2015-2019; 10-year time period: American Community Survey, 2010-2014 and 2015-2019.</span>
                     </p>
+                    <p>
+                        <b>% Foreign Born:</b>
+                        Percent of population that is foreign born.<br>
+                        <span class="source">Sources: 5-year time period: American Community Survey, 2015-2019; 10-year time period: American Community Survey, 2010-2014 and 2015-2019.</span>
+                    </p>
+
                     <!-- end of Definitions P items -->
                 </div><!--/tab-pane -->
             </div><!--/tab-content-->

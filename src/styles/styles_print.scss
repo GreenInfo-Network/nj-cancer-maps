@@ -24,18 +24,15 @@
         .leaflet-control-zoom, .leaflet-control-boxzoom, .leaflet-layerpicker-control {
             display: none;
         }
+    }
 
-        .leaflet-choroplethlegend-control {
-    		.leaflet-choroplethlegend-headtext, .leaflet-choroplethlegend-closebutton {
-    			display: none;
-    		}
-    		select.leaflet-choroplethlegend-select {
-    			border: none !important;
-    			-moz-appearance: none;
-    			-webkit-appearance: none;
-    			appearance: none;
-    		}
-    	}
+    .choropleth-legend .choropleth-legend-picker {
+        border: 0 none transparent;
+        padding: 0;
+
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
     }
 
     #logo-img-print {
@@ -78,5 +75,8 @@
     .filters-list {
         margin-top: 30px;
     }
-}
 
+    .data-filters button {
+        display: none;
+    }
+}

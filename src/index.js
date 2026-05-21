@@ -4,8 +4,6 @@ require('./index.scss');
 
 // require leaflets
 require('./leaflet-topojson.js');
-require('./leaflet-choroplethlegend.scss');
-require('./leaflet-choroplethlegend.js');
 require('./leaflet-layerpicker.scss');
 require('./leaflet-layerpicker.js');
 require('./leaflet-singleclick.js');
@@ -344,6 +342,7 @@ $(document).ready(function () {
         initFixZoneOverlay();
         initFixPlaceOverlay();
         initDemographicTables();
+        initChoroplethControl();
         initMapAndPolygonData();
         initDataFilters();
         initPrintPage();
@@ -511,11 +510,11 @@ function initLoadInitialState () {
         });
     }
     if (params.get('choropleth')) {
-        MAP.choroplethcontrol.setSelection(params.get('choropleth'));
+        choroplethSetSelection(params.get('choropleth'));
         anythingchanged = true;
     }
     else {
-        MAP.choroplethcontrol.setSelection('AAIR');
+        choroplethSetSelection('AAIR');
     }
 
     if (anythingchanged) {
@@ -775,11 +774,10 @@ function initDownloadButtons () {
     // $downloadinks.filter('[data-export="all"]');
 
     // Download Map is a tedious slog, because we want to hide some Leaflet controls, leave some, and customize some others
-    // this means hooks in some specific controls such as MAP.choroplethcontrol.setPrintMode()
     // we also want the print button to change text because printing can take several seconds...
     $printmapbutton.click(() => {
         // the filename is based on the choropleth selection; .png is added automatically
-        const choroplethlabel = MAP.choroplethcontrol.getSelectionLabel().replace('%', 'Percent').replace(/\W/, '');
+        const choroplethlabel = choroplethGetSelectionLabel().replace('%', 'Percent').replace(/\W/, '');
         const filename = `MapExport-${choroplethlabel}`;
         MAP.printplugin.printMap('CurrentSize', filename);
     });
@@ -801,18 +799,12 @@ function initDownloadButtons () {
         const mapdiv = MAP.getContainer();
         mapdiv.style.width = `${mapsize.x}px`;
         mapdiv.style.height = `${mapsize.y}px`;
-
-        // enable the "print mode hacks" in the map controls that were kept visible
-        MAP.choroplethcontrol.setPrintMode(true);
     });
     MAP.on('easyPrint-finished', () => {
         // workaround for a bug in easyPrint: an explicit W&H were asserted above; clear those so the map can again be responsive
         const mapdiv = MAP.getContainer();
         mapdiv.style.removeProperty('width');
         mapdiv.style.removeProperty('height');
-
-        // clear the "print mode hacks" in the map controls that were kept visible
-        MAP.choroplethcontrol.setPrintMode(false);
     });
 }
 
@@ -947,15 +939,25 @@ function initMapAndPolygonData () {
         style: CHOROPLETH_BORDER_NONE,  // see performSearchMap() where these are reassigned based on filters
     })
     .addTo(MAP);
+}
 
-    MAP.choroplethcontrol = new L.Control.ChoroplethLegend({
-        expanded: true,
-        selectoptions: CHOROPLETH_OPTIONS,
-        onChoroplethChange: (picked) => {
-            performSearch();
-            logGoogleAnalyticsEvent('map', 'choropleth', picked);
-        },
-    }).addTo(MAP);
+
+function initChoroplethControl () {
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
+    const $choroplethlegend_minvalue = $choroplethlegend.find('.choropleth-legend-minvalue');
+    const $choroplethlegend_maxvalue = $choroplethlegend.find('.choropleth-legend-maxvalue');
+    const $choroplethlegend_gradient = $choroplethlegend.find('.choropleth-legend-legendgradient');
+
+    CHOROPLETH_OPTIONS.forEach((vizopt) => {
+        $('<option></option>').prop('value', vizopt.field).text(vizopt.label).appendTo($choroplethlegend_picker);
+    });
+
+    $choroplethlegend_picker.change(() => {
+        const picked = choroplethGetSelectionValue();
+        performSearch();
+        logGoogleAnalyticsEvent('map', 'choropleth', picked);
+    });
 }
 
 
@@ -1158,7 +1160,6 @@ function initGoogleAnalyticsHooks () {
     });
 
     // map events, including some reall custom mods to the controls to the custom controls to capture these events
-    // MAP.choroplethcontrol -- see the constructor's onChoroplethChange callback
     // MAP.layerpicker -- see the constructor's onLayerChange callback
 }
 
@@ -1366,6 +1367,8 @@ function updateFilterSummary(searchparams) {
     $('.data-filters .input-group').each(function () {
         let label = $(this).find('label').text().trim();
         const input = $(this).find('select, input');
+        if (! input.length) return;
+
         let value = input.val() ? input.val().trim() : 'Not Selected';
 
         if (input.is('select')) {
@@ -1769,8 +1772,6 @@ function performSearchMap (searchparams) {
         layer.setStyle(Object.assign({}, CHOROPLETH_STYLE_NODATA_CLEAR));
     })
 
-    if (searchparams.type == 'Zone'){
-
     // if we were given a bbox, zoom to it
     if (searchparams.bbox) {
         MAP.fitBounds(searchparams.bbox);
@@ -1778,19 +1779,6 @@ function performSearchMap (searchparams) {
         MAP.fitBounds(SITE_CONSTANTS.MAP_BBOX);
     }
 
-    // highlight the selected CTA
-    MAP.ctapolygonbounds.eachLayer((layer) => {
-        const ctaid = layer.feature.properties.ZoneIDOrig;
-        const istheone = ctaid == searchparams.ctaid;
-        if (istheone) {
-            layer.setStyle(CHOROPLETH_BORDER_SELECTED);
-            layer.bringToFront();
-        }
-        else {
-            layer.setStyle(CHOROPLETH_BORDER_DEFAULT);
-        }
-    });
-
     // if a latlng was given in the search, place the marker
     if (searchparams.latlng) {
         MAP.addressmarker.setLatLng(searchparams.latlng).addTo(MAP);
@@ -1799,243 +1787,241 @@ function performSearchMap (searchparams) {
         MAP.addressmarker.setLatLng([0, 0]).removeFrom(MAP);
     }
 
-    //
-    // PART 2: choropleth
-    // the map has a CTA polygons layer, showing all CTAs colored to form a choropleth map
-    // the choice of value used to calculate and color, is selected by the custom MAP.choroplethcontrol
-    // which doesn't actually do the updating, but provides the UI for selection
-    // this-here function is what does the real choropleth work, as well as telling the control to update the legend
-    //
-
-    // rank the CTAs by what...
-    // depends on that map control; could be incidence data or demographic data
-    const rankthemby = MAP.choroplethcontrol.getSelection();
-    const vizopt = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0];
-    const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor, vizopt.colorramp.Q4.fillColor, vizopt.colorramp.Q5.fillColor ];
-
-    // make up a dict of CTA scores for all CTA Zones, ZoneID => score
-    const ctascores = {};
-
-    if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {  // the special case for AAIR/Cases incidence data
-        DATA_CANCER
-        .filter(row => row.GeoID != 'US')
-        .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)
-        .filter(row => row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)
-        .forEach((row) => {
-            let choropleth_score;
-            switch (rankthemby) {
-                case 'Cases':
-                    choropleth_score = searchparams.race ? row[`${searchparams.race}_Cases`] : row.Cases;
-                    break;
-                case 'AAIR':
-                    choropleth_score = searchparams.race ? row[`${searchparams.race}_AAIR`] : row.AAIR;
-                    break;
+    if (searchparams.type == 'Zone') {
+        // highlight the selected CTA
+        MAP.ctapolygonbounds.eachLayer((layer) => {
+            const ctaid = layer.feature.properties.ZoneIDOrig;
+            const istheone = ctaid == searchparams.ctaid;
+            if (istheone) {
+                layer.setStyle(CHOROPLETH_BORDER_SELECTED);
+                layer.bringToFront();
             }
-            ctascores[row.GeoID] = choropleth_score;
-        });
-    }
-    else {  // demographic data
-        DATA_DEMOGS
-        .filter(row => row.GeoID != 'US')
-        .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)  // only 1 demog row per CTZ Zone, so only filtering is Not Statewide
-        .forEach((row) => {
-            const choropleth_score = row[rankthemby];  // the control's selected value = a CHOROPLETH_OPTIONS "field" = a literal CSV column name
-            ctascores[row.GeoID] = choropleth_score;
-        });
-    }
-    // find the min and max, and send it to the control for display
-    const allscores = Object.values(ctascores).filter(function (score) { return score; });
-    const scoringmin = Math.min(...allscores);
-    const scoringmax = Math.max(...allscores);
-    const legendformat = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0].format;
-    const scoremintext = scoringmin == Infinity ? 'No Data' : formatFieldValue(scoringmin, legendformat);
-    const scoremaxtext = scoringmax == -Infinity ? 'No Data' : formatFieldValue(scoringmax, legendformat);
-    MAP.choroplethcontrol.setMinMax(scoremintext, scoremaxtext);
-
-    // update the color ramp gradient in the control
-    MAP.choroplethcontrol.setGradientColors(colors);
-
-    // find quantiles to make up 5 classes, for use in the choropleth assignments coming up
-    // thanks to buboh at https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
-    const asc = arr => arr.sort((a, b) => a - b);
-    const quantile = (arr, q) => {
-        const sorted = asc(arr);
-        const pos = ((sorted.length) - 1) * q;
-        const base = Math.floor(pos);
-        const rest = pos - base;
-        if ((sorted[base + 1] !== undefined)) {
-            return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
-        } else {
-            return sorted[base];
-        }
-    };
-
-    const q1brk = quantile(allscores, .20);
-    const q2brk = quantile(allscores, .40);
-    const q3brk = quantile(allscores, .60);
-    const q4brk = quantile(allscores, .80);
-
-    // assign the color/style to each CTA Zone polygon
-    MAP.ctapolygonfills.eachLayer((layer) => {
-        // const ctaid = layer.feature.properties.Zone;
-        const ctaid = layer.feature.properties.ZoneIDOrig;
-        const score = ctascores[ctaid];
-        let style;
-        if (score == null || score == undefined || score == "") {
-            style = Object.assign({}, CHOROPLETH_STYLE_NODATA);
-        }
-        else {
-            let bucket = 'Q5';
-            if (score <= q1brk) bucket = 'Q1';
-            else if (score <= q2brk) bucket = 'Q2';
-            else if (score <= q3brk) bucket = 'Q3';
-            else if (score <= q4brk) bucket = 'Q4';
-
-            style = Object.assign({}, vizopt.colorramp[bucket]);  // take a copy!
-        }
-
-        layer.setStyle(style);
-    });
-    } else if (searchparams.type == "County") {
-        
-    // if we were given a bbox, zoom to it
-    if (searchparams.bbox) {
-        MAP.fitBounds(searchparams.bbox);
-    }
-
-    // clear the zone borders
-    MAP.ctapolygonbounds.eachLayer((layer) => {
-        layer.setStyle({ color: null });
-    })
-
-    // highlight the selected CTA
-    MAP.countypolygonbounds.eachLayer((layer) => {
-        // const ctaid = layer.feature.properties.Zone;
-        // const ctaid = layer.feature.properties.ZoneIDOrig;
-        const ctaid = layer.feature.properties.GEOID;
-        const istheone = ctaid == searchparams.countyId;
-        if (istheone) {
-            layer.setStyle(CHOROPLETH_BORDER_SELECTED);
-            layer.bringToFront();
-        }
-        else {
-            layer.setStyle(CHOROPLETH_BORDER_DEFAULT);
-        }
-    });
-
-    // if a latlng was given in the search, place the marker
-    if (searchparams.latlng) {
-        MAP.addressmarker.setLatLng(searchparams.latlng).addTo(MAP);
-    }
-    else {
-        MAP.addressmarker.setLatLng([0, 0]).removeFrom(MAP);
-    }
-
-    //
-    // PART 2: choropleth
-    // the map has a CTA polygons layer, showing all CTAs colored to form a choropleth map
-    // the choice of value used to calculate and color, is selected by the custom MAP.choroplethcontrol
-    // which doesn't actually do the updating, but provides the UI for selection
-    // this-here function is what does the real choropleth work, as well as telling the control to update the legend
-    //
-
-    // rank the CTAs by what...
-    // depends on that map control; could be incidence data or demographic data
-    const rankthemby = MAP.choroplethcontrol.getSelection();
-    const vizopt = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0];
-    const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor, vizopt.colorramp.Q4.fillColor, vizopt.colorramp.Q5.fillColor ];
-
-    // make up a dict of CTA scores for all CTA Zones, ZoneID => score
-    const ctascores = {};
-
-    if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {  // the special case for AAIR/Cases incidence data
-        DATA_CANCER
-        .filter(row => row.GeoID != 'US')
-        .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)
-        .filter(row => row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)
-        .forEach((row) => {
-            let choropleth_score;
-            switch (rankthemby) {
-                case 'Cases':
-                    choropleth_score = searchparams.race ? row[`${searchparams.race}_Cases`] : row.Cases;
-                    break;
-                case 'AAIR':
-                    choropleth_score = searchparams.race ? row[`${searchparams.race}_AAIR`] : row.AAIR;
-                    break;
+            else {
+                layer.setStyle(CHOROPLETH_BORDER_DEFAULT);
             }
-            ctascores[row.GeoID] = choropleth_score;
         });
-    }
-    else {  // demographic data
-        DATA_DEMOGS
-        .filter(row => row.GeoID != 'US')
-        .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)  // only 1 demog row per CTZ Zone, so only filtering is Not Statewide
-        .forEach((row) => {
-            const choropleth_score = row[rankthemby];  // the control's selected value = a CHOROPLETH_OPTIONS "field" = a literal CSV column name
-            ctascores[row.GeoID] = choropleth_score;
+
+        //
+        // PART 2: choropleth
+        // the map has a CTA polygons layer, showing all CTAs colored to form a choropleth map
+        // the choice of value used to calculate and color, is selected by the choropleth selection
+        // which doesn't actually do the updating, but provides the UI for selection
+        // this-here function is what does the real choropleth work, as well as telling the control to update the legend
+        //
+
+        // rank the CTAs by what...
+        // depends on that map control; could be incidence data or demographic data
+        const rankthemby = choroplethGetSelectionValue();
+        const vizopt = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0];
+        const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor, vizopt.colorramp.Q4.fillColor, vizopt.colorramp.Q5.fillColor ];
+
+        // make up a dict of CTA scores for all CTA Zones, ZoneID => score
+        const ctascores = {};
+
+        if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {  // the special case for AAIR/Cases incidence data
+            DATA_CANCER
+            .filter(row => row.GeoID != 'US')
+            .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)
+            .filter(row => row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)
+            .forEach((row) => {
+                let choropleth_score;
+                switch (rankthemby) {
+                    case 'Cases':
+                        choropleth_score = searchparams.race ? row[`${searchparams.race}_Cases`] : row.Cases;
+                        break;
+                    case 'AAIR':
+                        choropleth_score = searchparams.race ? row[`${searchparams.race}_AAIR`] : row.AAIR;
+                        break;
+                }
+                ctascores[row.GeoID] = choropleth_score;
+            });
+        }
+        else {  // demographic data
+            DATA_DEMOGS
+            .filter(row => row.GeoID != 'US')
+            .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)  // only 1 demog row per CTZ Zone, so only filtering is Not Statewide
+            .forEach((row) => {
+                const choropleth_score = row[rankthemby];  // the control's selected value = a CHOROPLETH_OPTIONS "field" = a literal CSV column name
+                ctascores[row.GeoID] = choropleth_score;
+            });
+        }
+        // find the min and max, and send it to the control for display
+        const allscores = Object.values(ctascores).filter(function (score) { return score; });
+        const scoringmin = Math.min(...allscores);
+        const scoringmax = Math.max(...allscores);
+        const legendformat = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0].format;
+        const scoremintext = scoringmin == Infinity ? 'No Data' : formatFieldValue(scoringmin, legendformat);
+        const scoremaxtext = scoringmax == -Infinity ? 'No Data' : formatFieldValue(scoringmax, legendformat);
+        choroplethSetMinMax(scoremintext, scoremaxtext);
+
+        // update the color ramp gradient in the control
+        choroplethSetGradientColors(colors);
+
+        // find quantiles to make up 5 classes, for use in the choropleth assignments coming up
+        // thanks to buboh at https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
+        const asc = arr => arr.sort((a, b) => a - b);
+        const quantile = (arr, q) => {
+            const sorted = asc(arr);
+            const pos = ((sorted.length) - 1) * q;
+            const base = Math.floor(pos);
+            const rest = pos - base;
+            if ((sorted[base + 1] !== undefined)) {
+                return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+            } else {
+                return sorted[base];
+            }
+        };
+
+        const q1brk = quantile(allscores, .20);
+        const q2brk = quantile(allscores, .40);
+        const q3brk = quantile(allscores, .60);
+        const q4brk = quantile(allscores, .80);
+
+        // assign the color/style to each CTA Zone polygon
+        MAP.ctapolygonfills.eachLayer((layer) => {
+            // const ctaid = layer.feature.properties.Zone;
+            const ctaid = layer.feature.properties.ZoneIDOrig;
+            const score = ctascores[ctaid];
+            let style;
+            if (score == null || score == undefined || score == "") {
+                style = Object.assign({}, CHOROPLETH_STYLE_NODATA);
+            }
+            else {
+                let bucket = 'Q5';
+                if (score <= q1brk) bucket = 'Q1';
+                else if (score <= q2brk) bucket = 'Q2';
+                else if (score <= q3brk) bucket = 'Q3';
+                else if (score <= q4brk) bucket = 'Q4';
+
+                style = Object.assign({}, vizopt.colorramp[bucket]);  // take a copy!
+            }
+
+            layer.setStyle(style);
         });
-    }
+    } else if (searchparams.type == "County") {        
+        // clear the zone borders
+        MAP.ctapolygonbounds.eachLayer((layer) => {
+            layer.setStyle({ color: null });
+        })
 
-    const filteredDataWithoutZones = Object.fromEntries(
-        Object.entries(ctascores).filter(([key, value]) => !key.includes("A"))
-    );
+        // highlight the selected CTA
+        MAP.countypolygonbounds.eachLayer((layer) => {
+            // const ctaid = layer.feature.properties.Zone;
+            // const ctaid = layer.feature.properties.ZoneIDOrig;
+            const ctaid = layer.feature.properties.GEOID;
+            const istheone = ctaid == searchparams.countyId;
+            if (istheone) {
+                layer.setStyle(CHOROPLETH_BORDER_SELECTED);
+                layer.bringToFront();
+            }
+            else {
+                layer.setStyle(CHOROPLETH_BORDER_DEFAULT);
+            }
+        });
 
-    // find the min and max, and send it to the control for display
-    const allscores = Object.values(filteredDataWithoutZones).filter(function (score) { return score; });
-    const scoringmin = Math.min(...allscores);
-    const scoringmax = Math.max(...allscores);
-    const legendformat = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0].format;
-    const scoremintext = scoringmin == Infinity ? 'No Data' : formatFieldValue(scoringmin, legendformat);
-    const scoremaxtext = scoringmax == -Infinity ? 'No Data' : formatFieldValue(scoringmax, legendformat);
-    MAP.choroplethcontrol.setMinMax(scoremintext, scoremaxtext);
+        //
+        // PART 2: choropleth
+        // the map has a CTA polygons layer, showing all CTAs colored to form a choropleth map
+        // which doesn't actually do the updating, but provides the UI for selection
+        // this-here function is what does the real choropleth work, as well as telling the control to update the legend
+        //
 
-    // update the color ramp gradient in the control
-    MAP.choroplethcontrol.setGradientColors(colors);
+        // rank the CTAs by what...
+        // depends on that map control; could be incidence data or demographic data
+        const rankthemby = choroplethGetSelectionValue();
+        const vizopt = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0];
+        const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor, vizopt.colorramp.Q4.fillColor, vizopt.colorramp.Q5.fillColor ];
 
-    // find quantiles to make up 5 classes, for use in the choropleth assignments coming up
-    // thanks to buboh at https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
-    const asc = arr => arr.sort((a, b) => a - b);
-    const quantile = (arr, q) => {
-        const sorted = asc(arr);
-        const pos = ((sorted.length) - 1) * q;
-        const base = Math.floor(pos);
-        const rest = pos - base;
-        if ((sorted[base + 1] !== undefined)) {
-            return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
-        } else {
-            return sorted[base];
+        // make up a dict of CTA scores for all CTA Zones, ZoneID => score
+        const ctascores = {};
+
+        if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {  // the special case for AAIR/Cases incidence data
+            DATA_CANCER
+            .filter(row => row.GeoID != 'US')
+            .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)
+            .filter(row => row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)
+            .forEach((row) => {
+                let choropleth_score;
+                switch (rankthemby) {
+                    case 'Cases':
+                        choropleth_score = searchparams.race ? row[`${searchparams.race}_Cases`] : row.Cases;
+                        break;
+                    case 'AAIR':
+                        choropleth_score = searchparams.race ? row[`${searchparams.race}_AAIR`] : row.AAIR;
+                        break;
+                }
+                ctascores[row.GeoID] = choropleth_score;
+            });
         }
-    };
-
-    const q1brk = quantile(allscores, .20);
-    const q2brk = quantile(allscores, .40);
-    const q3brk = quantile(allscores, .60);
-    const q4brk = quantile(allscores, .80);
-
-    // assign the color/style to each CTA Zone polygon
-    MAP.countypolygonfills.eachLayer((layer) => {
-        // const ctaid = layer.feature.properties.Zone;
-        // const ctaid = layer.feature.properties.ZoneIDOrig;
-        const ctaid = layer.feature.properties.GEOID;
-        const score = ctascores[ctaid];
-        let style;
-        if (score == null || score == undefined || score == "") {
-            style = Object.assign({}, CHOROPLETH_STYLE_NODATA);
-        }
-        else {
-            let bucket = 'Q5';
-            if (score <= q1brk) bucket = 'Q1';
-            else if (score <= q2brk) bucket = 'Q2';
-            else if (score <= q3brk) bucket = 'Q3';
-            else if (score <= q4brk) bucket = 'Q4';
-
-            style = Object.assign({}, vizopt.colorramp[bucket]);  // take a copy!
+        else {  // demographic data
+            DATA_DEMOGS
+            .filter(row => row.GeoID != 'US')
+            .filter(row => row.GeoID != SITE_CONSTANTS.ctaid)  // only 1 demog row per CTZ Zone, so only filtering is Not Statewide
+            .forEach((row) => {
+                const choropleth_score = row[rankthemby];  // the control's selected value = a CHOROPLETH_OPTIONS "field" = a literal CSV column name
+                ctascores[row.GeoID] = choropleth_score;
+            });
         }
 
-        layer.setStyle(style);
-    });
-    }
+        const filteredDataWithoutZones = Object.fromEntries(
+            Object.entries(ctascores).filter(([key, value]) => !key.includes("A"))
+        );
 
+        // find the min and max, and send it to the control for display
+        const allscores = Object.values(filteredDataWithoutZones).filter(function (score) { return score; });
+        const scoringmin = Math.min(...allscores);
+        const scoringmax = Math.max(...allscores);
+        const legendformat = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0].format;
+        const scoremintext = scoringmin == Infinity ? 'No Data' : formatFieldValue(scoringmin, legendformat);
+        const scoremaxtext = scoringmax == -Infinity ? 'No Data' : formatFieldValue(scoringmax, legendformat);
+        choroplethSetMinMax(scoremintext, scoremaxtext);
+
+        // update the color ramp gradient in the control
+        choroplethSetGradientColors(colors);
+
+        // find quantiles to make up 5 classes, for use in the choropleth assignments coming up
+        // thanks to buboh at https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
+        const asc = arr => arr.sort((a, b) => a - b);
+        const quantile = (arr, q) => {
+            const sorted = asc(arr);
+            const pos = ((sorted.length) - 1) * q;
+            const base = Math.floor(pos);
+            const rest = pos - base;
+            if ((sorted[base + 1] !== undefined)) {
+                return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+            } else {
+                return sorted[base];
+            }
+        };
+
+        const q1brk = quantile(allscores, .20);
+        const q2brk = quantile(allscores, .40);
+        const q3brk = quantile(allscores, .60);
+        const q4brk = quantile(allscores, .80);
+
+        // assign the color/style to each CTA Zone polygon
+        MAP.countypolygonfills.eachLayer((layer) => {
+            // const ctaid = layer.feature.properties.Zone;
+            // const ctaid = layer.feature.properties.ZoneIDOrig;
+            const ctaid = layer.feature.properties.GEOID;
+            const score = ctascores[ctaid];
+            let style;
+            if (score == null || score == undefined || score == "") {
+                style = Object.assign({}, CHOROPLETH_STYLE_NODATA);
+            }
+            else {
+                let bucket = 'Q5';
+                if (score <= q1brk) bucket = 'Q1';
+                else if (score <= q2brk) bucket = 'Q2';
+                else if (score <= q3brk) bucket = 'Q3';
+                else if (score <= q4brk) bucket = 'Q4';
+
+                style = Object.assign({}, vizopt.colorramp[bucket]);  // take a copy!
+            }
+
+            layer.setStyle(style);
+        });
+    }  // end of the if/elseif by area type
 }
 
 
@@ -2137,7 +2123,7 @@ function compileParams (addextras=false) {
             .join(',');
         if (! params.overlays) params.overlays = 'none';  // so we always have something, even if it's all layers off
 
-        params.choropleth = MAP.choroplethcontrol.getSelection();
+        params.choropleth = choroplethGetSelectionValue();
     }
 
     // done
@@ -2274,6 +2260,51 @@ function updateCandleChart($candlediv, subtitle, aair, lci, uci, minlci, maxuci)
     $ucilcirangeline.css({
         width: `${cirangeidthpercent}%`,
         left: `${cirangeleftpercent}%`,
+    });
+}
+
+
+function choroplethSetSelection (whichone) {
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
+
+    $choroplethlegend_picker.val(whichone).change();
+}
+
+
+function choroplethGetSelectionLabel () {
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
+
+    return $choroplethlegend_picker.find('option:selected').text();
+}
+
+
+function choroplethGetSelectionValue () {
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
+
+    return $choroplethlegend_picker.find('option:selected').prop('value');
+}
+
+
+function choroplethSetMinMax (scoremintext, scoremaxtext) {
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_minvalue = $choroplethlegend.find('.choropleth-legend-minvalue');
+    const $choroplethlegend_maxvalue = $choroplethlegend.find('.choropleth-legend-maxvalue');
+
+    $choroplethlegend_minvalue.text(scoremintext);
+    $choroplethlegend_maxvalue.text(scoremaxtext);
+}
+
+
+function choroplethSetGradientColors (colorlist) {
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_gradient = $choroplethlegend.find('.choropleth-legend-legendgradient');
+
+	const csscolor = `linear-gradient(to right, ${colorlist.join(', ') })`;
+    $choroplethlegend_gradient.css({
+        'background-image': csscolor,
     });
 }
 
