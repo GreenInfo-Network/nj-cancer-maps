@@ -825,7 +825,7 @@ function initDemographicTables () {
             <table class="table-sm table-colorscheme2">
                 <thead>
                     <tr>
-                        <th class="nowrap left"><span class="subtitle" tabindex="0">${tableinfo.title}</span></th>
+                        <th class="nowrap left">${tableinfo.title}</th>
                         <th class="nowrap right typeName" data-region="cta" >Zone</th>
                         <th class="nowrap right" data-region="state" >Statewide</th>
                         <th class="nowrap right" data-region="nation" >Nationwide</th>
@@ -1357,7 +1357,7 @@ function performSearchPlaces (searchparams) {
     }
     if (counties.length) {
         const text = counties.join(', ');
-        const $block = $('<div></div>').html(`<b class='subtitle'>Counties: </b>`).appendTo($placesslot);
+        const $block = $('<div></div>').html(`<b class='subtitle'>County: </b>`).appendTo($placesslot);
         $('<span></span>').text(text).appendTo($block);
     }
     if (cities.length && searchparams.ctaid) {
@@ -1804,7 +1804,7 @@ function performSearchMap (searchparams) {
 
     // if we were given a bbox, zoom to it
     if (searchparams.bbox) {
-        MAP.fitBounds(searchparams.bbox);
+        MAP.fitBounds(searchparams.bbox.pad(0.25));
     } else {
         MAP.fitBounds(SITE_CONSTANTS.MAP_BBOX);
     }
@@ -1995,9 +1995,12 @@ function performSearchMap (searchparams) {
     $readout_table_thead.empty();
     $readout_table_tbody.empty();
 
+    const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
+
     const $thr = $('<tr></tr>').appendTo($readout_table_thead);
     $('<th class="left"></th>').text(searchparams.type).appendTo($thr);
     $('<th class="right"></th>').text(rankthemby_text).appendTo($thr);
+    $('<th class="right"></th>').text("Select").appendTo($thr);
 
     tabularscores.forEach(function (row) {
         let name = row.GeoName;
@@ -2018,6 +2021,7 @@ function performSearchMap (searchparams) {
         const $tr = $('<tr></tr>');
         const $cell1 = $('<th scope="row" class="left"></th>').text(name).appendTo($tr);
         const $cell2 = $('<td class="right"></td>').text(scoretext).appendTo($tr);
+        const $cell3 = $('<td class="right"></td>').appendTo($tr);
 
         // add a color swatch
         let bucket = 'Q5';
@@ -2037,8 +2041,36 @@ function performSearchMap (searchparams) {
         });
         $swatch.appendTo($cell2);
 
+        // a button to find the area, find its center, and then fill in that latlng as an address
+        // these are all proper convex shapes, no weird horseshoes etc, so we can use the center
+        let thefeature;
+        if (searchparams.type == 'Zone') {
+            thefeature = MAP.ctapolygonbounds.getLayers().filter(layer => layer.feature.properties.ZoneIDOrig == row.GeoID)[0];
+        } else if (searchparams.type == 'County') {
+            thefeature = MAP.countypolygonbounds.getLayers().filter(layer => layer.feature.properties.GEOID == row.GeoID)[0];
+        }
+
+        if (thefeature) {
+            const latlng = thefeature.getCenter();
+            const $selectbutton = $('<button class="btn btn-default">Select</button>').attr('data-lat', latlng.lat).attr('data-lng', latlng.lng).appendTo($cell3);
+            $selectbutton.attr('aria-label', `Select ${name}`);
+            $selectbutton.click(function () {
+                const lat = $(this).attr('data-lat');
+                const lng = $(this).attr('data-lng');
+
+                $searchwidgets.filter('[name="address"]').val(`${lat},${lng}`);
+                performSearch();
+            });
+        }
+
         $tr.appendTo($readout_table_tbody);
     });
+
+    if (optiontype == 'cancer') {
+        $readout_table.addClass('table-colorscheme1').removeClass('table-colorscheme2');
+    } else {
+        $readout_table.removeClass('table-colorscheme1').addClass('table-colorscheme2');
+    }
 }
 
 

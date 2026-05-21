@@ -36,6 +36,16 @@ table.table-colorscheme1 {
 table.table-colorscheme2 {
     width: 100%;
 
+    thead {
+        th {
+            font-size: 16px;
+            line-height: 16px;
+            text-align: center;
+            color: #000;
+            font-weight: bold;
+        }
+    }
+
     span.title, span.subtitle {
         color: #000000;
     }
@@ -49,6 +59,8 @@ table.table-colorscheme2 {
     tr {
         td, th[scope] {
             color: #000000;
+            font-weight: 400;
+            text-align: left;
         }
     }
 
@@ -73,11 +85,6 @@ table.table-colorscheme2 {
     }
     th[data-region="nation"], td[data-region="nation"] {
         color: #000000;
-    }
-
-    th[scope] {  /* TH must be used for semantics, esp screen readers and scope, but we want them to look like regular TDs */
-        font-weight: 400;
-        text-align: left;
     }
 
     /* help make the column widths more consistent */
