@@ -184,11 +184,11 @@ var DEMOGRAPHIC_TABLES = [
 // then CHOROPLETH_BORDER_DEFAULT and CHOROPLETH_BORDER_SELECTED are added to form a thicker border for selected/highlighted state
 // then CHOROPLETH_STYLE_INCIDENCE and CHOROPLETH_STYLE_DEMOGRAPHIC are added to form the choropleth coloring
 // see performSearchMap() which calculates scoring and uses these color ramps, to implement the choropleth behavior
-var CHOROPLETH_STYLE_NODATA = { fillOpacity: 0.25, fillColor: '#cccccc', color: 'black', opacity: 0.2, weight: 1 };
-var CHOROPLETH_STYLE_NODATA_CLEAR = { fillOpacity: 0, fillColor: '#cccccc', color: 'black', opacity: 0, weight: 0 };
-var CHOROPLETH_BORDER_DEFAULT = { color: 'black', opacity: 1, weight: 1, fill: false };
-var CHOROPLETH_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fill: false };
-var CHOROPLETH_BORDER_NONE = { color: null, opacity: 100, weight: 0, fill: false };
+var CHOROPLETH_STYLE_NODATA = { fillOpacity: 0.25, fillColor: '#cccccc', color: 'black', opacity: 0.2, weight: 1, interactive: false };
+var CHOROPLETH_STYLE_NODATA_CLEAR = { fillOpacity: 0, fillColor: '#cccccc', color: 'black', opacity: 0, weight: 0, interactive: false };
+var CHOROPLETH_BORDER_DEFAULT = { color: 'black', opacity: 1, weight: 1, fill: false, interactive: false };
+var CHOROPLETH_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fill: false, interactive: false };
+var CHOROPLETH_BORDER_NONE = { color: null, opacity: 100, weight: 0, fill: false, interactive: false };
 
 var CHOROPLETH_STYLE_INCIDENCE = {
     Q1: { fillOpacity: 0.75, fillColor: '#ffffb3', stroke: false },
@@ -862,6 +862,8 @@ function initMapAndPolygonData () {
         keyboard: false,
         dragging: false,
         scrollWheelZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false,
         touchZoom: false,
         zoomControl: false,
     })
