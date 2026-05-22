@@ -191,19 +191,15 @@ var CHOROPLETH_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fill
 var CHOROPLETH_BORDER_NONE = { color: null, opacity: 100, weight: 0, fill: false, interactive: false };
 
 var CHOROPLETH_STYLE_INCIDENCE = {
-    Q1: { fillOpacity: 0.75, fillColor: '#ffffb3', stroke: false },
-    Q2: { fillOpacity: 0.75, fillColor: '#ffe066', stroke: false },
-    Q3: { fillOpacity: 0.75, fillColor: '#f99e26', stroke: false },
-    Q4: { fillOpacity: 0.75, fillColor: '#b36093', stroke: false },
-    Q5: { fillOpacity: 0.75, fillColor: '#873d6a', stroke: false },
+    Q1: { fillOpacity: 0.75, fillColor: '#FFFFEB', stroke: false },
+    Q2: { fillOpacity: 0.75, fillColor: '#D27700', stroke: false },
+    Q3: { fillOpacity: 0.75, fillColor: '#642D4E', stroke: false },
 };
 
 var CHOROPLETH_STYLE_DEMOGRAPHIC = {
-    Q1: { fillOpacity: 0.75, fillColor: '#e6eaff', stroke: false },
-    Q2: { fillOpacity: 0.75, fillColor: '#abb4e0', stroke: false },
-    Q3: { fillOpacity: 0.75, fillColor: '#7683c2', stroke: false },
-    Q4: { fillOpacity: 0.75, fillColor: '#4b5aa3', stroke: false },
-    Q5: { fillOpacity: 0.75, fillColor: '#293885', stroke: false },
+    Q1: { fillOpacity: 0.75, fillColor: '#E6EAFF', stroke: false },
+    Q2: { fillOpacity: 0.75, fillColor: '#7683C2', stroke: false },
+    Q3: { fillOpacity: 0.75, fillColor: '#1B2B80', stroke: false },
 };
 
 // options for the choropleth map (Color By)
@@ -1824,7 +1820,7 @@ function performSearchMap (searchparams) {
     const rankthemby = choroplethGetSelectionValue();
     const rankthemby_text = choroplethGetSelectionLabel();
     const vizopt = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0];
-    const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor, vizopt.colorramp.Q4.fillColor, vizopt.colorramp.Q5.fillColor ];
+    const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor];
 
     // make up a dict of CTA scores for all CTA Zones, ZoneID => score
     // also, since we'll use the results later keep a tabular listing as well with additional info such as the area name
@@ -1901,10 +1897,8 @@ function performSearchMap (searchparams) {
         }
     };
 
-    const q1brk = quantile(allscores, .20);
-    const q2brk = quantile(allscores, .40);
-    const q3brk = quantile(allscores, .60);
-    const q4brk = quantile(allscores, .80);
+    const q1brk = quantile(allscores, .333);
+    const q2brk = quantile(allscores, .666);
 
     if (searchparams.type == 'Zone') {
         // highlight the selected CTA
@@ -1930,11 +1924,9 @@ function performSearchMap (searchparams) {
                 style = Object.assign({}, CHOROPLETH_STYLE_NODATA);
             }
             else {
-                let bucket = 'Q5';
+                let bucket = 'Q3';
                 if (score <= q1brk) bucket = 'Q1';
                 else if (score <= q2brk) bucket = 'Q2';
-                else if (score <= q3brk) bucket = 'Q3';
-                else if (score <= q4brk) bucket = 'Q4';
 
                 style = Object.assign({}, vizopt.colorramp[bucket]);  // take a copy!
             }
@@ -1973,11 +1965,9 @@ function performSearchMap (searchparams) {
                 style = Object.assign({}, CHOROPLETH_STYLE_NODATA);
             }
             else {
-                let bucket = 'Q5';
+                let bucket = 'Q3';
                 if (score <= q1brk) bucket = 'Q1';
                 else if (score <= q2brk) bucket = 'Q2';
-                else if (score <= q3brk) bucket = 'Q3';
-                else if (score <= q4brk) bucket = 'Q4';
 
                 style = Object.assign({}, vizopt.colorramp[bucket]);  // take a copy!
             }
@@ -2024,11 +2014,9 @@ function performSearchMap (searchparams) {
         const $cell3 = $('<td class="right"></td>').appendTo($tr);
 
         // add a color swatch
-        let bucket = 'Q5';
+        let bucket = 'Q3';
         if (score <= q1brk) bucket = 'Q1';
         else if (score <= q2brk) bucket = 'Q2';
-        else if (score <= q3brk) bucket = 'Q3';
-        else if (score <= q4brk) bucket = 'Q4';
 
         const $swatch = $('<span></span>').css({
             'display': 'inline-block',
@@ -2350,7 +2338,14 @@ function choroplethSetGradientColors (colorlist) {
     const $choroplethlegend = $('#choroplethlegend');
     const $choroplethlegend_gradient = $choroplethlegend.find('.choropleth-legend-legendgradient');
 
-	const csscolor = `linear-gradient(to right, ${colorlist.join(', ') })`;
+    const percentage = 100.0 / colorlist.length;
+    const colorclauses = [];
+    colorlist.forEach(function (color, i) {
+        colorclauses.push(`${color} ${i * percentage}%`);
+        colorclauses.push(`${color} ${(i + 1) * percentage}%`);
+    });
+
+	const csscolor = `linear-gradient(to right, ${colorclauses.join(', ') })`;
     $choroplethlegend_gradient.css({
         'background-image': csscolor,
     });

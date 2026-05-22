@@ -24,7 +24,7 @@
 .choropleth-legend .choropleth-legend-legendgradient {
     width: 200px;
     height: 20px;
-    background-image: linear-gradient(to right, white, black); /* this is a fallback; colors will be set by performSearchMap() and CHOROPLETH_OPTIONS */
+    background-image: linear-gradient(to right, white 50%, black 50%); /* this is a fallback; colors will be set by performSearchMap() and CHOROPLETH_OPTIONS */
 }
 .choropleth-legend .choropleth-legend-legendgradient::after {
     content: "";
