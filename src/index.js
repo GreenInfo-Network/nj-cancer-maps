@@ -1987,6 +1987,16 @@ function performSearchMap (searchparams) {
 
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
 
+    let format = 'text';
+    if (optiontype == 'demographic') {
+        format = DEMOGRAPHIC_TABLES.map(group => group.rows).reduce((f, i) => { return f.concat(i); }, []).filter(f => f.field == rankthemby);
+        if (format.length) format = format[0].format;
+    } else if (rankthemby == 'Cases') {
+        format = 'integer';
+    } else if (rankthemby == 'AAIR') {
+        format = 'float';
+    }
+
     const $thr = $('<tr></tr>').appendTo($readout_table_thead);
     $('<th class="left"></th>').text(searchparams.type).appendTo($thr);
     $('<th class="right"></th>').text(rankthemby_text).appendTo($thr);
@@ -2003,10 +2013,7 @@ function performSearchMap (searchparams) {
         }
 
         const score = row[rankthemby];
-        let scoretext = score;
-        if (optiontype == 'demographic') {
-            scoretext = formatFieldValue(score, 'percent');
-        }
+        const scoretext = formatFieldValue(score, format);
 
         const $tr = $('<tr></tr>');
         const $cell1 = $('<th scope="row" class="left"></th>').text(name).appendTo($tr);
