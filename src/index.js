@@ -1642,6 +1642,7 @@ function performSearchIncidenceBarChart (searchparams) {
 
     // chart it!
 
+/*GDA
     // a special hack here, to adjust the barchart's DIV based on SEARCHOPTIONS_RACE
     // to achieve ideal height for the number of categories, without a lot of empty space for deployments with 2-3 races instead of 5-7
     // see also the groupPadding option which affects the spacing between categories
@@ -1650,6 +1651,7 @@ function performSearchIncidenceBarChart (searchparams) {
     $barchartdiv.css({
         height: `${chartheight}px`,
     });
+GDA*/
 
     // a special hack here to insert "data not calculated" text any place where data are 0
     // for this dataset, we know that 0 never happens and above we set nulls to be 0 for our purposes
@@ -1671,6 +1673,7 @@ function performSearchIncidenceBarChart (searchparams) {
             // events: {
             //     load: hackChartForNullValues,
             // },
+            marginTop: 50,
         },
         plotOptions: {
             series: {
@@ -1709,9 +1712,9 @@ function performSearchIncidenceBarChart (searchparams) {
             y: -20,
             symbolRadius: 0,  // square swatches
             itemStyle: {
-                fontSize: '18px', // Increase legend font size
+                fontSize: '16px', // Increase legend font size
                 fontWeight: 'bold',
-            }
+            },
         },
         title: null,
         xAxis: {
@@ -1723,7 +1726,7 @@ function performSearchIncidenceBarChart (searchparams) {
                 style: {
                     fontSize: '16px', // Increase x-axis labels size
                 }
-            }
+            },
         },
         yAxis: {
             min: 0,
