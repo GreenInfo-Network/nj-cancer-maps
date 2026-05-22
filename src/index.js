@@ -879,7 +879,8 @@ function initMapAndPolygonData () {
     
     MAP.addressmarker = L.marker([0, 0], {
         pane: 'popupPane',
-        icon: blackIcon
+        icon: blackIcon,
+        title: "Searched address",
     });
 
     // the layer-picker control
