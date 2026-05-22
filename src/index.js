@@ -980,6 +980,7 @@ function initDataFilters () {
     const $searchwidgets_race = $('div.data-filters select[name="race"]');
     const $searchwidgets_time = $('div.data-filters select[name="time"]');
     const $searchwidgets_type = $('div.data-filters select[name="type"]');
+    const $searchwidgets_address = $('div.data-filters input[name="address"]');
 
     SEARCHOPTIONS_CANCERSITE.forEach(function (option) {
         $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_site);
@@ -1018,11 +1019,15 @@ function initDataFilters () {
         }
     });
 
+    $searchwidgets_address.keydown(function () {
+        if (event.key == 'Enter') $submitbutton.click();
+    });
+
     // the anti-filters: Xs in the div.data-filters-summary which will clear a specific filter
     // how we clear the filter varies: most are select, one is text
     // at any rate, upon clearing the filter trigger its change to re-search
     $filtersummary.on('keypress', 'div', function (event) {
-        if (event.keyCode == 13) $(this).click();  // ARIA/508 translate hitting enter as clicking
+        if (event.key == 'Enter') $(this).click();  // ARIA/508 translate hitting enter as clicking
     });
     $filtersummary.on('click', '[data-filter]', function () {
         const whichfilter = $(this).closest('span').attr('data-filter');
