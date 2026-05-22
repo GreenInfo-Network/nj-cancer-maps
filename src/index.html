@@ -693,6 +693,32 @@
             </div><!--/tab-content-->
         </div><!--/container section-->
 
+        <!--
+        terms of use modal
+        not really a modal but a DIV which covers the map, search, and results
+        see initTermsOfUse() which sets the size & position, and closes it
+        -->
+        <div id="termsofusemodal" class="d-none">
+            <div>
+                <p>Use of <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps implies consent to abide by
+                    the terms of these data use restrictions. Any effort to determine the identity of any reported cases, or
+                    to use the information for any purpose other than for health statistical reporting and analysis, is
+                    against the law.</p>
+                <p>Therefore users will:</p>
+                <ul>
+                    <li>Use these data for health statistical reporting and analysis only.</li>
+                    <li>Make no attempt to learn the identity of any person or establishment included in these data.</li>
+                    <li>Make no attempt to link to cancer data released with other geographic areas.</li>
+                    <li>Make no disclosure or other use of the identity of any person or establishment discovered
+                        inadvertently and advise the <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Registry
+                        of any such discovery.</li>
+                </ul>
+                <p>By clicking the button below, I agree to these terms of use.</p>
+                <div class="center">
+                    <button class="btn btn-alternate">I Agree</button>
+                </div>
+            </div>
+        </div>
     </main>
 
 
@@ -714,35 +740,6 @@
             </div>
         </div>
     </footer>
-
-
-    <!--
-    terms of use modal
-    not really a modal but a DIV which covers the map, search, and results
-    see initTermsOfUse() which sets the size & position, and closes it
-    -->
-    <div id="termsofusemodal" class="d-none">
-        <div>
-            <p>Use of <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps implies consent to abide by
-                the terms of these data use restrictions. Any effort to determine the identity of any reported cases, or
-                to use the information for any purpose other than for health statistical reporting and analysis, is
-                against the law.</p>
-            <p>Therefore users will:</p>
-            <ul>
-                <li>Use these data for health statistical reporting and analysis only.</li>
-                <li>Make no attempt to learn the identity of any person or establishment included in these data.</li>
-                <li>Make no attempt to link to cancer data released with other geographic areas.</li>
-                <li>Make no disclosure or other use of the identity of any person or establishment discovered
-                    inadvertently and advise the <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Registry
-                    of any such discovery.</li>
-            </ul>
-            <p>By clicking the button below, I agree to these terms of use.</p>
-            <div class="center">
-                <button class="btn btn-alternate">I Agree</button>
-            </div>
-        </div>
-    </div>
-
 </body>
 
 </html>
