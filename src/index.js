@@ -690,6 +690,7 @@ function initFixZoneOverlay () {
     });
 }
 
+
 function initFixPlaceOverlay () {
     const maplayerinfo = MAP_LAYERS.filter(function (maplayerinfo) { return maplayerinfo.id == 'places'; })[0];
     maplayerinfo.layer = L.topoJson(PLACETOPOJSONDATA, {
@@ -701,52 +702,35 @@ function initFixPlaceOverlay () {
 
 
 function initPrintPage () {
-    const $printbutton = $('#printpagebutton');
-    const $mapdomnode = $('#map').parent('div').get(0);
-    const originalclasslist = $mapdomnode.className;
-    const $incidencebarchart = $('#incidence-barchart');
-    let hiddenMarkers = [];
+    // with a map it's never simple to change sizes, and with them in table cells side-by-side it's even weirder
+    // entering print mode, we want the left-side content hidden (it is, via nopprint) then to expand the map's cell to full-width, then trigger Leaflet resize
+    // leaving print mode, need to undo all of that
+    // also, have the Print button change text, so folks don't get impatient waiting for that delay as we redraw the map
+    // also, the chart is now on the edge so gets clipped, so try to resize it and not do that
 
-    $printbutton.data('ready-html', $printbutton.html() );
+    const $printbutton = $('#printpagebutton');
+    const $mapdomnode = $('#map').parent('div').parent('div').parent('div').get(0);
+    const originalclasslist = $mapdomnode.className;
+
+    const $demogtablecolumns = $('#data-readouts > div.row > div')
+
+    $printbutton.data('ready-html', $printbutton.html() );  // fetch whatever the HTML is when the page loads, so we don't have to repeat ourselves here
     $printbutton.data('busy-html', '<i class="fa fa-clock"></i> Printing');
 
-    let leafletControls = [];
-
     window.addEventListener('beforeprint', function () {
-        leafletControls = [
-            document.querySelector('.leaflet-control-attribution'),
-            document.querySelector('.leaflet-control-zoom'),
-            document.querySelector('.leaflet-control-scale'),
-            document.querySelector('.leaflet-layerpicker-control')
-        ];
-        leafletControls.forEach(control => {
-            if (control) {
-                control.style.display = 'none';
-            }
-        });
-        $printbutton.html( $printbutton.data('busy-html') );
-        hiddenMarkers = [];
-        MAP.eachLayer(function (layer) {
-            if (layer instanceof L.Marker) {
-                hiddenMarkers.push(layer);
-                MAP.removeLayer(layer);
-            }
-        });
+        $mapdomnode.className = 'col-12';
         MAP.invalidateSize();
+        $printbutton.html( $printbutton.data('busy-html') );
+
+        $demogtablecolumns.removeClass('col').addClass('col-12');
     });
 
     window.addEventListener('afterprint', function () {
-        leafletControls.forEach(control => {
-            if (control) {
-                control.style.display = '';
-            }
-        });
-        $incidencebarchart.removeClass('printing');
+        $demogtablecolumns.addClass('col').removeClass('col-12');
+
         $mapdomnode.className = originalclasslist;
         MAP.invalidateSize();
         $printbutton.html( $printbutton.data('ready-html') );
-        hiddenMarkers.forEach(marker => MAP.addLayer(marker));
-        hiddenMarkers = [];
     });
 }
 
@@ -951,6 +935,14 @@ function initMapAndPolygonData () {
         style: CHOROPLETH_BORDER_NONE,  // see performSearchMap() where these are reassigned based on filters
     })
     .addTo(MAP);
+
+    // when tabs change, if the newly-visible tab is the Map tab, the map may be broken because it had 0x0 size
+    $('ul.nav-pills a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
+        const targetid = event.target.ariaControlsElements[0].id;
+        if (targetid == 'map-or-table-map') {
+            MAP.invalidateSize();
+        }
+    });
 }
 
 

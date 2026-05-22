@@ -21,7 +21,15 @@
     }
 
     #map {
-        .leaflet-control-zoom, .leaflet-control-boxzoom, .leaflet-layerpicker-control {
+        .leaflet-control-zoom,
+        .leaflet-control-boxzoom,
+        .leaflet-layerpicker-control,
+        .leaflet-control-scale,
+        .leaflet-control-attribution {
+            display: none;
+        }
+
+        .leaflet-marker-icon {
             display: none;
         }
     }
@@ -70,6 +78,17 @@
 
     #incidence-barchart.printing {
         /* see initPrintPage() and styles_datareadouts.scss for crazy hacks to resize the chart before printing */
+    }
+
+    #map-table {
+        button {
+            display: none;
+        }
+
+        tbody td:nth-child(3),
+        thead th:nth-child(3) {
+            display: none;
+        }
     }
 
     .filters-list {
