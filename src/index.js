@@ -2076,7 +2076,7 @@ function performSearchUpdateDataDownloadLinks (searchparams) {
 }
 
 
-function geocodeAddress(address, callback) {
+function geocodeAddress (address, callback) {
     const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
 
     // If it's already lat,lng coordinates
@@ -2091,31 +2091,52 @@ function geocodeAddress(address, callback) {
         return callback(GEOCODE_CACHE[address]);
     }
 
-    if (!MAPBOX_ACCESS_TOKEN) {
-        alert("Cannot look up addresses because MAPBOX_ACCESS_TOKEN has not been set.");
-        return;
-    }
+    if (MAPBOX_ACCESS_TOKEN) {
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${MAPBOX_ACCESS_TOKEN}`;
 
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${MAPBOX_ACCESS_TOKEN}`;
-
-    $.ajax({
-        url: url,
-        dataType: 'json',
-        success: function(data) {
-            if (data.features && data.features.length > 0) {
-                const [lon, lat] = data.features[0].center;
-                const coordinates = [lat, lon];
-                GEOCODE_CACHE[address] = coordinates;
-                callback(coordinates);
-            } else {
-                callback(null);
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            success: function(data) {
+                if (data.features && data.features.length > 0) {
+                    const [lon, lat] = data.features[0].center;
+                    const coordinates = [lat, lon];
+                    GEOCODE_CACHE[address] = coordinates;
+                    callback(coordinates);
+                } else {
+                    callback(null);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching geocode data:', error);
+                alert("There was a problem finding that address. Please try again.");
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error fetching geocode data:', error);
-            alert("There was a problem finding that address. Please try again.");
-        }
-    });
+        });
+    } else {
+        console.error("MAPBOX_ACCESS_TOKEN has not been set so falling back to Nominatim.");
+
+        const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=1&q=${encodeURIComponent(address)}`;
+
+        $.ajax({
+            url: url,
+            dataType: "json",
+            success: function (data) {
+                if (data && data.length) {
+                    const lon = parseFloat(data[0].lon);
+                    const lat = parseFloat(data[0].lat);
+                    const coordinates = [lat, lon];
+                    GEOCODE_CACHE[address] = coordinates;
+                    callback(coordinates);
+                } else {
+                    callback(null);
+                }
+            },
+            error: function (e) {
+                console.error('Error fetching geocode data:', error);
+                alert("There was a problem finding that address. Please try again.");
+            }
+        });
+    }
 }
 
 
