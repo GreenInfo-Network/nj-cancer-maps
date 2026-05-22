@@ -2003,7 +2003,7 @@ function performSearchMap (searchparams) {
     const $thr = $('<tr></tr>').appendTo($readout_table_thead);
     $('<th class="left"></th>').text(searchparams.type).appendTo($thr);
     $('<th class="right"></th>').text(rankthemby_text).appendTo($thr);
-    $('<th class="right"></th>').text("Select").appendTo($thr);
+    $('<th class="right minwidth"></th>').text("Select").appendTo($thr);
 
     tabularscores.forEach(function (row) {
         let name = row.GeoName;
@@ -2018,10 +2018,14 @@ function performSearchMap (searchparams) {
         const score = row[rankthemby];
         const scoretext = formatFieldValue(score, format);
 
+        let isselected;
+        if (searchparams.type == 'Zone' && searchparams.ctaid == row.GeoID) isselected = true;
+        if (searchparams.type == 'County' && searchparams.countyId == row.GeoID) isselected = true;
+
         const $tr = $('<tr></tr>');
         const $cell1 = $('<th scope="row" class="left"></th>').text(name).appendTo($tr);
         const $cell2 = $('<td class="right"></td>').text(scoretext).appendTo($tr);
-        const $cell3 = $('<td class="right"></td>').appendTo($tr);
+        const $cell3 = $('<td class="center minwidth"></td>').appendTo($tr);
 
         // add a color swatch
         let bucket = 'Q3';
@@ -2041,26 +2045,33 @@ function performSearchMap (searchparams) {
 
         // a button to find the area, find its center, and then fill in that latlng as an address
         // these are all proper convex shapes, no weird horseshoes etc, so we can use the center
-        let thefeature;
-        if (searchparams.type == 'Zone') {
-            thefeature = MAP.ctapolygonbounds.getLayers().filter(layer => layer.feature.properties.ZoneIDOrig == row.GeoID)[0];
-        } else if (searchparams.type == 'County') {
-            thefeature = MAP.countypolygonbounds.getLayers().filter(layer => layer.feature.properties.GEOID == row.GeoID)[0];
+        if (! isselected) {
+            let thefeature;
+            if (searchparams.type == 'Zone') {
+                thefeature = MAP.ctapolygonbounds.getLayers().filter(layer => layer.feature.properties.ZoneIDOrig == row.GeoID)[0];
+            } else if (searchparams.type == 'County') {
+                thefeature = MAP.countypolygonbounds.getLayers().filter(layer => layer.feature.properties.GEOID == row.GeoID)[0];
+            }
+
+            if (thefeature) {
+                const latlng = thefeature.getCenter();
+                const $selectbutton = $('<button class="btn btn-default py-0">Select</button>').attr('data-lat', latlng.lat).attr('data-lng', latlng.lng).appendTo($cell3);
+                $selectbutton.attr('aria-label', `Select ${name}`);
+                $selectbutton.click(function () {
+                    const lat = $(this).attr('data-lat');
+                    const lng = $(this).attr('data-lng');
+
+                    $searchwidgets.filter('[name="address"]').val(`${lat},${lng}`);
+                    performSearch();
+                });
+            }
         }
 
-        if (thefeature) {
-            const latlng = thefeature.getCenter();
-            const $selectbutton = $('<button class="btn btn-default">Select</button>').attr('data-lat', latlng.lat).attr('data-lng', latlng.lng).appendTo($cell3);
-            $selectbutton.attr('aria-label', `Select ${name}`);
-            $selectbutton.click(function () {
-                const lat = $(this).attr('data-lat');
-                const lng = $(this).attr('data-lng');
-
-                $searchwidgets.filter('[name="address"]').val(`${lat},${lng}`);
-                performSearch();
-            });
+        if (isselected) {
+            $tr.addClass('selected-row');
         }
 
+        // done; add this row to the table
         $tr.appendTo($readout_table_tbody);
     });
 

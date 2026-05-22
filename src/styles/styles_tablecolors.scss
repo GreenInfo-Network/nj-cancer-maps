@@ -1,6 +1,8 @@
 table.table-colorscheme1 {
     width: 100%;
 
+    border-collapse: unset;
+
     thead {
         th {
             font-size: 16px;
@@ -30,11 +32,30 @@ table.table-colorscheme1 {
             color: #000;
             font-size: 16px;
         }
+
+        tr.selected-row th,
+        tr.selected-row td {
+            border-bottom: 2px solid black;
+            border-top: 2px solid black;
+        }
+        tr.selected-row th:first-child {
+            border-left: 2px solid black;
+        }
+        tr.selected-row td:last-child {
+            border-right: 2px solid black;
+        }
+    }
+
+    th.minwidth,
+    td.minwidth {
+        width: 1px;
     }
 }
 
 table.table-colorscheme2 {
     width: 100%;
+
+    border-collapse: unset;
 
     thead {
         th {
@@ -93,5 +114,22 @@ table.table-colorscheme2 {
     }
     tbody td {
         width: 20%;
+    }
+
+    tbody tr.selected-row th,
+    tbody tr.selected-row td {
+        border-bottom: 2px solid black;
+        border-top: 2px solid black;
+    }
+    tbody tr.selected-row th:first-child {
+        border-left: 2px solid black;
+    }
+    tbody tr.selected-row td:last-child {
+        border-right: 2px solid black;
+    }
+
+    th.minwidth,
+    td.minwidth {
+        width: 1px;
     }
 }
