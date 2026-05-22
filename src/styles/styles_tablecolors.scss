@@ -48,7 +48,7 @@ table.table-colorscheme1 {
 
     th.minwidth,
     td.minwidth {
-        width: 1px;
+        max-width: 1px;
     }
 }
 
@@ -130,6 +130,6 @@ table.table-colorscheme2 {
 
     th.minwidth,
     td.minwidth {
-        width: 1px;
+        max-width: 1px;
     }
 }

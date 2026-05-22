@@ -2003,7 +2003,7 @@ function performSearchMap (searchparams) {
     const $thr = $('<tr></tr>').appendTo($readout_table_thead);
     $('<th class="left"></th>').text(searchparams.type).appendTo($thr);
     $('<th class="right"></th>').text(rankthemby_text).appendTo($thr);
-    $('<th class="right minwidth"></th>').text("Select").appendTo($thr);
+    $('<th class="center minwidth"></th>').text("Select").appendTo($thr);
 
     tabularscores.forEach(function (row) {
         let name = row.GeoName;
