@@ -55,8 +55,8 @@
     <script type="text/javascript" src="https://unpkg.com/es7-object-polyfill"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/polyfill-object-assign@1.0.0/index.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="index.css?Tue_May_26_2026_12_51_52_GMT_0700__Pacific_Daylight_Time_" />
-    <script type="text/javascript" src="index.js?Tue_May_26_2026_12_51_52_GMT_0700__Pacific_Daylight_Time_"></script>
+    <link rel="stylesheet" type="text/css" href="index.css?Tue_May_26_2026_13_46_53_GMT_0700__Pacific_Daylight_Time_" />
+    <script type="text/javascript" src="index.js?Tue_May_26_2026_13_46_53_GMT_0700__Pacific_Daylight_Time_"></script>
 </head>
 
 <body>
@@ -116,16 +116,17 @@
             <div class="row">
                 <div class="col-md noprint">
                     <div class="data-filters">
+                        <h3>Update Data Display</h3>
+
                         <div class="input-group">
                             <label class="subtitle" for="data-filters-type">Area Type</label>
                             <select name="type" id="data-filters-type" aria-label="Select area type to report">
                             </select>
                         </div>
                         <div class="input-group">
-                            <label class="subtitle" for="data-filters-address">Location Search</label>
-                            <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-label="Enter address to select an area to report" />
-                            <div class="warnmessage d-none" aria-live="assertive"></div>
-                            <p class="small mb-0">Include street name and number and city, at a minimum. For example, &quot;258 Chapman Rd, Newark, NJ&quot;.</p>
+                            <label class="subtitle" for="data-filters-whichchoropleth">Variable Mapped</label>
+                            <select name="whichchoropleth" id="data-filters-whichchoropleth">
+                            </select>
                         </div>
                         <div class="input-group">
                             <label class="subtitle" for="data-filters-time">Time Period</label>
@@ -149,10 +150,26 @@
                         </div>
 
                         <div class="input-group">
-                            <button type="button" class="btn btn-alternate w-100" id="data-filters-submit">Search</button>
+                            <button type="button" class="btn btn-alternate w-100" id="data-filters-submit1">Update Map</button>
                         </div>
                         <div class="input-group">
-                            <button type="button" class="btn btn-default w-100" id="data-filters-reset">Reset Filters</button>
+                            <button type="button" class="btn btn-default w-100" id="data-filters-reset1">Reset Filters</button>
+                        </div>
+
+                        <h3>Area Selection</h3>
+
+                        <div class="input-group">
+                            <label class="subtitle" for="data-filters-address">Location Search</label>
+                            <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-label="Enter address to select an area to report" />
+                            <div class="warnmessage d-none" aria-live="assertive"></div>
+                            <p class="small mb-0">Include street name and number and city, at a minimum. For example, &quot;258 Chapman Rd, Newark, NJ&quot;.</p>
+                        </div>
+
+                        <div class="input-group">
+                            <button type="button" class="btn btn-alternate w-100" id="data-filters-submit2">Find Area</button>
+                        </div>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-default w-100" id="data-filters-reset2">Reset Filters</button>
                         </div>
                     </div>
 
@@ -162,11 +179,6 @@
                 </div>
                 <div class="col-md-7">
                     <div class="choropleth-legend" id="choroplethlegend">
-                        <div class="choroplethlegend-picker-wrapper">
-                            <label for="choroplethlegend-picker" class="noprint mb-0">Select the variable to show on the map and table: </label>
-                            <select class="choropleth-legend-picker" id="choroplethlegend-picker">
-                            </select>
-                        </div>
                         <div>
                             Legend:
                         </div>
