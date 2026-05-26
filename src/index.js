@@ -338,7 +338,6 @@ $(document).ready(function () {
         initFixZoneOverlay();
         initFixPlaceOverlay();
         initDemographicTables();
-        initChoroplethControl();
         initMapAndPolygonData();
         initMapTable();
         initDataFilters();
@@ -970,25 +969,6 @@ function initMapTable () {
 }
 
 
-function initChoroplethControl () {
-    const $choroplethlegend = $('#choroplethlegend');
-    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
-    const $choroplethlegend_minvalue = $choroplethlegend.find('.choropleth-legend-minvalue');
-    const $choroplethlegend_maxvalue = $choroplethlegend.find('.choropleth-legend-maxvalue');
-    const $choroplethlegend_gradient = $choroplethlegend.find('.choropleth-legend-legendgradient');
-
-    CHOROPLETH_OPTIONS.forEach((vizopt) => {
-        $('<option></option>').prop('value', vizopt.field).text(vizopt.label).appendTo($choroplethlegend_picker);
-    });
-
-    $choroplethlegend_picker.change(() => {
-        const picked = choroplethGetSelectionValue();
-        performSearch();
-        logGoogleAnalyticsEvent('map', 'choropleth', picked);
-    });
-}
-
-
 function initDataFilters () {
     // fill in the SELECT options from the configurable constants
     const $searchwidgets_site = $('div.data-filters select[name="site"]');
@@ -997,6 +977,7 @@ function initDataFilters () {
     const $searchwidgets_time = $('div.data-filters select[name="time"]');
     const $searchwidgets_type = $('div.data-filters select[name="type"]');
     const $searchwidgets_address = $('div.data-filters input[name="address"]');
+    const $choroplethlegend_picker = $('div.data-filters select[name="whichchoropleth"]');
 
     SEARCHOPTIONS_CANCERSITE.forEach(function (option) {
         $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_site);
@@ -1012,6 +993,10 @@ function initDataFilters () {
     });
     SEARCHOPTIONS_TYPE.forEach(function (option) {
         $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_type);
+    });
+
+    CHOROPLETH_OPTIONS.forEach((vizopt) => {
+        $('<option></option>').prop('value', vizopt.field).text(vizopt.label).appendTo($choroplethlegend_picker);
     });
 
     if (getOptionCount('time') < 2) {  // since some datasets have only 1 option
@@ -1064,14 +1049,22 @@ function initDataFilters () {
     });
 
     // submit button and clear button
-    const $submitbutton = $('#data-filters-submit');
-    const $resetbutton = $('#data-filters-reset');
+    const $submitbutton1 = $('#data-filters-submit1');
+    const $submitbutton2 = $('#data-filters-submit2');
+    const $resetbutton1 = $('#data-filters-reset1');
+    const $resetbutton2 = $('#data-filters-reset2');
 
-    $submitbutton.click(function () {
+    $submitbutton1.click(function () {
+        performSearch();
+    });
+    $submitbutton2.click(function () {
         performSearch();
     });
 
-    $resetbutton.click(function () {
+    $resetbutton1.click(function () {
+        resetFilters();
+    });
+    $resetbutton2.click(function () {
         resetFilters();
     });
 }
@@ -2392,25 +2385,19 @@ function updateCandleChart($candlediv, subtitle, aair, lci, uci, minlci, maxuci)
 
 
 function choroplethSetSelection (whichone) {
-    const $choroplethlegend = $('#choroplethlegend');
-    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
-
+    const $choroplethlegend_picker = $('div.data-filters select[name="whichchoropleth"]');
     $choroplethlegend_picker.val(whichone).change();
 }
 
 
 function choroplethGetSelectionLabel () {
-    const $choroplethlegend = $('#choroplethlegend');
-    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
-
+    const $choroplethlegend_picker = $('div.data-filters select[name="whichchoropleth"]');
     return $choroplethlegend_picker.find('option:selected').text();
 }
 
 
 function choroplethGetSelectionValue () {
-    const $choroplethlegend = $('#choroplethlegend');
-    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
-
+    const $choroplethlegend_picker = $('div.data-filters select[name="whichchoropleth"]');
     return $choroplethlegend_picker.find('option:selected').prop('value');
 }
 
