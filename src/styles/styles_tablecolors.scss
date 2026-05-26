@@ -80,6 +80,19 @@ table.table-colorscheme2 {
         }
     }
 
+    tr.striped-odd {
+        td, th[scope] {
+            color: #000000;
+            background-color: #feecd4;
+        }
+    }
+    tr.striped-even {
+        td, th[scope] {
+            background-color: white;
+        }
+    }
+
+
     th:not(:last-child),
     td:not(:last-child) {
         border-right: 5px solid white;

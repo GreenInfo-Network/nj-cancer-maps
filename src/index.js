@@ -945,6 +945,7 @@ function initMapAndPolygonData () {
 
 function initMapTable () {
     const $readout_table = $('#map-table');
+    const $tablefilter = $('#map-table-textfilter');
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
 
     // the Select buttons
@@ -956,7 +957,16 @@ function initMapTable () {
         performSearch();
     });
 
-    // table sorting, see performSearchMap() afegr the table is re-populated
+    $tablefilter.change(function () {
+
+        applyMapTableFilteringAndStriping();
+    });
+    $tablefilter.keydown(function () {
+        if (event.key == 'Enter') $tablefilter.change();
+    });
+
+    // table sorting, see performSearchMap() where the table is re-populated
+    // and class SortableTable; there are interactions between sorting and hiding rows
 }
 
 
@@ -1660,17 +1670,6 @@ function performSearchIncidenceBarChart (searchparams) {
 
     // chart it!
 
-/*GDA
-    // a special hack here, to adjust the barchart's DIV based on SEARCHOPTIONS_RACE
-    // to achieve ideal height for the number of categories, without a lot of empty space for deployments with 2-3 races instead of 5-7
-    // see also the groupPadding option which affects the spacing between categories
-    const $barchartdiv = $('#incidence-barchart');
-    var chartheight = 20 + 15 + 15 + 55 * SEARCHOPTIONS_RACE.length;  // top legend + axis labels + credits + (categoryheight * numcategories)
-    $barchartdiv.css({
-        height: `${chartheight}px`,
-    });
-GDA*/
-
     // a special hack here to insert "data not calculated" text any place where data are 0
     // for this dataset, we know that 0 never happens and above we set nulls to be 0 for our purposes
     // we also have data labels so there will be a value label with the text 0 in it
@@ -2026,7 +2025,7 @@ function performSearchMap (searchparams) {
     $('<button></button>').text(searchparams.type).append($('<span aria-hidden="true"></span>')).appendTo($th1);
     $('<button></button>').text(rankthemby_text).append($('<span aria-hidden="true"></span>')).appendTo($th2);
 
-    tabularscores.forEach(function (row) {
+    tabularscores.forEach(function (row, rowindex) {
         let name = row.GeoName;
         if (searchparams.type == 'Zone') name = `${row.GeoName} (${row.GeoID})`;
 
@@ -2043,7 +2042,7 @@ function performSearchMap (searchparams) {
         if (searchparams.type == 'Zone' && searchparams.ctaid == row.GeoID) isselected = true;
         if (searchparams.type == 'County' && searchparams.countyId == row.GeoID) isselected = true;
 
-        const $tr = $('<tr></tr>');
+        const $tr = $('<tr></tr>').attr('aria-rowindex', rowindex + 1);
         const $cell1 = $('<th scope="row" class="left"></th>').text(name).appendTo($tr);
         const $cell2 = $('<td class="right"></td>').text(scoretext).appendTo($tr);
         const $cell3 = $('<td class="center"></td>').appendTo($tr);
@@ -2096,9 +2095,15 @@ function performSearchMap (searchparams) {
         $readout_table.removeClass('table-colorscheme1').addClass('table-colorscheme2');
     }
 
-    // sortable table with a text filter box
+    $readout_table.attr('aria-rowcount', tabularscores.length);
+
+    // re-calculate the sortable table
     const sortme = document.querySelector('#map-table');
     new SortableTable(sortme);
+
+    // re-apply filtering
+    // see also initMapTable() and applyMapTableFilteringAndStriping() which apply filtering to the table rows
+    $('#map-table-textfilter').change();
 }
 
 
@@ -2197,6 +2202,30 @@ function getOptionCount (fieldname) {
     const $picker = $(`div.data-filters select[name="${fieldname}"]`);
     const $options = $picker.find('option');
     return $options.length;
+}
+
+
+function applyMapTableFilteringAndStriping () {
+    const $readout_table = $('#map-table');
+    const $trs = $readout_table.find('tbody tr');
+    const $tablefilter = $('#map-table-textfilter');
+    const searchstring = $tablefilter.val().toLowerCase().trim();
+
+    $trs.each(function () {
+        // we only filter by cell 0, the area name
+        const $tr = $(this);
+        const thevalue = $tr.children().first().text().toLowerCase().trim();
+        const matches = thevalue.indexOf(searchstring) != -1;
+
+        if (matches) {
+            $tr.removeClass('d-none');
+        } else {
+            $tr.addClass('d-none');
+        }
+    });
+
+  $trs.removeClass('striped-odd').addClass('striped-even');
+  $trs.not('.d-none').filter(':odd').addClass('striped-odd').removeClass('striped-even');
 }
 
 
@@ -2586,8 +2615,13 @@ class SortableTable {
 
     // add sorted rows
     for (var i = 0; i < dataCells.length; i += 1) {
-      tbodyNode.appendChild(rowNodes[dataCells[i].index]);
+      const tr = rowNodes[dataCells[i].index];
+      tr.setAttribute('aria-rowindex', i + 1);
+      tbodyNode.appendChild(tr);
     }
+
+    // apply our custom table filtering and striping
+    applyMapTableFilteringAndStriping();
   }
 
   /* EVENT HANDLERS */
