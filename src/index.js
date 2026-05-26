@@ -2099,7 +2099,8 @@ function performSearchMap (searchparams) {
 
     // re-calculate the sortable table
     const sortme = document.querySelector('#map-table');
-    new SortableTable(sortme);
+    const sortable = new SortableTable(sortme);
+    sortable.setColumnHeaderSort(0, 'asc');
 
     // re-apply filtering
     // see also initMapTable() and applyMapTableFilteringAndStriping() which apply filtering to the table rows
@@ -2521,7 +2522,7 @@ class SortableTable {
     }
   }
 
-  setColumnHeaderSort(columnIndex) {
+  setColumnHeaderSort(columnIndex, ascdesc) {
     if (typeof columnIndex === 'string') {
       columnIndex = parseInt(columnIndex);
     }
@@ -2531,7 +2532,7 @@ class SortableTable {
       var buttonNode = ch.querySelector('button');
       if (i === columnIndex) {
         var value = ch.getAttribute('aria-sort');
-        if (value === 'descending') {
+        if (value === 'descending' || ascdesc == 'asc') {
           ch.setAttribute('aria-sort', 'ascending');
           this.sortColumn(
             columnIndex,
