@@ -340,6 +340,7 @@ $(document).ready(function () {
         initDemographicTables();
         initChoroplethControl();
         initMapAndPolygonData();
+        initMapTable();
         initDataFilters();
         initPrintPage();
         initDownloadButtons();
@@ -939,6 +940,23 @@ function initMapAndPolygonData () {
             MAP.invalidateSize();
         }
     });
+}
+
+
+function initMapTable () {
+    const $readout_table = $('#map-table');
+    const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
+
+    // the Select buttons
+    $readout_table.on('click', 'button[data-lat][data-lng]', function () {
+        const lat = $(this).attr('data-lat');
+        const lng = $(this).attr('data-lng');
+
+        $searchwidgets.filter('[name="address"]').val(`${lat},${lng}`);
+        performSearch();
+    });
+
+    // table sorting, see performSearchMap() afegr the table is re-populated
 }
 
 
@@ -2001,9 +2019,12 @@ function performSearchMap (searchparams) {
     }
 
     const $thr = $('<tr></tr>').appendTo($readout_table_thead);
-    $('<th class="left"></th>').text(searchparams.type).appendTo($thr);
-    $('<th class="right"></th>').text(rankthemby_text).appendTo($thr);
-    $('<th class="center minwidth"></th>').text("Select").appendTo($thr);
+    const $th1 = $('<th class="left"></th>').appendTo($thr);
+    const $th2 = $('<th class="right sortable-number"></th>').appendTo($thr);
+    const $th3 = $('<th class="center"></th>').text("Select").appendTo($thr);
+
+    $('<button></button>').text(searchparams.type).append($('<span aria-hidden="true"></span>')).appendTo($th1);
+    $('<button></button>').text(rankthemby_text).append($('<span aria-hidden="true"></span>')).appendTo($th2);
 
     tabularscores.forEach(function (row) {
         let name = row.GeoName;
@@ -2025,7 +2046,7 @@ function performSearchMap (searchparams) {
         const $tr = $('<tr></tr>');
         const $cell1 = $('<th scope="row" class="left"></th>').text(name).appendTo($tr);
         const $cell2 = $('<td class="right"></td>').text(scoretext).appendTo($tr);
-        const $cell3 = $('<td class="center minwidth"></td>').appendTo($tr);
+        const $cell3 = $('<td class="center"></td>').appendTo($tr);
 
         // add a color swatch
         let bucket = 'Q3';
@@ -2057,13 +2078,7 @@ function performSearchMap (searchparams) {
                 const latlng = thefeature.getCenter();
                 const $selectbutton = $('<button class="btn btn-default py-0">Select</button>').attr('data-lat', latlng.lat).attr('data-lng', latlng.lng).appendTo($cell3);
                 $selectbutton.attr('aria-label', `Select ${name}`);
-                $selectbutton.click(function () {
-                    const lat = $(this).attr('data-lat');
-                    const lng = $(this).attr('data-lng');
-
-                    $searchwidgets.filter('[name="address"]').val(`${lat},${lng}`);
-                    performSearch();
-                });
+                // see initMapTable() for delegated event handler on these buttons
             }
         }
 
@@ -2080,6 +2095,10 @@ function performSearchMap (searchparams) {
     } else {
         $readout_table.removeClass('table-colorscheme1').addClass('table-colorscheme2');
     }
+
+    // sortable table with a text filter box
+    const sortme = document.querySelector('#map-table');
+    new SortableTable(sortme);
 }
 
 
@@ -2432,3 +2451,159 @@ document.addEventListener("DOMContentLoaded", function () {
         downloadDataAsZip();
     });
 });
+
+
+/*
+ *   This content is licensed according to the W3C Software License at https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+ *   File:   sortable-table.js
+ *   Desc:   Adds sorting to a HTML data table that implements ARIA Authoring Practices
+ */
+
+class SortableTable {
+  constructor(tableNode) {
+    this.tableNode = tableNode;
+
+    this.columnHeaders = tableNode.querySelectorAll('thead th');
+
+    this.sortColumns = [];
+
+    for (var i = 0; i < this.columnHeaders.length; i++) {
+      var ch = this.columnHeaders[i];
+      var buttonNode = ch.querySelector('button');
+      if (buttonNode) {
+        this.sortColumns.push(i);
+        buttonNode.setAttribute('data-column-index', i);
+        buttonNode.addEventListener('click', this.handleClick.bind(this));
+      }
+    }
+
+    this.optionCheckbox = document.querySelector(
+      'input[type="checkbox"][value="show-unsorted-icon"]'
+    );
+
+    if (this.optionCheckbox) {
+      this.optionCheckbox.addEventListener(
+        'change',
+        this.handleOptionChange.bind(this)
+      );
+      if (this.optionCheckbox.checked) {
+        this.tableNode.classList.add('show-unsorted-icon');
+      }
+    }
+  }
+
+  setColumnHeaderSort(columnIndex) {
+    if (typeof columnIndex === 'string') {
+      columnIndex = parseInt(columnIndex);
+    }
+
+    for (var i = 0; i < this.columnHeaders.length; i++) {
+      var ch = this.columnHeaders[i];
+      var buttonNode = ch.querySelector('button');
+      if (i === columnIndex) {
+        var value = ch.getAttribute('aria-sort');
+        if (value === 'descending') {
+          ch.setAttribute('aria-sort', 'ascending');
+          this.sortColumn(
+            columnIndex,
+            'ascending',
+            ch.classList.contains('sortable-number')
+          );
+        } else {
+          ch.setAttribute('aria-sort', 'descending');
+          this.sortColumn(
+            columnIndex,
+            'descending',
+            ch.classList.contains('sortable-number')
+          );
+        }
+      } else {
+        if (ch.hasAttribute('aria-sort') && buttonNode) {
+          ch.removeAttribute('aria-sort');
+        }
+      }
+    }
+  }
+
+  sortColumn(columnIndex, sortValue, isNumber) {
+    function compareValues(a, b) {
+      if (sortValue === 'ascending') {
+        if (a.value === b.value) {
+          return 0;
+        } else {
+          if (isNumber) {
+            return a.value - b.value;
+          } else {
+            return a.value < b.value ? -1 : 1;
+          }
+        }
+      } else {
+        if (a.value === b.value) {
+          return 0;
+        } else {
+          if (isNumber) {
+            return b.value - a.value;
+          } else {
+            return a.value > b.value ? -1 : 1;
+          }
+        }
+      }
+    }
+
+    if (typeof isNumber !== 'boolean') {
+      isNumber = false;
+    }
+
+    var tbodyNode = this.tableNode.querySelector('tbody');
+    var rowNodes = [];
+    var dataCells = [];
+
+    var rowNode = tbodyNode.firstElementChild;
+
+    var index = 0;
+    while (rowNode) {
+      rowNodes.push(rowNode);
+      var rowCells = rowNode.querySelectorAll('th, td');
+      var dataCell = rowCells[columnIndex];
+
+      var data = {};
+      data.index = index;
+      data.value = dataCell.textContent.toLowerCase().trim();
+      if (isNumber) {
+        data.value = parseFloat(data.value.replace(/[^\d\.\-]/, ''));
+      }
+      dataCells.push(data);
+      rowNode = rowNode.nextElementSibling;
+      index += 1;
+    }
+
+    dataCells.sort(compareValues);
+
+    // remove rows
+    while (tbodyNode.firstChild) {
+      tbodyNode.removeChild(tbodyNode.lastChild);
+    }
+
+    // add sorted rows
+    for (var i = 0; i < dataCells.length; i += 1) {
+      tbodyNode.appendChild(rowNodes[dataCells[i].index]);
+    }
+  }
+
+  /* EVENT HANDLERS */
+
+  handleClick(event) {
+    var tgt = event.currentTarget;
+    this.setColumnHeaderSort(tgt.getAttribute('data-column-index'));
+  }
+
+  handleOptionChange(event) {
+    var tgt = event.currentTarget;
+
+    if (tgt.checked) {
+      this.tableNode.classList.add('show-unsorted-icon');
+    } else {
+      this.tableNode.classList.remove('show-unsorted-icon');
+    }
+  }
+}

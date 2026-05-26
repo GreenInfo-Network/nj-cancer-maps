@@ -45,11 +45,6 @@ table.table-colorscheme1 {
             border-right: 2px solid black;
         }
     }
-
-    th.minwidth,
-    td.minwidth {
-        max-width: 1px;
-    }
 }
 
 table.table-colorscheme2 {
@@ -126,10 +121,5 @@ table.table-colorscheme2 {
     }
     tbody tr.selected-row td:last-child {
         border-right: 2px solid black;
-    }
-
-    th.minwidth,
-    td.minwidth {
-        max-width: 1px;
     }
 }
