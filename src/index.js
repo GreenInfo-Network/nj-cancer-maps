@@ -512,6 +512,7 @@ function initLoadInitialState () {
     }
     else {
         choroplethSetSelection('AAIR');
+        anythingchanged = true;
     }
 
     if (params.get('type')) {
