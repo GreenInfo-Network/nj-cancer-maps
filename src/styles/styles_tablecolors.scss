@@ -124,15 +124,24 @@ table.table-colorscheme2 {
         width: 20%;
     }
 
-    tbody tr.selected-row th,
-    tbody tr.selected-row td {
-        border-bottom: 2px solid black;
-        border-top: 2px solid black;
-    }
-    tbody tr.selected-row th:first-child {
-        border-left: 2px solid black;
-    }
-    tbody tr.selected-row td:last-child {
-        border-right: 2px solid black;
+    tbody {
+        th,
+        td {
+            border-bottom: 2px solid #fff;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff
+        }
+
+        tr.selected-row th,
+        tr.selected-row td {
+            border-bottom: 2px solid black;
+            border-top: 2px solid black;
+        }
+        tr.selected-row th:first-child {
+            border-left: 2px solid black;
+        }
+        tr.selected-row td:last-child {
+            border-right: 2px solid black;
+        }
     }
 }

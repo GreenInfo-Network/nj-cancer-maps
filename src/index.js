@@ -186,20 +186,20 @@ var DEMOGRAPHIC_TABLES = [
 // see performSearchMap() which calculates scoring and uses these color ramps, to implement the choropleth behavior
 var CHOROPLETH_STYLE_NODATA = { fillOpacity: 0.25, fillColor: '#cccccc', color: 'black', opacity: 0.2, weight: 1, interactive: false };
 var CHOROPLETH_STYLE_NODATA_CLEAR = { fillOpacity: 0, fillColor: '#cccccc', color: 'black', opacity: 0, weight: 0, interactive: false };
-var CHOROPLETH_BORDER_DEFAULT = { color: 'black', opacity: 1, weight: 1, fill: false, interactive: false };
-var CHOROPLETH_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fill: false, interactive: false };
-var CHOROPLETH_BORDER_NONE = { color: null, opacity: 100, weight: 0, fill: false, interactive: false };
+var CHOROPLETH_BORDER_DEFAULT = { color: 'black', opacity: 1, weight: 1, fillColor: "transparent", interactive: false };
+var CHOROPLETH_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fillColor: "transparent", interactive: false };
+var CHOROPLETH_BORDER_NONE = { color: null, opacity: 100, weight: 0, fillColor: "transparent", interactive: false };
 
 var CHOROPLETH_STYLE_INCIDENCE = {
-    Q1: { fillOpacity: 0.75, fillColor: '#FFFFEB', stroke: false },
-    Q2: { fillOpacity: 0.75, fillColor: '#D27700', stroke: false },
-    Q3: { fillOpacity: 0.75, fillColor: '#642D4E', stroke: false },
+    Q1: { fillOpacity: 0.75, fillColor: '#FFFFEB', color: "transparent" },
+    Q2: { fillOpacity: 0.75, fillColor: '#D27700', color: "transparent" },
+    Q3: { fillOpacity: 0.75, fillColor: '#642D4E', color: "transparent" },
 };
 
 var CHOROPLETH_STYLE_DEMOGRAPHIC = {
-    Q1: { fillOpacity: 0.75, fillColor: '#E6EAFF', stroke: false },
-    Q2: { fillOpacity: 0.75, fillColor: '#7683C2', stroke: false },
-    Q3: { fillOpacity: 0.75, fillColor: '#1B2B80', stroke: false },
+    Q1: { fillOpacity: 0.75, fillColor: '#E6EAFF', color: "transparent" },
+    Q2: { fillOpacity: 0.75, fillColor: '#7683C2', color: "transparent" },
+    Q3: { fillOpacity: 0.75, fillColor: '#1B2B80', color: "transparent" },
 };
 
 // options for the choropleth map (Color By)
@@ -1922,30 +1922,32 @@ function performSearchMap (searchparams) {
         MAP.ctapolygonbounds.eachLayer((layer) => {
             const ctaid = layer.feature.properties.ZoneIDOrig;
             const istheone = ctaid == searchparams.ctaid;
+            const score = ctascores[ctaid];
+            const style = {};
+
             if (istheone) {
-                layer.setStyle(CHOROPLETH_BORDER_SELECTED);
+                Object.assign(style, CHOROPLETH_BORDER_SELECTED);
                 layer.bringToFront();
             }
             else {
-                layer.setStyle(CHOROPLETH_BORDER_DEFAULT);
+                Object.assign(style, CHOROPLETH_BORDER_DEFAULT);
             }
-        });
 
-        // assign the color/style to each CTA Zone polygon
-        MAP.ctapolygonfills.eachLayer((layer) => {
-            // const ctaid = layer.feature.properties.Zone;
-            const ctaid = layer.feature.properties.ZoneIDOrig;
-            const score = ctascores[ctaid];
-            let style;
             if (score == null || score == undefined || score == "") {
-                style = Object.assign({}, CHOROPLETH_STYLE_NODATA);
+                Object.assign(style, CHOROPLETH_STYLE_NODATA);
             }
             else {
                 let bucket = 'Q3';
                 if (score <= q1brk) bucket = 'Q1';
                 else if (score <= q2brk) bucket = 'Q2';
 
-                style = Object.assign({}, vizopt.colorramp[bucket]);  // take a copy!
+                Object.assign(style, vizopt.colorramp[bucket]);
+
+                if (bucket == 'Q3') {
+                    Object.assign(style, { color: "white" });
+                } else {
+                    Object.assign(style, { color: "black" });
+                }
             }
 
             layer.setStyle(style);
@@ -1958,35 +1960,34 @@ function performSearchMap (searchparams) {
 
         // highlight the selected CTA
         MAP.countypolygonbounds.eachLayer((layer) => {
-            // const ctaid = layer.feature.properties.Zone;
-            // const ctaid = layer.feature.properties.ZoneIDOrig;
             const ctaid = layer.feature.properties.GEOID;
             const istheone = ctaid == searchparams.countyId;
+            const score = ctascores[ctaid];
+            const style = {};
+
             if (istheone) {
-                layer.setStyle(CHOROPLETH_BORDER_SELECTED);
+                Object.assign(style, CHOROPLETH_BORDER_SELECTED);
                 layer.bringToFront();
             }
             else {
-                layer.setStyle(CHOROPLETH_BORDER_DEFAULT);
+                Object.assign(style, CHOROPLETH_BORDER_DEFAULT);
             }
-        });
 
-        // assign the color/style to each CTA Zone polygon
-        MAP.countypolygonfills.eachLayer((layer) => {
-            // const ctaid = layer.feature.properties.Zone;
-            // const ctaid = layer.feature.properties.ZoneIDOrig;
-            const ctaid = layer.feature.properties.GEOID;
-            const score = ctascores[ctaid];
-            let style;
             if (score == null || score == undefined || score == "") {
-                style = Object.assign({}, CHOROPLETH_STYLE_NODATA);
+                Object.assign(style, CHOROPLETH_STYLE_NODATA);
             }
             else {
                 let bucket = 'Q3';
                 if (score <= q1brk) bucket = 'Q1';
                 else if (score <= q2brk) bucket = 'Q2';
 
-                style = Object.assign({}, vizopt.colorramp[bucket]);  // take a copy!
+                Object.assign(style, vizopt.colorramp[bucket]);
+
+                if (bucket == 'Q3') {
+                    Object.assign(style, { color: "white" });
+                } else {
+                    Object.assign(style, { color: "black" });
+                }
             }
 
             layer.setStyle(style);
