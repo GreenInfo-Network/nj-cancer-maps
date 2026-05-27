@@ -864,6 +864,9 @@ function initMapAndPolygonData () {
         pane: 'popupPane',
         icon: blackIcon,
         title: "Searched address",
+        interactive: false,
+        clickable: false,
+        keyboard: false,
     });
 
     // the layer-picker control
@@ -980,6 +983,11 @@ function initDataFilters () {
     const $searchwidgets_address = $('div.data-filters input[name="address"]');
     const $choroplethlegend_picker = $('div.data-filters select[name="whichchoropleth"]');
 
+    const $submitbutton1 = $('#data-filters-submit1');
+    const $submitbutton2 = $('#data-filters-submit2');
+    const $resetbutton1 = $('#data-filters-reset1');
+    const $resetbutton2 = $('#data-filters-reset2');
+
     SEARCHOPTIONS_CANCERSITE.forEach(function (option) {
         $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_site);
     });
@@ -1022,7 +1030,7 @@ function initDataFilters () {
     });
 
     $searchwidgets_address.keydown(function () {
-        if (event.key == 'Enter') $submitbutton.click();
+        if (event.key == 'Enter') $submitbutton1.click();
     });
 
     // the anti-filters: Xs in the div.data-filters-summary which will clear a specific filter
@@ -1050,11 +1058,6 @@ function initDataFilters () {
     });
 
     // submit button and clear button
-    const $submitbutton1 = $('#data-filters-submit1');
-    const $submitbutton2 = $('#data-filters-submit2');
-    const $resetbutton1 = $('#data-filters-reset1');
-    const $resetbutton2 = $('#data-filters-reset2');
-
     $submitbutton1.click(function () {
         performSearch();
     });
