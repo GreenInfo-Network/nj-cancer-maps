@@ -746,12 +746,12 @@ function initDownloadButtons () {
         if (already) {
             $downloadtogglecaret.addClass('fa-caret-down').removeClass('fa-caret-up');
             $downloadoptions.addClass('d-none');
-            $downloadoptions.attr('aria-expanded', 'false');
+            $downloadtogglebutton.attr('aria-expanded', 'false');
         }
         else {
             $downloadtogglecaret.addClass('fa-caret-up').removeClass('fa-caret-down');
             $downloadoptions.removeClass('d-none');
-            $downloadoptions.attr('aria-expanded', 'true');
+            $downloadtogglebutton.attr('aria-expanded', 'true');
         }
     });
     $downloadlinks.click(function (event) {
@@ -764,21 +764,11 @@ function initDownloadButtons () {
     // $downloadinks.filter('[data-export="all"]');
 
     // Download Map is a tedious slog, because we want to hide some Leaflet controls, leave some, and customize some others
-    // we also want the print button to change text because printing can take several seconds...
     $printmapbutton.click(() => {
         // the filename is based on the choropleth selection; .png is added automatically
         const choroplethlabel = choroplethGetSelectionLabel().replace('%', 'Percent').replace(/\W/, '');
         const filename = `MapExport-${choroplethlabel}`;
         MAP.printplugin.printMap('CurrentSize', filename);
-    });
-
-    $printmapbutton.data('ready-html', $printmapbutton.html() );  // fetch whatever the HTML is when the page loads, so we don't have to repeat ourselves here
-    $printmapbutton.data('busy-html', '<i class="fa fa-clock"></i> One Moment');
-    MAP.on('easyPrint-start', () => {
-        $printmapbutton.html( $printmapbutton.data('busy-html') );
-    });
-    MAP.on('easyPrint-finished', () => {
-        $printmapbutton.html( $printmapbutton.data('ready-html') );
     });
 
     MAP.on('easyPrint-start', () => {
@@ -899,8 +889,7 @@ function initMapAndPolygonData () {
         hideControlContainer: false,
         hideClasses: [
             // hide these other controls
-            'leaflet-layerpicker-control', 'leaflet-control-attribution',
-            'leaflet-control-zoom',
+            'leaflet-layerpicker-control',
             // within the choroplethlegend control which we do not hide, setPrintMode() sets certain CSS to show/hide those items
         ],
     }).addTo(MAP);
@@ -1079,7 +1068,7 @@ function initFaqAccordion () {
     const $buttons = $('#learn-faq button.usa-accordion__button');
     $buttons.click(function (event) {
         const $this = $(this);
-        const $definition = $this.closest('h2').next('.usa-accordion__content');
+        const $definition = $this.closest('.usa-accordion__heading').next('.usa-accordion__content');
         const isvisible = $this.attr('aria-expanded') == 'true';
 
         if (isvisible) {
@@ -1115,34 +1104,18 @@ function initFaqAccordion () {
 function initTermsOfUse () {
     const $modal = $('#termsofusemodal');
     const $acceptbutton = $modal.find('button');
-    const $attachtopleft = $('#above-map');
 
-    // not a real BS modal but a DIV with a contrived position and size, to make it cover up the map and data portions of the page
-    // so we have to do our own resizing handler, to make it continue to cover up even if they change size
-    $(window).resize(function () {
-        const height = $('#above-map').height() + $('#search-and-map').height() + $('#filters-and-aairbarchart').height() + $('#demographic-tables').height() + 25;  // extra for various padding, spacing, margins
-        const width = $('#search-and-map').width() + 15 + 15;  // add 2*15 to match .container padding
-
-        $modal.css({
-            height: `${height}px`,
-            width: `${width}px`,
-            top: `${$attachtopleft.offset().top}px`,
-            left: `${$attachtopleft.offset().left}px`,
-        });
-    });
-
-    // clickin the button = set the cookie and clear the modal
+    // click the button = set the cookie and clear the modal
     $acceptbutton.click(function () {
         document.cookie = "termsaccepted=true;max-age=31536000";
-        $modal.addClass('d-none');
+        $modal.modal('hide');
     });
 
     // unless we have a cookie set, go ahead and show the modal, triggering a resize event now to assert its size and position
     const hastermscookie = document.cookie.split(';').filter(item => item.indexOf('termsaccepted=true') >= 0).length;
     if (! hastermscookie) {
         setTimeout(function () {
-            $(window).resize();
-            $modal.removeClass('d-none');
+            $modal.modal('show');
         }, 0.5 * 1000);
     }
 }
@@ -1701,6 +1674,11 @@ function performSearchIncidenceBarChart (searchparams) {
                         return `${point.category}, ${point.series.name}, AAIR ${point.y}`;
                     },
                 },
+                events: {
+                    legendItemClick: function(e) {
+                        return false;
+                    },
+                },
             },
             bar: {
                 dataLabels: {
@@ -1767,7 +1745,7 @@ function performSearchIncidenceBarChart (searchparams) {
             }
         },
         credits: {
-            enabled: true,
+            enabled: false,
         },
         series: chartseries,
     });
@@ -2289,7 +2267,7 @@ function findCTAById (ctaid) {
 
 
 function toggleAddressSearchFailure (message) {
-    const $textarea = $('#data-filters-address').siblings('.warnmessage');
+    const $textarea = $('#data-filters-address-error');
 
     if (message) {
         $textarea.text(message).removeClass('d-none');

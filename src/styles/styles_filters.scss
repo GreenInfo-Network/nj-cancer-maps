@@ -24,6 +24,12 @@ div.data-filters {
     label {
         margin-bottom: 0px;
     }
+
+    input:focus,
+    select:focus {
+        outline: 0;
+        box-shadow: 0 0 0 .2rem #D27700;
+    }
 }
 
 

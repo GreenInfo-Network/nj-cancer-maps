@@ -67,8 +67,11 @@
 
                     <img src="./static/ribbon_purple.png" alt="Health Maps Logo" />
                     <div style="display:block">
-                        <h1 class="site-title-1" aria-label="Health Maps" tabindex="0"><span class="stateName">[REPLACE STATE/REGISTRY]</span></h1>
-                        <h1 class="site-title-2">Health Maps</h1>
+                        <h1 class="site-title-1">
+                            <span class="stateName">[REPLACE STATE/REGISTRY]</span>
+                            <br />
+                            Health Maps
+                        </h1>
                     </div>
                 </div>
                 <!-- <div id="logo-img">
@@ -79,8 +82,11 @@
         <div class=" container printonly" id="logo-img-print" >
             <img src="./static/ribbon_purple.png" alt="Health Maps Logo" />
             <div style="display:block">
-                <h1 class="site-title-1" aria-label="Health Maps" tabindex="0"><span class="stateName">[REPLACE STATE/REGISTRY]</span></h1>
-                <h1 class="site-title-2">Health Maps</h1>
+                <h1 class="site-title-1">
+                    <span class="stateName">[REPLACE STATE/REGISTRY]</span>
+                    <br />
+                    Health Maps
+                </h1>
             </div>
         </div>
 
@@ -103,8 +109,8 @@
                     </button>
 
                     <div id="downloadoptions" class="d-none" aria-expanded="false">
-                        <a href="javascript:void(0);" data-export="map" title="Download a PNG image of the map"><i class="fa fa-map"></i> Map</a>
-                        <a href="javascript:void(0);" data-export="data" title="Download data associated with the tool"><i class="fa fa-table"></i> Data</a>
+                        <a role="button" href="javascript:void(0);" data-export="map" title="Download a PNG image of the map"><i class="fa fa-map"></i> Map</a>
+                        <a role="button" href="javascript:void(0);" data-export="data" title="Download data associated with the tool"><i class="fa fa-table"></i> Data</a>
                     </div>
 
                     <button class="btn btn-alternate" id="printpagebutton" onClick="window.print();"><i class="fa fa-print"></i> Print Page</button>
@@ -160,8 +166,8 @@
 
                         <div class="input-group">
                             <label class="subtitle" for="data-filters-address">Location Search</label>
-                            <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-label="Enter address to select an area to report" />
-                            <div class="warnmessage d-none" aria-live="assertive"></div>
+                            <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-label="Enter address to select an area to report" aria-describedby="data-filters-address-error" />
+                            <div id="data-filters-address-error" class="warnmessage d-none" aria-live="assertive"></div>
                             <p class="small mb-0">Include street name and number and city, at a minimum. For example, &quot;258 Chapman Rd, Newark, NJ&quot;.</p>
                         </div>
 
@@ -203,7 +209,7 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane container px-0 active" id="map-or-table-map">
-                            <div class="map" id="map" ></div>
+                            <div class="map" id="map" role="img" aria-label="Map of selected areas colored by the selected variable"></div>
                         </div>
                         <div class="tab-pane container px-0" id="map-or-table-table">
                             <div class="input-group">
@@ -357,7 +363,7 @@
         </div>
 
         <div class="container learn-text noprint" id="learn-text">
-            <h2 class="title">Learn</h2>
+            <h2>Learn</h2>
 
             <ul class="nav nav-pills nav-justified" role="tablist">
                 <li class="nav-item" role="presentation"><a class="nav-link active" data-toggle="tab" role="tab" aria-controls="learn-about" href="#learn-about" aria-selected="true">About</a></li>
@@ -481,11 +487,11 @@
                         </p>
                     </p>
                     <div class="usa-accordion">
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq1">
                                 What is the New Jersey State Cancer Registry?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq1" class="usa-accordion__content" hidden="">
                             <p>The New Jersey State Cancer Registry (NJSCR) is a population-based registry and includes all cancer cases diagnosed in New Jersey residents since October 1, 1978. The NJSCR serves the entire State of New Jersey, which includes a population of approximately 9.5 million people.</p>
                             <p>The purpose of the NJSCR is to track cancer in New Jersey supporting efforts to promote the following activities: scientific research; public and professional education programs; and planning and implementation of cancer control and prevention activities. The NJSCR strives to improve the quality and enhance the usefulness of its data. </p>
@@ -495,104 +501,104 @@
                             <p>The NJSCR has been awarded the NAACCR Gold Standard, the highest standard possible.</p>
 
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq2">
                                 How did you choose which cancer sites to include?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq2" class="usa-accordion__content" hidden="">
                             We used the cancer sites reported on by the CDC’s <a target="_blank" href ="https://www.cdc.gov/united-states-cancer-statistics/index.html">United States Cancer Statistics</a> (USCS, “The Official Federal Cancer Statistics”).
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq4">
                                 Will the cancer incidence data be updated?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq4" class="usa-accordion__content" hidden="">
                             We plan to update New Jersey Cancer Maps to include the most current cancer incidence data as they become available, typically in the Spring of each year.
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq5">
                                 What is a census tract aggregation zone?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq5" class="usa-accordion__content" hidden="">
                             <p><strong>Census Tracts</strong> are small, relatively permanent statistical subdivisions of a county with between 1,200 and 8,000 people and an optimum size of 4,000 people. The primary purpose of census tracts is to provide a stable set of geographic units for the presentation of statistical data. However, in order to protect citizen confidentiality, the NJSCR does not release data to the general public at the Census Tract-level. By combining data over longer periods of time or wider areas, larger numbers of cases are included, reducing the threat of identification of individual cases. Additionally, larger numbers of cases results in more stable estimates of cancer incidence.</p>
                             <p>Here we combine Census Tracts to form Census Tract Aggregation Zones based on adjacency and similarity in population sociodemographic characteristics: poverty, rurality, and racial/ethnic minority (i.e., non-White) composition. Zones are required to have a minimum population of 50,000. There are 150 Zones in New Jersey which vary in population size from 50,676 to 97,265 and are composed of between 11 and 32 Census Tracts. Zones are generally smaller than a county and larger than a census tract to help provide additional options for understanding disease burden and better facilitate public health and policy planning.</p>
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq6">
                                 Who developed the census tract aggregation zones?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq6" class="usa-accordion__content" hidden="">
                             The Zones were developed by the New Jersey State Cancer Registry including partners at Westat and the National Cancer Institute as part of a collaborative effort to provide cancer data at areas generally smaller than county. Stakeholder input was gathered and incorporated in the development process.
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq7">
                                 What are the benefits of using these census tract aggregation zones?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq7" class="usa-accordion__content" hidden="">
                             Counties in New Jersey can span up to hundreds of miles and include large and diverse populations or cover sparsely populated rural areas. Surveillance of cancer burden at these large geographic scales may not be meaningful nor adequate for identifying areas with higher disease rates. This information can be used by cancer centers, healthcare organizations, community organizations, and policy makers better serve cancer control, public health, and policy efforts.
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq8">
                                 What is the source of the cancer incidence data?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq8" class="usa-accordion__content" hidden="">
                             <p>New Jersey State Cancer Registry (NJSCR) provides zone and statewide cancer incidence data collected from various sources, including hospitals and non-hospital reporting sites such as physicians, and laboratories. This data contains comprehensive demographic and medical records for each reported cancer case, following strict reporting guidelines. Patients are monitored annually, with updates on their vital status and relevant cancer information, including cause of death for those who have passed.</p>
                             <p>Age-adjusted incidence rates for all invasive cancers, including specific in situ bladder cancers, are calculated using SEER*Stat. These rates are standardized to the 2000 U.S. population and reported as cases per 100,000 people per year. Population estimates are derived from the U.S. Census Bureau and adjusted for consistency across different demographics and geographic areas by the National Cancer Institute (NCI). Data compilation and public reporting are further managed by the NCI’s SEER Program and the Centers for Disease Control and Prevention’s National Program of Cancer Registries (NPCR). For detailed methodology, please refer to the Methodology section.</p>
 
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq9">
                                 What are the Census and American Community Survey data?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq9" class="usa-accordion__content" hidden="">
                             For the purposes of determining voting districts and congressional Representation, the U.S. Census is required by the Constitution to count everyone in the country every 10 years, but they do a lot more than that. The <a target="_blank" href="https://www.census.gov/programs-surveys/acs">American Community Survey</a> (ACS) has been conducted annually by the U.S. Census Bureau since 2005 and provides detailed population and housing information replacing data previously collected on the Census long form. The ACS is based on a sample of about 1% (or 3.5 million addresses) of the overall US population while the Census strives to sample all of the US population.
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq10">
                                 Why do some zones not have incidence rates?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq10" class="usa-accordion__content" hidden="">
                             NJ Department of Health ensures confidentiality by law. Incidence rates are suppressed if based on 15 or fewer cancer cases for privacy and statistical stability.
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq11">
                                 Why are data not available for other or more granular racial/ethnic groups (e.g., American Indians, Asian or Latinx ethnic groups) or non-binary genders?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq11" class="usa-accordion__content" hidden="">
                             We have not reported Census Tract Aggregation Zone-level cancer incidence data for smaller racial/ethnic groups or non-binary genders due to small cancer case counts and population estimates to ensure confidentiality and stable statistical rates. In addition, currently, some of these data are not consistently collected within the New Jersey Cancer Registry nor available in population estimate data.
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq12">
                                 Does my neighborhood influence my cancer risk? What factors in my neighborhood contribute to the cancer incidence rate?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq12" class="usa-accordion__content" hidden="">
                             <p>Studies have shown that where we live (and work and learn) affects our opportunities for physical activity, social engagement and support, access to healthy and affordable food, and exposure to stress and harmful chemicals. These factors can influence opportunities for health promotion and disease prevention.</p>
                             <p>Cancer is a group of diseases with many possible causes including genetic and environmental factors as well as social determinants of health. Common risk factors for cancer include smoking and tobacco use, diet and physical activity, sun and other types of radiation, viruses (e.g., HPV, Hepatitis B and C), chronic inflammation, and environmental exposures. Neighborhoods may influence cancer through multiple pathways including material deprivation, psychosocial mechanisms, health behaviors, and access to resources.</p>
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq13">
                                 Why are neighborhood data on population sociodemographic factors provided? Do they cause cancer?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq13" class="usa-accordion__content" hidden="">
                             <p>The neighborhood data are provided to characterize the Zones based on several key social and built environment attributes. These are unrelated measures of neighborhood characteristics and cancer incidence, so inferences regarding causes of cancer cannot be made. We have provided these data for the Zones to help provide additional context for the observed cancer incidence rates. For example, if a Zone has high colorectal cancer incidence rates, understanding the population-level characteristics of that Zone can help community organizations and healthcare facilities target their screening and prevention programs toward the predominant populations within the Zone.</p>
                             <p>Neighborhood measures were developed using data from census tracts. We used the tract-level count data from the Census and American Community Survey to calculate measures for each Zone.</p>
                         </div>
-                        <h2 class="usa-accordion__heading">
+                        <h3 class="usa-accordion__heading">
                             <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq14">
                                 Where can I get more information?
                             </button>
-                        </h2>
+                        </h3>
                         <div id="faq13" class="usa-accordion__content" hidden="">
                             <p>
                                 <a target="_blank" href="https://www.nj.gov/health/ces/contact.shtml">https://www.nj.gov/health/ces/contact.shtml</a>
@@ -711,31 +717,34 @@
         </div><!--/container section-->
 
         <!--
-        terms of use modal
-        not really a modal but a DIV which covers the map, search, and results
-        see initTermsOfUse() which sets the size & position, and closes it
+        terms of use modal; see initTermsOfUse()
         -->
-        <div id="termsofusemodal" class="d-none">
-            <div>
-                <p>Use of <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps implies consent to abide by
-                    the terms of these data use restrictions. Any effort to determine the identity of any reported cases, or
-                    to use the information for any purpose other than for health statistical reporting and analysis, is
-                    against the law.</p>
-                <p>Therefore users will:</p>
-                <ul>
-                    <li>Use these data for health statistical reporting and analysis only.</li>
-                    <li>Make no attempt to learn the identity of any person or establishment included in these data.</li>
-                    <li>Make no attempt to link to cancer data released with other geographic areas.</li>
-                    <li>Make no disclosure or other use of the identity of any person or establishment discovered
-                        inadvertently and advise the <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Registry
-                        of any such discovery.</li>
-                </ul>
-                <p>By clicking the button below, I agree to these terms of use.</p>
-                <div class="center">
-                    <button class="btn btn-alternate">I Agree</button>
+        <div class="modal" tabindex="-1" role="dialog" id="termsofusemodal">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p>Use of <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps implies consent to abide by
+                            the terms of these data use restrictions. Any effort to determine the identity of any reported cases, or
+                            to use the information for any purpose other than for health statistical reporting and analysis, is
+                            against the law.</p>
+                        <p>Therefore users will:</p>
+                        <ul>
+                            <li>Use these data for health statistical reporting and analysis only.</li>
+                            <li>Make no attempt to learn the identity of any person or establishment included in these data.</li>
+                            <li>Make no attempt to link to cancer data released with other geographic areas.</li>
+                            <li>Make no disclosure or other use of the identity of any person or establishment discovered
+                                inadvertently and advise the <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Registry
+                                of any such discovery.</li>
+                        </ul>
+                        <p>By clicking the button below, I agree to these terms of use.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-alternate">I Agree</button>
+                    </div>
                 </div>
             </div>
         </div>
+
     </main>
 
 

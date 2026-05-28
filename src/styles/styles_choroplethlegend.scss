@@ -21,6 +21,7 @@
     width: 200px;
     height: 20px;
     background-image: linear-gradient(to right, white 50%, black 50%); /* this is a fallback; colors will be set by performSearchMap() and CHOROPLETH_OPTIONS */
+    border: 1px solid black;
 }
 .choropleth-legend .choropleth-legend-legendgradient::after {
     content: "";
@@ -45,6 +46,7 @@
     height: 1em;
     width: 1em;
     background-color: #cccccc;
+    border: 1px solid black;
 }
 .choropleth-legend .choropleth-legend-nodata-explanation {
     font-size: 12px;

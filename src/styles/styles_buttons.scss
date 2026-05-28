@@ -26,4 +26,9 @@
             color: #000000;
         }
     }
+
+    &.focus, &:focus {
+        outline: 0;
+        box-shadow: 0 0 0 .2rem #D27700;
+    }
 }
