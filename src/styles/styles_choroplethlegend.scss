@@ -13,8 +13,10 @@
     display: flex;
 }
 
+@media screen and (min-width: 768px) {
 .choropleth-legend .choropleth-legend-twoparts {
     display: flex;
+}
 }
 
 .choropleth-legend .choropleth-legend-legendgradient {
