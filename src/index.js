@@ -1665,9 +1665,9 @@ function performSearchIncidenceBarChart (searchparams) {
         plotOptions: {
             series: {
                 groupPadding: 0.1,
-                maxPointWidth: 12,
+                maxPointWidth: 8,
                 animation: {
-                    duration: 0
+                    duration: 0,
                 },
                 accessibility: {
                     pointDescriptionFormatter: function (point) {
@@ -1678,6 +1678,13 @@ function performSearchIncidenceBarChart (searchparams) {
                     legendItemClick: function(e) {
                         return false;
                     },
+                },
+                shadow: {
+                    color: 'black',
+                    offsetX: 2,
+                    offsetY: 2,
+                    opacity: 1,
+                    width: 3,
                 },
             },
             bar: {
