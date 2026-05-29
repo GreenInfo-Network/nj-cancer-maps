@@ -179,7 +179,8 @@
                         </div>
                     </div>
 
-                    <div id="places-area" role="heading" aria-level="2" aria-live="polite" aria-atomic="true"></div>
+                    <div id="places-area"></div>
+                    <div id="places-area-status" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
                 </div>
                 <div class="col-md printonly" id="data-filters-summary">
                 </div>
@@ -232,9 +233,10 @@
         </div>
 
         <div class="container" id="filters-and-aairbarchart">
-            <span class="title" tabindex="0" aria-live="polite" aria-atomic="true">Age-Adjusted Incidence Rates - <span data-statistics="ctaname"></span></span>
+            <span class="title" tabindex="0">Age-Adjusted Incidence Rates - <span data-statistics="ctaname"></span></span>
 
-            <p id="incidence-barchart-description" aria-live="polite" aria-atomic="true"></p>
+            <p id="incidence-barchart-description"></p>
+            <div id="incidence-barchart-status" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
 
             <ul class="nav nav-pills nav-justified noprint" role="tablist">
                 <li class="nav-item" role="presentation"><a class="nav-link active" data-toggle="tab" role="tab" aria-controls="incidence-barchart-chartmode" href="#incidence-barchart-chartmode" aria-selected="true">Bar Chart</a></li>
@@ -245,7 +247,7 @@
                     <div id="incidence-barchart" aria-label="Chart of AAIR by race and sex for the selected filters"></div>
                 </div>
                 <div class="tab-pane container pl-0" id="incidence-barchart-tablemode">
-                    <table class="table-sm table-colorscheme1" id="incidence-barchart-table" aria-live="polite" aria-atomic="true">
+                    <table class="table-sm table-colorscheme1" id="incidence-barchart-table">
                         <thead>
                             <tr>
                                 <th scope="col">Race/Ethnicity</th>
@@ -300,12 +302,14 @@
             <span class="title" tabindex="0">Cancer Statistics - <span data-statistics="ctaname"></span></span>
         </div>
         <div class="container" id="incidence-readouts">
-            <p id="incidence-readouts-description" aria-live="polite" aria-atomic="true"></p>
+            <p id="incidence-readouts-description"></p>
+            <div id="incidence-readouts-status" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
 
-            <table class="table-sm table-colorscheme1" aria-live="polite" aria-atomic="true">
+            <table class="table-sm table-colorscheme1">
+                <caption class="visually-hidden">Cancer statistics for the selected filters</caption>
                 <thead>
                     <tr>
-                        <th class="left">Zone or Statewide</th>
+                        <th scope="col" class="left">Zone or Statewide</th>
                         <th scope="col">Cases</th>
                         <th scope="col" colspan="2">Age-Adjusted Incidence Rates (95% LCI, 95% UCI)</th>
                     </tr>
@@ -349,7 +353,7 @@
             </p>
         </div>
 
-        <div class="container" id="demographic-tables" aria-live="polite" aria-atomic="true">
+        <div class="container" id="demographic-tables">
             <span role="heading" aria-level="2">
                 <span class="title" tabindex="0" aria-label="Name of area reported">
                     Demographics - <span data-statistics="ctaname"></span>
@@ -357,6 +361,7 @@
                 </span>
                 <br />
             </span>
+            <div id="demographic-tables-status" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
             <!-- tables inserted here via initDemographicTables() -->
         </div>
 
@@ -718,37 +723,38 @@
             </div><!--/tab-content-->
         </div><!--/container section-->
 
-        <!--
-        terms of use modal; see initTermsOfUse()
-        -->
-        <div class="modal" tabindex="-1" role="dialog" id="termsofusemodal">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <p>Use of <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps implies consent to abide by
-                            the terms of these data use restrictions. Any effort to determine the identity of any reported cases, or
-                            to use the information for any purpose other than for health statistical reporting and analysis, is
-                            against the law.</p>
-                        <p>Therefore users will:</p>
-                        <ul>
-                            <li>Use these data for health statistical reporting and analysis only.</li>
-                            <li>Make no attempt to learn the identity of any person or establishment included in these data.</li>
-                            <li>Make no attempt to link to cancer data released with other geographic areas.</li>
-                            <li>Make no disclosure or other use of the identity of any person or establishment discovered
-                                inadvertently and advise the <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Registry
-                                of any such discovery.</li>
-                        </ul>
-                        <p>By clicking the button below, I agree to these terms of use.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-alternate">I Agree</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
     </main>
 
+    <!--
+    terms of use modal; see initTermsOfUse()
+    -->
+    <div class="modal" tabindex="-1" role="dialog" id="termsofusemodal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>Use of <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps implies consent to abide by
+                        the terms of these data use restrictions. Any effort to determine the identity of any reported cases, or
+                        to use the information for any purpose other than for health statistical reporting and analysis, is
+                        against the law.</p>
+                    <p>Therefore users will:</p>
+                    <ul>
+                        <li>Use these data for health statistical reporting and analysis only.</li>
+                        <li>Make no attempt to learn the identity of any person or establishment included in these data.</li>
+                        <li>Make no attempt to link to cancer data released with other geographic areas.</li>
+                        <li>Make no disclosure or other use of the identity of any person or establishment discovered
+                            inadvertently and advise the <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Registry
+                            of any such discovery.</li>
+                    </ul>
+                    <p>By clicking the button below, I agree to these terms of use.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-alternate">I Agree</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!--
     section: footer

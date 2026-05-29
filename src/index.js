@@ -524,7 +524,7 @@ function initLoadInitialState () {
     }
 
     if (anythingchanged) {
-        performSearch();
+        performSearch(false);
     }
 }
 
@@ -794,12 +794,13 @@ function initDemographicTables () {
     DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
         const $table = $(`
             <table class="table-sm table-colorscheme2">
+                <caption class="visually-hidden">${tableinfo.title} demographics</caption>
                 <thead>
                     <tr>
-                        <th class="nowrap left">${tableinfo.title}</th>
-                        <th class="nowrap right typeName" data-region="cta" >Zone</th>
-                        <th class="nowrap right" data-region="state" >Statewide</th>
-                        <th class="nowrap right" data-region="nation" >Nationwide</th>
+                        <th scope="col" class="nowrap left">${tableinfo.title}</th>
+                        <th scope="col" class="nowrap right typeName" data-region="cta" >Zone</th>
+                        <th scope="col" class="nowrap right" data-region="state" >Statewide</th>
+                        <th scope="col" class="nowrap right" data-region="nation" >Nationwide</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1127,7 +1128,7 @@ function initTermsOfUse () {
     $acceptbutton.click(function () {
         document.cookie = "termsaccepted=true;max-age=31536000";
         $modal.modal('hide');
-// unset inert from main and footer
+        // unset inert from main and footer
         $main.prop('inert', false);
         $footer.prop('inert', false);
         $header.prop('inert', false);
@@ -1212,7 +1213,7 @@ function resetFilters() {
 }
 
 
-function performSearch () {
+function performSearch (announceResults = true) {
     toggleAddressSearchFailure(false);
     MAP.addressmarker.setLatLng([0, 0]).removeFrom(MAP);
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
@@ -1229,7 +1230,7 @@ function performSearch () {
                 params.ctaid = cta.feature.properties.ZoneIDOrig;
                 params.ctaname = cta.feature.properties.ZoneName.replace(/\_\d+$/, '');
                 params.bbox = cta.getBounds();
-                performSearchReally(params);
+                performSearchReally(params, announceResults);
             }
             else {
                 toggleAddressSearchFailure('Could not find that CTA');
@@ -1248,23 +1249,23 @@ function performSearch () {
                     params.bbox = zone.getBounds();
                     params.countyId = county.feature.properties.GEOID;
                     params.countyName = county.feature.properties.Name;
-                    performSearchReally(params);
+                    performSearchReally(params, announceResults);
                 }
                 else {
                     MAP.addressmarker.setLatLng(searchlatlng).addTo(MAP);
                     toggleAddressSearchFailure('Data not available for that location');
-                    performSearchReally(params);
+                    performSearchReally(params, announceResults);
                 }
             });
         }
     }
     else {
-        performSearchReally(params);
+        performSearchReally(params, announceResults);
     }
 }
 
 
-function performSearchReally (searchparams) {
+function performSearchReally (searchparams, announceResults = true) {
     const typeNames = $('.typeName');
     if (searchparams.type == 'Zone') {
         typeNames.text("Zone");
@@ -1274,10 +1275,10 @@ function performSearchReally (searchparams) {
     }
 
     performSearchMap(searchparams);
-    performSearchDemographics(searchparams);
-    performSearchPlaces(searchparams);
-    performSearchIncidenceReadout(searchparams);
-    performSearchIncidenceBarChart(searchparams);
+    performSearchDemographics(searchparams, announceResults);
+    performSearchPlaces(searchparams, announceResults);
+    performSearchIncidenceReadout(searchparams, announceResults);
+    performSearchIncidenceBarChart(searchparams, announceResults);
     
     // performSearchUpdateDataDownloadLinks(searchparams); // commented out until file downloads addressed
 
@@ -1286,7 +1287,7 @@ function performSearchReally (searchparams) {
 }
 
 
-function performSearchDemographics (searchparams) {
+function performSearchDemographics (searchparams, announceResults = true) {
     let demogdata_zone;
     if (searchparams.ctaid) {
         demogdata_zone = DATA_DEMOGS.filter(function (row) { return row.GeoID == searchparams.ctaid && row.Years == searchparams.time; })[0];
@@ -1299,8 +1300,10 @@ function performSearchDemographics (searchparams) {
     const demogdata_state = DATA_DEMOGS.filter(function (row) { return row.GeoID == SITE_CONSTANTS.ctaid && row.Years == searchparams.time; })[0];
     const demogdata_nation = DATA_DEMOGS.filter(function (row) { return row.GeoID == 'US' && row.Years == searchparams.time; })[0];
     const $demographics_section = $('#demographic-tables');
+    const $demographics_status = $('#demographic-tables-status');
     const $ctastats = $demographics_section.find('[data-region="cta"]');
     const $nationstats = $demographics_section.find('[data-region="nation"]');
+    $demographics_section.attr('aria-busy', 'true');
 
     // show/hide the CTA Zone content, depending whether a CTA Zone was selected (that is, not Statewide)
     if (searchparams.ctaid == SITE_CONSTANTS.ctaid) {
@@ -1351,35 +1354,86 @@ function performSearchDemographics (searchparams) {
             }
         });
     });
+
+    $demographics_section.attr('aria-busy', 'false');
+    $demographics_status.text('');
+    if (announceResults) {
+        const include_cta = searchparams.ctaid != SITE_CONSTANTS.ctaid;
+        const include_nation = NATIONWIDE_DEMOGRAPHICS;
+        const demographic_summary = [`Demographics updated for ${ctanametext}.`];
+        DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
+            demographic_summary.push(`${tableinfo.title}.`);
+            tableinfo.rows.forEach(function (tablerowinfo) {
+                const row_summary = [tablerowinfo.label];
+                if (include_cta) {
+                    row_summary.push(`${searchparams.type}: ${formatFieldValue(demogdata_zone[tablerowinfo.field], tablerowinfo.format)}`);
+                }
+                row_summary.push(`Statewide: ${formatFieldValue(demogdata_state[tablerowinfo.field], tablerowinfo.format)}`);
+                if (include_nation) {
+                    row_summary.push(`Nationwide: ${formatFieldValue(demogdata_nation[tablerowinfo.field], tablerowinfo.format)}`);
+                }
+                demographic_summary.push(`${row_summary.join(', ')}.`);
+            });
+        });
+
+        window.setTimeout(function () {
+            $demographics_status.text(demographic_summary.join(' '));
+        }, 0);
+    }
 }
 
 
-function performSearchPlaces (searchparams) {
-    if (! searchparams.ctaid && ! searchparams.countyId) return;
+function performSearchPlaces (searchparams, announceResults = true) {
+    const $placesslot = $('#places-area');
+    const $placesstatus = $('#places-area-status');
+    $placesslot.attr('aria-busy', 'true');
+    $placesslot.empty();
+    $placesstatus.text('');
+
+    if (! searchparams.ctaid && ! searchparams.countyId) {
+        $placesslot.attr('aria-busy', 'false');
+        updateFilterSummary(searchparams);
+        return;
+    }
 
     const counties = DATA_CTACOUNTY.filter(row => row.ZoneIDOrig == searchparams.ctaid).map(row => `${row.County} County`);
     const cities = DATA_CTACITY.filter(row => row.ZoneIDOrig == searchparams.ctaid).map(row => row.City);
     counties.sort();
     cities.sort();
 
-    const $placesslot = $('#places-area');
-    $placesslot.empty();
     $("<h3 class='title'></h3>").text('Location Details').appendTo($placesslot);
 
+    const places_summary = ['Location details updated.'];
     if (searchparams.ctaid) {
         const text = searchparams.ctaname + ' (' + searchparams.ctaid + ')'
         const $block = $("<div ></div>").html(`<b class='subtitle'>Zone: </b>`).appendTo($placesslot);
         $("<span></span>").text(text).appendTo($block);
+        places_summary.push(`Zone: ${text}.`);
+    }
+    if (searchparams.countyId && searchparams.type == 'County') {
+        const text = `${searchparams.countyName} County`;
+        const $block = $('<div></div>').html(`<b class='subtitle'>County: </b>`).appendTo($placesslot);
+        $('<span></span>').text(text).appendTo($block);
+        places_summary.push(`County: ${text}.`);
     }
     if (counties.length) {
         const text = counties.join(', ');
         const $block = $('<div></div>').html(`<b class='subtitle'>County: </b>`).appendTo($placesslot);
         $('<span></span>').text(text).appendTo($block);
+        places_summary.push(`County: ${text}.`);
     }
     if (cities.length && searchparams.ctaid) {
         const text = cities.join(', ');
         const $block = $('<div></div>').html(`<b class='subtitle'>Places: </b>`).appendTo($placesslot);
         $('<span></span>').text(text).appendTo($block);
+        places_summary.push(`Places: ${text}.`);
+    }
+
+    $placesslot.attr('aria-busy', 'false');
+    if (announceResults) {
+        window.setTimeout(function () {
+            $placesstatus.text(places_summary.join(' '));
+        }, 0);
     }
 
     updateFilterSummary(searchparams);    
@@ -1428,8 +1482,11 @@ function updateFilterSummary(searchparams) {
 }
 
 
-function performSearchIncidenceReadout (searchparams) {
+function performSearchIncidenceReadout (searchparams, announceResults = true) {
     const $incidence_section = $('#incidence-title');
+    const $incidence_readouts = $('#incidence-readouts');
+    const $incidence_status = $('#incidence-readouts-status');
+    $incidence_readouts.attr('aria-busy', 'true');
 
     let ctanametext = searchparams.ctaname;
     if (searchparams.countyId && searchparams.type == 'County') {
@@ -1544,39 +1601,39 @@ function performSearchIncidenceReadout (searchparams) {
 
     // show/hide the CTA columns (well, actually, each individual cell)
     if (searchparams.ctaid == SITE_CONSTANTS.ctaid) {
-        $('#incidence-readouts [data-region="cta"]').hide();
+        $incidence_readouts.find('[data-region="cta"]').hide();
     }
     else {
-        $('#incidence-readouts [data-region="cta"]').show();
+        $incidence_readouts.find('[data-region="cta"]').show();
     }
 
     // show/hide the Nationwide content based on the NATIONWIDE_INCIDENCE config setting
     if (NATIONWIDE_INCIDENCE) {
-        $('#incidence-readouts [data-region="nation"]').show();
+        $incidence_readouts.find('[data-region="nation"]').show();
     }
     else {
-        $('#incidence-readouts [data-region="nation"]').hide();
+        $incidence_readouts.find('[data-region="nation"]').hide();
     }
 
     // now fill in the blanks
-    $('#incidence-readouts span[data-region="cta"][data-statistic="cases"]').text(text_cases_cta);
-    $('#incidence-readouts span[data-region="cta"][data-statistic="aair"]').text(text_aair_cta);
-    $('#incidence-readouts span[data-region="cta"][data-statistic="lciuci"]').text(text_lciuci_cta);
+    $incidence_readouts.find('span[data-region="cta"][data-statistic="cases"]').text(text_cases_cta);
+    $incidence_readouts.find('span[data-region="cta"][data-statistic="aair"]').text(text_aair_cta);
+    $incidence_readouts.find('span[data-region="cta"][data-statistic="lciuci"]').text(text_lciuci_cta);
 
-    $('#incidence-readouts span[data-region="state"][data-statistic="cases"]').text(text_cases_state);
-    $('#incidence-readouts span[data-region="state"][data-statistic="aair"]').text(text_aair_state);
-    $('#incidence-readouts span[data-region="state"][data-statistic="lciuci"]').text(text_lciuci_state);
+    $incidence_readouts.find('span[data-region="state"][data-statistic="cases"]').text(text_cases_state);
+    $incidence_readouts.find('span[data-region="state"][data-statistic="aair"]').text(text_aair_state);
+    $incidence_readouts.find('span[data-region="state"][data-statistic="lciuci"]').text(text_lciuci_state);
 
-    $('#incidence-readouts span[data-region="nation"][data-statistic="cases"]').text(text_cases_nation);
-    $('#incidence-readouts span[data-region="nation"][data-statistic="aair"]').text(text_aair_nation);
-    $('#incidence-readouts span[data-region="nation"][data-statistic="lciuci"]').text(text_lciuci_nation);
+    $incidence_readouts.find('span[data-region="nation"][data-statistic="cases"]').text(text_cases_nation);
+    $incidence_readouts.find('span[data-region="nation"][data-statistic="aair"]').text(text_aair_nation);
+    $incidence_readouts.find('span[data-region="nation"][data-statistic="lciuci"]').text(text_lciuci_nation);
 
     // part 2
     // tacked on several months later, a candle chart (sort of) for the LCI/UCI/AAIR of these regions
     // but existing candle chart UIs aen't suited, as they want a really custom UI
-    const $candlechart_cta = $('#incidence-readouts span.ucilcicandlechart[data-region="cta"]');
-    const $candlechart_state = $('#incidence-readouts span.ucilcicandlechart[data-region="state"]');
-    const $candlechart_nation = $('#incidence-readouts span.ucilcicandlechart[data-region="nation"]');
+    const $candlechart_cta = $incidence_readouts.find('span.ucilcicandlechart[data-region="cta"]');
+    const $candlechart_state = $incidence_readouts.find('span.ucilcicandlechart[data-region="state"]');
+    const $candlechart_nation = $incidence_readouts.find('span.ucilcicandlechart[data-region="nation"]');
 
     let minlci = (nation_lci && nation_uci) ? Math.min(cta_lci, state_lci, nation_lci) : Math.min(cta_lci, state_lci);
     let maxuci = (nation_lci && nation_uci) ? Math.max(cta_uci, state_uci, nation_uci) : Math.max(cta_uci, state_uci);
@@ -1595,13 +1652,33 @@ function performSearchIncidenceReadout (searchparams) {
         const siteText = getLabelFor('site', searchparams.site);
         const sexText = getLabelFor('sex', searchparams.sex);
         const raceText = getLabelFor('race', searchparams.race);
-        $('#incidence-readouts-description').text(`Filtered to ${siteText}, ${yearText}, ${sexText}, ${raceText}`);
+        const filterText = `Filtered to ${siteText}, ${yearText}, ${sexText}, ${raceText}`;
+        const include_cta = searchparams.ctaid != SITE_CONSTANTS.ctaid;
+        const incidence_summary = [`Cancer statistics updated for ${ctanametext}. ${filterText}.`];
+        if (include_cta) {
+            incidence_summary.push(`${searchparams.type}: ${text_cases_cta} cases, age-adjusted incidence rate ${text_aair_cta} ${text_lciuci_cta}.`);
+        }
+        incidence_summary.push(`Statewide: ${text_cases_state} cases, age-adjusted incidence rate ${text_aair_state} ${text_lciuci_state}.`);
+        if (NATIONWIDE_INCIDENCE) {
+            incidence_summary.push(`Nationwide: ${text_cases_nation} cases, age-adjusted incidence rate ${text_aair_nation} ${text_lciuci_nation}.`);
+        }
+
+        $incidence_readouts.find('#incidence-readouts-description').text(filterText);
+        $incidence_readouts.attr('aria-busy', 'false');
+        $incidence_status.text('');
+        if (announceResults) {
+            window.setTimeout(function () {
+                $incidence_status.text(incidence_summary.join(' '));
+            }, 0);
+        }
     }
 }
 
 
-function performSearchIncidenceBarChart (searchparams) {
+function performSearchIncidenceBarChart (searchparams, announceResults = true) {
     const $chart_section  = $('#filters-and-aairbarchart');
+    const $chart_status = $('#incidence-barchart-status');
+    $chart_section.attr('aria-busy', 'true');
     $chart_section.find('span[data-statistic="cancersite"]').text( getLabelFor('site', searchparams.site) );
     $chart_section.find('span[data-statistics="ctaname"]').text(searchparams.ctaname);
 
@@ -1800,7 +1877,15 @@ function performSearchIncidenceBarChart (searchparams) {
         const siteText = getLabelFor('site', searchparams.site);
         const sexText = getLabelFor('sex', searchparams.sex);
         const raceText = getLabelFor('race', searchparams.race);
-        $('#incidence-barchart-description').text(`Filtered to ${siteText}, ${yearText}, ${sexText}, ${raceText}`);
+        const filterText = `Filtered to ${siteText}, ${yearText}, ${sexText}, ${raceText}`;
+        $('#incidence-barchart-description').text(filterText);
+        $chart_section.attr('aria-busy', 'false');
+        $chart_status.text('');
+        if (announceResults) {
+            window.setTimeout(function () {
+                $chart_status.text(`Age-adjusted incidence rates chart updated for ${ctanametext}. ${filterText}.`);
+            }, 0);
+        }
     }
 }
 
