@@ -1014,7 +1014,7 @@ function initDataFilters () {
     });
 
     if (getOptionCount('time') < 2) {  // since some datasets have only 1 option
-        $searchwidgets_time.closest('div.input-group').hide();
+        $searchwidgets_time.closest('div.filter-control').hide();
     }
 
     // add actions to the search widgets
@@ -1453,7 +1453,7 @@ function updateFilterSummary(searchparams) {
     $summaryContainer.find('.filters-list').remove();
     let summaryHtml = '<div class="filters-list" style="margin-top: 10px;">';
 
-    $('.data-filters .input-group').each(function () {
+    $('.data-filters .filter-control').each(function () {
         let label = $(this).find('label').text().trim();
         const input = $(this).find('select, input');
         if (! input.length) return;

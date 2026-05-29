@@ -67,7 +67,7 @@
 
                     <img src="./static/ribbon_purple.png" alt="Health Maps Logo" />
                     <div style="display:block">
-                        <h1 class="site-title-1">
+                        <h1 class="site-title-1" tabindex="-1">
                             <span class="stateName">[REPLACE STATE/REGISTRY]</span>
                             <br />
                             Health Maps
@@ -124,57 +124,57 @@
                     <div class="data-filters">
                         <h3 class="title">Update Data Display</h3>
 
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-type">Area Type</label>
-                            <select name="type" id="data-filters-type" aria-label="Select area type to report">
+                            <select name="type" id="data-filters-type">
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-whichchoropleth">Variable Mapped</label>
                             <select name="whichchoropleth" id="data-filters-whichchoropleth">
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-time">Time Period</label>
                             <select name="time" id="data-filters-time">
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-site">Cancer Site/Type</label>
                             <select name="site" id="data-filters-site">
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-sex">Sex</label>
                             <select name="sex" id="data-filters-sex">
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-race">Race/Ethnicity</label>
                             <select name="race" id="data-filters-race">
                             </select>
                         </div>
 
-                        <div class="input-group">
+                        <div class="filter-action">
                             <button type="button" class="btn btn-alternate w-100" id="data-filters-submit1">Update Map</button>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-action">
                             <button type="button" class="btn btn-default w-100" id="data-filters-reset1">Reset Filters</button>
                         </div>
 
                         <h3 class="title">Area Selection</h3>
 
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-address">Location Search</label>
-                            <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-label="Enter address to select an area to report" aria-describedby="data-filters-address-error" />
+                            <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-describedby="data-filters-address-help data-filters-address-error" />
                             <div id="data-filters-address-error" class="warnmessage d-none" aria-live="assertive"></div>
-                            <p class="small mb-0">Include street name and number and city, at a minimum. For example, &quot;258 Chapman Rd, Newark, NJ&quot;.</p>
+                            <p class="small mb-0" id="data-filters-address-help">Include street name and number and city, at a minimum. For example, &quot;258 Chapman Rd, Newark, NJ&quot;.</p>
                         </div>
 
-                        <div class="input-group">
+                        <div class="filter-action">
                             <button type="button" class="btn btn-alternate w-100" id="data-filters-submit2">Find Area</button>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-action">
                             <button type="button" class="btn btn-default w-100" id="data-filters-reset2">Reset Filters</button>
                         </div>
                     </div>

@@ -3,7 +3,8 @@
  */
 
 div.data-filters {
-    div.input-group {
+    div.filter-control,
+    div.filter-action {
         margin-bottom: 10px;
     }
     span.input-group-text {
