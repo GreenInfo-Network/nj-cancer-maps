@@ -1143,6 +1143,11 @@ function initTermsOfUse () {
         setTimeout(function () {
             $modal.modal('show');
         }, 0.5 * 1000);
+    } else {
+        // unset inert from main and footer        
+        $main.prop('inert', false);
+        $footer.prop('inert', false);
+        $header.prop('inert', false);
     }
 }
 
