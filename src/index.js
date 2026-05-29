@@ -1996,9 +1996,18 @@ function performSearchMap (searchparams) {
 
     // fill in a table of the selected statistic; this is part of performSearchMap() for two reasons
     // a) it uses the choropleth calculations above for color indicators, b) this is the accessible equivalent
+    // a lot to do here:
+    // detect the current sorting
+    // rewrite the TH to indicate what we're showing
+    // purge and reload the rows
+    // re-apply sorting and filtering
     const $readout_table = $('#map-table');
     const $readout_table_thead = $readout_table.children('thead');
     const $readout_table_tbody = $readout_table.children('tbody');
+
+    const $current_sorting = $readout_table_thead.find('th[aria-sort]');
+    const current_sorting_index = $current_sorting.index();
+    const current_sorting_ascdesc = $current_sorting.attr('aria-sort');
 
     $readout_table_thead.empty();
     $readout_table_tbody.empty();
@@ -2095,10 +2104,15 @@ function performSearchMap (searchparams) {
 
     $readout_table.attr('aria-rowcount', tabularscores.length);
 
-    // re-calculate the sortable table
+    // re-calculate the sortable table, apply the sorting we had previously
     const sortme = document.querySelector('#map-table');
     const sortable = new SortableTable(sortme);
-    sortable.setColumnHeaderSort(0, 'asc');
+
+    if (current_sorting_ascdesc) {
+        sortable.setColumnHeaderSort(current_sorting_index, current_sorting_ascdesc);
+    } else {
+        sortable.setColumnHeaderSort(0, 'ascending');
+    }
 
     // re-apply filtering
     // see also initMapTable() and applyMapTableFilteringAndStriping() which apply filtering to the table rows
@@ -2534,7 +2548,7 @@ class SortableTable {
       var buttonNode = ch.querySelector('button');
       if (i === columnIndex) {
         var value = ch.getAttribute('aria-sort');
-        if (value === 'descending' || ascdesc == 'asc') {
+        if (value === 'descending' || ascdesc == 'ascending') {
           ch.setAttribute('aria-sort', 'ascending');
           this.sortColumn(
             columnIndex,
