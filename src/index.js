@@ -1274,6 +1274,9 @@ function performSearch (announceResults = true) {
 
 
 function performSearchReally (searchparams, announceResults = true) {
+    const $search_results_status = $('#search-results-status');
+    $search_results_status.text('');
+
     const typeNames = $('.typeName');
     if (searchparams.type == 'Zone') {
         typeNames.text("Zone");
@@ -1283,10 +1286,18 @@ function performSearchReally (searchparams, announceResults = true) {
     }
 
     performSearchMap(searchparams);
-    performSearchDemographics(searchparams, announceResults);
-    performSearchPlaces(searchparams, announceResults);
-    performSearchIncidenceReadout(searchparams, announceResults);
-    performSearchIncidenceBarChart(searchparams, announceResults);
+    const search_result_summaries = [
+        performSearchPlaces(searchparams),
+        performSearchIncidenceBarChart(searchparams),
+        performSearchIncidenceReadout(searchparams),
+        performSearchDemographics(searchparams),
+    ].filter(Boolean);
+
+    if (announceResults) {
+        window.setTimeout(function () {
+            $search_results_status.text(search_result_summaries.join(' '));
+        }, 0);
+    }
     
     // performSearchUpdateDataDownloadLinks(searchparams); // commented out until file downloads addressed
 
@@ -1295,7 +1306,7 @@ function performSearchReally (searchparams, announceResults = true) {
 }
 
 
-function performSearchDemographics (searchparams, announceResults = true) {
+function performSearchDemographics (searchparams) {
     let demogdata_zone;
     if (searchparams.ctaid) {
         demogdata_zone = DATA_DEMOGS.filter(function (row) { return row.GeoID == searchparams.ctaid && row.Years == searchparams.time; })[0];
@@ -1308,7 +1319,6 @@ function performSearchDemographics (searchparams, announceResults = true) {
     const demogdata_state = DATA_DEMOGS.filter(function (row) { return row.GeoID == SITE_CONSTANTS.ctaid && row.Years == searchparams.time; })[0];
     const demogdata_nation = DATA_DEMOGS.filter(function (row) { return row.GeoID == 'US' && row.Years == searchparams.time; })[0];
     const $demographics_section = $('#demographic-tables');
-    const $demographics_status = $('#demographic-tables-status');
     const $ctastats = $demographics_section.find('[data-region="cta"]');
     const $nationstats = $demographics_section.find('[data-region="nation"]');
     $demographics_section.attr('aria-busy', 'true');
@@ -1364,39 +1374,33 @@ function performSearchDemographics (searchparams, announceResults = true) {
     });
 
     $demographics_section.attr('aria-busy', 'false');
-    $demographics_status.text('');
-    if (announceResults) {
-        const include_cta = searchparams.ctaid != SITE_CONSTANTS.ctaid;
-        const include_nation = NATIONWIDE_DEMOGRAPHICS;
-        const demographic_summary = [`Demographics updated for ${ctanametext}.`];
-        DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
-            demographic_summary.push(`${tableinfo.title}.`);
-            tableinfo.rows.forEach(function (tablerowinfo) {
-                const row_summary = [tablerowinfo.label];
-                if (include_cta) {
-                    row_summary.push(`${searchparams.type}: ${formatFieldValue(demogdata_zone[tablerowinfo.field], tablerowinfo.format)}`);
-                }
-                row_summary.push(`Statewide: ${formatFieldValue(demogdata_state[tablerowinfo.field], tablerowinfo.format)}`);
-                if (include_nation) {
-                    row_summary.push(`Nationwide: ${formatFieldValue(demogdata_nation[tablerowinfo.field], tablerowinfo.format)}`);
-                }
-                demographic_summary.push(`${row_summary.join(', ')}.`);
-            });
-        });
 
-        window.setTimeout(function () {
-            $demographics_status.text(demographic_summary.join(' '));
-        }, 0);
-    }
+    const include_cta = searchparams.ctaid != SITE_CONSTANTS.ctaid;
+    const include_nation = NATIONWIDE_DEMOGRAPHICS;
+    const demographic_summary = [`Demographics updated for ${ctanametext}.`];
+    DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
+        demographic_summary.push(`${tableinfo.title}.`);
+        tableinfo.rows.forEach(function (tablerowinfo) {
+            const row_summary = [tablerowinfo.label];
+            if (include_cta) {
+                row_summary.push(`${searchparams.type}: ${formatFieldValue(demogdata_zone[tablerowinfo.field], tablerowinfo.format)}`);
+            }
+            row_summary.push(`Statewide: ${formatFieldValue(demogdata_state[tablerowinfo.field], tablerowinfo.format)}`);
+            if (include_nation) {
+                row_summary.push(`Nationwide: ${formatFieldValue(demogdata_nation[tablerowinfo.field], tablerowinfo.format)}`);
+            }
+            demographic_summary.push(`${row_summary.join(', ')}.`);
+        });
+    });
+
+    return demographic_summary.join(' ');
 }
 
 
-function performSearchPlaces (searchparams, announceResults = true) {
+function performSearchPlaces (searchparams) {
     const $placesslot = $('#places-area');
-    const $placesstatus = $('#places-area-status');
     $placesslot.attr('aria-busy', 'true');
     $placesslot.empty();
-    $placesstatus.text('');
 
     if (! searchparams.ctaid && ! searchparams.countyId) {
         $placesslot.attr('aria-busy', 'false');
@@ -1438,13 +1442,8 @@ function performSearchPlaces (searchparams, announceResults = true) {
     }
 
     $placesslot.attr('aria-busy', 'false');
-    if (announceResults) {
-        window.setTimeout(function () {
-            $placesstatus.text(places_summary.join(' '));
-        }, 0);
-    }
-
     updateFilterSummary(searchparams);    
+    return places_summary.join(' ');
 }
 
 
@@ -1490,10 +1489,9 @@ function updateFilterSummary(searchparams) {
 }
 
 
-function performSearchIncidenceReadout (searchparams, announceResults = true) {
+function performSearchIncidenceReadout (searchparams) {
     const $incidence_section = $('#incidence-title');
     const $incidence_readouts = $('#incidence-readouts');
-    const $incidence_status = $('#incidence-readouts-status');
     $incidence_readouts.attr('aria-busy', 'true');
 
     let ctanametext = searchparams.ctaname;
@@ -1673,19 +1671,13 @@ function performSearchIncidenceReadout (searchparams, announceResults = true) {
 
         $incidence_readouts.find('#incidence-readouts-description').text(filterText);
         $incidence_readouts.attr('aria-busy', 'false');
-        $incidence_status.text('');
-        if (announceResults) {
-            window.setTimeout(function () {
-                $incidence_status.text(incidence_summary.join(' '));
-            }, 0);
-        }
+        return incidence_summary.join(' ');
     }
 }
 
 
-function performSearchIncidenceBarChart (searchparams, announceResults = true) {
+function performSearchIncidenceBarChart (searchparams) {
     const $chart_section  = $('#filters-and-aairbarchart');
-    const $chart_status = $('#incidence-barchart-status');
     $chart_section.attr('aria-busy', 'true');
     $chart_section.find('span[data-statistic="cancersite"]').text( getLabelFor('site', searchparams.site) );
     $chart_section.find('span[data-statistics="ctaname"]').text(searchparams.ctaname);
@@ -1888,12 +1880,7 @@ function performSearchIncidenceBarChart (searchparams, announceResults = true) {
         const filterText = `Filtered to ${siteText}, ${yearText}, ${sexText}, ${raceText}`;
         $('#incidence-barchart-description').text(filterText);
         $chart_section.attr('aria-busy', 'false');
-        $chart_status.text('');
-        if (announceResults) {
-            window.setTimeout(function () {
-                $chart_status.text(`Age-adjusted incidence rates chart updated for ${ctanametext}. ${filterText}.`);
-            }, 0);
-        }
+        return `Age-adjusted incidence rates chart updated for ${ctanametext}. ${filterText}.`;
     }
 }
 
