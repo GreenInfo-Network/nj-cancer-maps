@@ -1132,6 +1132,9 @@ function initTermsOfUse () {
         $main.prop('inert', false);
         $footer.prop('inert', false);
         $header.prop('inert', false);
+        window.setTimeout(function () {
+            $('#data-filters-type').focus();
+        }, 0);
     });
 
     // unless we have a cookie set, go ahead and show the modal, triggering a resize event now to assert its size and position
