@@ -55,12 +55,12 @@
     <script type="text/javascript" src="https://unpkg.com/es7-object-polyfill"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/polyfill-object-assign@1.0.0/index.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="index.css?Fri_May_29_2026_08_32_22_GMT_0700__Pacific_Daylight_Time_" />
-    <script type="text/javascript" src="index.js?Fri_May_29_2026_08_32_22_GMT_0700__Pacific_Daylight_Time_"></script>
+    <link rel="stylesheet" type="text/css" href="index.css?Fri_May_29_2026_19_54_19_GMT_0400__Eastern_Daylight_Time_" />
+    <script type="text/javascript" src="index.js?Fri_May_29_2026_19_54_19_GMT_0400__Eastern_Daylight_Time_"></script>
 </head>
 
 <body>
-    <header>
+    <header inert>
         <div class="container noprint">
             <nav class="navbar navbar-light">
                 <div id="logo-img" style="display:flex">
@@ -97,7 +97,7 @@
         </div>
     </header>
 
-    <main>
+    <main inert>
         <div class="container noprint" id="above-map">
             <div class="row">
                 <div class="col-md-4">
@@ -124,62 +124,64 @@
                     <div class="data-filters">
                         <h3 class="title">Update Data Display</h3>
 
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-type">Area Type</label>
-                            <select name="type" id="data-filters-type" aria-label="Select area type to report">
+                            <select name="type" id="data-filters-type">
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-whichchoropleth">Variable Mapped</label>
                             <select name="whichchoropleth" id="data-filters-whichchoropleth">
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-time">Time Period</label>
                             <select name="time" id="data-filters-time">
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-site">Cancer Site/Type</label>
                             <select name="site" id="data-filters-site">
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-sex">Sex</label>
                             <select name="sex" id="data-filters-sex">
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-race">Race/Ethnicity</label>
                             <select name="race" id="data-filters-race">
                             </select>
                         </div>
 
-                        <div class="input-group">
+                        <div class="filter-action">
                             <button type="button" class="btn btn-alternate w-100" id="data-filters-submit1">Update Map</button>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-action">
                             <button type="button" class="btn btn-default w-100" id="data-filters-reset1">Reset Filters</button>
                         </div>
 
                         <h3 class="title">Area Selection</h3>
 
-                        <div class="input-group">
+                        <div class="filter-control">
                             <label class="subtitle" for="data-filters-address">Location Search</label>
-                            <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-label="Enter address to select an area to report" aria-describedby="data-filters-address-error" />
+                            <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-describedby="data-filters-address-help data-filters-address-error" />
                             <div id="data-filters-address-error" class="warnmessage d-none" aria-live="assertive"></div>
-                            <p class="small mb-0">Include street name and number and city, at a minimum. For example, &quot;258 Chapman Rd, Newark, NJ&quot;.</p>
+                            <p class="small mb-0" id="data-filters-address-help">Include street name and number and city, at a minimum. For example, &quot;258 Chapman Rd, Newark, NJ&quot;.</p>
                         </div>
 
-                        <div class="input-group">
+                        <div class="filter-action">
                             <button type="button" class="btn btn-alternate w-100" id="data-filters-submit2">Find Area</button>
                         </div>
-                        <div class="input-group">
+                        <div class="filter-action">
                             <button type="button" class="btn btn-default w-100" id="data-filters-reset2">Reset Filters</button>
                         </div>
                     </div>
 
-                    <div id="places-area" role="heading" aria-level="2" aria-live="polite" aria-atomic="true"></div>
+                    <div id="places-area"></div>
+                    <div id="places-area-status" class="visually-hidden"></div>
+                    <div id="search-results-status" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
                 </div>
                 <div class="col-md printonly" id="data-filters-summary">
                 </div>
@@ -232,9 +234,10 @@
         </div>
 
         <div class="container" id="filters-and-aairbarchart">
-            <span class="title" tabindex="0" aria-live="polite" aria-atomic="true">Age-Adjusted Incidence Rates - <span data-statistics="ctaname"></span></span>
+            <span class="title" tabindex="0">Age-Adjusted Incidence Rates - <span data-statistics="ctaname"></span></span>
 
-            <p id="incidence-barchart-description" aria-live="polite" aria-atomic="true"></p>
+            <p id="incidence-barchart-description"></p>
+            <div id="incidence-barchart-status" class="visually-hidden"></div>
 
             <ul class="nav nav-pills nav-justified noprint" role="tablist">
                 <li class="nav-item" role="presentation"><a class="nav-link active" data-toggle="tab" role="tab" aria-controls="incidence-barchart-chartmode" href="#incidence-barchart-chartmode" aria-selected="true">Bar Chart</a></li>
@@ -245,7 +248,7 @@
                     <div id="incidence-barchart" aria-label="Chart of AAIR by race and sex for the selected filters"></div>
                 </div>
                 <div class="tab-pane container pl-0" id="incidence-barchart-tablemode">
-                    <table class="table-sm table-colorscheme1" id="incidence-barchart-table" aria-live="polite" aria-atomic="true">
+                    <table class="table-sm table-colorscheme1" id="incidence-barchart-table">
                         <thead>
                             <tr>
                                 <th scope="col">Race/Ethnicity</th>
@@ -300,12 +303,14 @@
             <span class="title" tabindex="0">Cancer Statistics - <span data-statistics="ctaname"></span></span>
         </div>
         <div class="container" id="incidence-readouts">
-            <p id="incidence-readouts-description" aria-live="polite" aria-atomic="true"></p>
+            <p id="incidence-readouts-description"></p>
+            <div id="incidence-readouts-status" class="visually-hidden"></div>
 
-            <table class="table-sm table-colorscheme1" aria-live="polite" aria-atomic="true">
+            <table class="table-sm table-colorscheme1">
+                <caption class="visually-hidden">Cancer statistics for the selected filters</caption>
                 <thead>
                     <tr>
-                        <th class="left">Zone or Statewide</th>
+                        <th scope="col" class="left">Zone or Statewide</th>
                         <th scope="col">Cases</th>
                         <th scope="col" colspan="2">Age-Adjusted Incidence Rates (95% LCI, 95% UCI)</th>
                     </tr>
@@ -349,7 +354,7 @@
             </p>
         </div>
 
-        <div class="container" id="demographic-tables" aria-live="polite" aria-atomic="true">
+        <div class="container" id="demographic-tables">
             <span role="heading" aria-level="2">
                 <span class="title" tabindex="0" aria-label="Name of area reported">
                     Demographics - <span data-statistics="ctaname"></span>
@@ -357,6 +362,7 @@
                 </span>
                 <br />
             </span>
+            <div id="demographic-tables-status" class="visually-hidden"></div>
             <!-- tables inserted here via initDemographicTables() -->
         </div>
 
@@ -718,12 +724,20 @@
             </div><!--/tab-content-->
         </div><!--/container section-->
 
+
+
+    </main>
+
+    <section>
         <!--
         terms of use modal; see initTermsOfUse()
         -->
         <div class="modal" tabindex="-1" role="dialog" id="termsofusemodal">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Terms of Use</h3>
+                    </div>
                     <div class="modal-body">
                         <p>Use of <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps implies consent to abide by
                             the terms of these data use restrictions. Any effort to determine the identity of any reported cases, or
@@ -746,14 +760,12 @@
                 </div>
             </div>
         </div>
-
-    </main>
-
+    </section>
 
     <!--
     section: footer
     -->
-    <footer class="footer noprint">
+    <footer class="footer noprint" inert>
         <div class="container">
             <div class="row">
                 <div class="col-sm-7 left small">
