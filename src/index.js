@@ -924,14 +924,6 @@ function initMapAndPolygonData () {
         style: CHOROPLETH_BORDER_NONE,  // see performSearchMap() where these are reassigned based on filters
     })
     .addTo(MAP);
-
-    // when tabs change, if the newly-visible tab is the Map tab, the map may be broken because it had 0x0 size
-    $('ul.nav-pills a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
-        const targetid = event.target.ariaControlsElements[0].id;
-        if (targetid == 'map-or-table-map') {
-            MAP.invalidateSize();
-        }
-    });
 }
 
 
@@ -959,6 +951,29 @@ function initMapTable () {
 
     // table sorting, see performSearchMap() where the table is re-populated
     // and class SortableTable; there are interactions between sorting and hiding rows
+
+    // on tab change, we will be showing Map or Table; update the submitbutton to have that word
+    $('ul.nav-pills a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
+        const targetid = event.target.ariaControlsElements[0].id;
+        const $submitbutton1 = $('#data-filters-submit1');
+
+        switch (targetid) {
+            case 'map-or-table-map':
+                $submitbutton1.text("Update Map");
+                break;
+            case 'map-or-table-table':
+                $submitbutton1.text("Update Table");
+                break;
+        }
+    });
+
+    // on tab change, if the newly-visible tab is the Map tab, the map may be broken because it had 0x0 size
+    $('ul.nav-pills a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
+        const targetid = event.target.ariaControlsElements[0].id;
+        if (targetid == 'map-or-table-map') {
+            MAP.invalidateSize();
+        }
+    });
 }
 
 
@@ -2088,6 +2103,16 @@ function performSearchMap (searchparams) {
     // re-apply filtering
     // see also initMapTable() and applyMapTableFilteringAndStriping() which apply filtering to the table rows
     $('#map-table-textfilter').change();
+
+    // update the text describing the filter, to say the name ogf the selected area type
+    {
+    const $searchwidgets_type = $('div.data-filters select[name="type"]');
+    const $table_filter_text = $('label[for="map-table-textfilter"]');
+    const type = $searchwidgets_type.val();
+    const type_text = getLabelFor('type', type);
+    const table_filter_text = `Filter the table by ${type_text.toLowerCase()} name:`;
+    $table_filter_text.text(table_filter_text);
+    }
 }
 
 
