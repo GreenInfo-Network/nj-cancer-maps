@@ -1119,11 +1119,18 @@ function initFaqAccordion () {
 function initTermsOfUse () {
     const $modal = $('#termsofusemodal');
     const $acceptbutton = $modal.find('button');
+    const $main = $('main');
+    const $footer = $('footer');
+    const $header = $('header');
 
     // click the button = set the cookie and clear the modal
     $acceptbutton.click(function () {
         document.cookie = "termsaccepted=true;max-age=31536000";
         $modal.modal('hide');
+// unset inert from main and footer
+        $main.prop('inert', false);
+        $footer.prop('inert', false);
+        $header.prop('inert', false);
     });
 
     // unless we have a cookie set, go ahead and show the modal, triggering a resize event now to assert its size and position
