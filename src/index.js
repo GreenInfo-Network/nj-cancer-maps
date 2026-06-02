@@ -831,6 +831,7 @@ function initMapAndPolygonData () {
     MAP = L.map('map', {
         minZoom: SITE_CONSTANTS.MIN_ZOOM,
         maxZoom: SITE_CONSTANTS.MAX_ZOOM,
+        attributionControl: false,
         keyboard: false,
         dragging: false,
         scrollWheelZoom: false,
@@ -931,6 +932,7 @@ function initMapAndPolygonData () {
 function initMapTable () {
     const $readout_table = $('#map-table');
     const $tablefilter = $('#map-table-textfilter');
+    const $tablefilterapplybutton = $('#map-table-textfilter-button');
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
 
     // the Select buttons
@@ -942,12 +944,11 @@ function initMapTable () {
         performSearch();
     });
 
-    $tablefilter.change(function () {
-
+    $tablefilterapplybutton.click(function () {
         applyMapTableFilteringAndStriping();
     });
     $tablefilter.keydown(function () {
-        if (event.key == 'Enter') $tablefilter.change();
+        if (event.key == 'Enter') $tablefilterapplybutton.click();
     });
 
     // table sorting, see performSearchMap() where the table is re-populated
