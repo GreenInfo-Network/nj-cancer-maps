@@ -7,6 +7,7 @@ require('./leaflet-topojson.js');
 require('./leaflet-layerpicker.scss');
 require('./leaflet-layerpicker.js');
 require('./leaflet-singleclick.js');
+require('./leaflet.pattern.js');
 require('./printing-leaflet-easyPrint.js');
 
 
@@ -184,7 +185,7 @@ var DEMOGRAPHIC_TABLES = [
 // then CHOROPLETH_BORDER_DEFAULT and CHOROPLETH_BORDER_SELECTED are added to form a thicker border for selected/highlighted state
 // then CHOROPLETH_STYLE_INCIDENCE and CHOROPLETH_STYLE_DEMOGRAPHIC are added to form the choropleth coloring
 // see performSearchMap() which calculates scoring and uses these color ramps, to implement the choropleth behavior
-var CHOROPLETH_STYLE_NODATA = { fillOpacity: 0.25, fillColor: '#cccccc', color: 'black', opacity: 0.2, weight: 1, interactive: false };
+var CHOROPLETH_STYLE_NODATA = { fillOpacity: 1, fillColor: '#cccccc', color: 'black', opacity: 0.2, weight: 1, interactive: false };
 var CHOROPLETH_STYLE_NODATA_CLEAR = { fillOpacity: 0, fillColor: '#cccccc', color: 'black', opacity: 0, weight: 0, interactive: false };
 var CHOROPLETH_BORDER_DEFAULT = { color: 'black', opacity: 1, weight: 1, fillColor: "transparent", interactive: false };
 var CHOROPLETH_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fillColor: "transparent", interactive: false };
@@ -885,6 +886,17 @@ function initMapAndPolygonData () {
         clickable: false,
         keyboard: false,
     });
+
+    // a pattern fill for No Data areas
+    MAP.pattern_stripes = new L.StripePattern({
+        weight: 4, // width of the primary stripe
+        spaceWeight: 4, // width of the secondaty stripe, typically an empty space
+        color: "silver", // color of the primary stripe
+        spaceColor: "white", // color of the secondary stripe
+        opacity: 1.0, // opacity of the primary stripe
+        spaceOpacity: 1.0, // opacity of the secondary stripe
+    });
+    MAP.pattern_stripes.addTo(MAP);
 
     // the layer-picker control
     MAP.layerpicker = new L.Control.LayerPicker({
@@ -1886,7 +1898,7 @@ function performSearchMap (searchparams) {
     })
 
     MAP.ctapolygonfills.eachLayer((layer) => { 
-        layer.setStyle(Object.assign({}, CHOROPLETH_STYLE_NODATA));
+        layer.setStyle(Object.assign({}, CHOROPLETH_STYLE_NODATA, { fillPattern: MAP.pattern_stripes }));
     })
 
     MAP.countypolygonfills.eachLayer((layer) => { 
@@ -2012,7 +2024,7 @@ function performSearchMap (searchparams) {
             }
 
             if (score == null || score == undefined || score == "") {
-                Object.assign(style, CHOROPLETH_STYLE_NODATA);
+                Object.assign(style, CHOROPLETH_STYLE_NODATA, { fillPattern: MAP.pattern_stripes });
             }
             else {
                 let bucket = 'Q3';
@@ -2052,7 +2064,7 @@ function performSearchMap (searchparams) {
             }
 
             if (score == null || score == undefined || score == "") {
-                Object.assign(style, CHOROPLETH_STYLE_NODATA);
+                Object.assign(style, CHOROPLETH_STYLE_NODATA, { fillPattern: MAP.pattern_stripes });
             }
             else {
                 let bucket = 'Q3';
