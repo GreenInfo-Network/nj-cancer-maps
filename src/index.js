@@ -342,6 +342,7 @@ $(document).ready(function () {
         initMapTable();
         initDataFilters();
         initPrintPage();
+        initIncidenceBarchart();
         initDownloadButtons();
         initFaqAccordion();
         initGoogleAnalyticsHooks();
@@ -821,6 +822,30 @@ function initDemographicTables () {
         });
 
         $table.appendTo($demographics_section);
+    });
+}
+
+
+function initIncidenceBarchart () {
+    // very deep tweaking here to get some intricate mobiler behaviors
+    // the AAIR chart looks bad under 500px width
+    // on screen size <500px pick the Table view instead of Chart view, then hide the Chart/Table picker so they're forced to Table view
+    const $tabs = $('#incidence-barchart-tabs');
+    const $tab_tablemode = $tabs.find('a[href="#incidence-barchart-tablemode"]');
+    const $tab_chartmode = $tabs.find('a[href="#incidence-barchart-chartmode"]');
+
+    $(window).resize(function () {
+        const width = $(window).width();
+        const ischart = $tab_chartmode.attr('aria-selected') == 'true';
+
+        if (width < 500) {
+            if (ischart) {
+                $tab_tablemode.click();
+            }
+            $tabs.addClass('d-none');
+        } else {
+            $tabs.removeClass('d-none');
+        }
     });
 }
 
@@ -1745,12 +1770,12 @@ function performSearchIncidenceBarChart (searchparams) {
             // events: {
             //     load: hackChartForNullValues,
             // },
-            marginTop: 50,
         },
         plotOptions: {
             series: {
                 groupPadding: 0.1,
                 maxPointWidth: 8,
+                borderColor: "black",
                 animation: {
                     duration: 0,
                 },
@@ -1758,18 +1783,6 @@ function performSearchIncidenceBarChart (searchparams) {
                     pointDescriptionFormatter: function (point) {
                         return `${point.category}, ${point.series.name}, AAIR ${point.y}`;
                     },
-                },
-                events: {
-                    legendItemClick: function(e) {
-                        return false;
-                    },
-                },
-                shadow: {
-                    color: 'black',
-                    offsetX: 2,
-                    offsetY: 2,
-                    opacity: 1,
-                    width: 3,
                 },
             },
             bar: {
@@ -1781,24 +1794,16 @@ function performSearchIncidenceBarChart (searchparams) {
                     useHTML: true,
                     formatter: function () {
                         if (this.y === 0 || this.y === null) {
-                        return '<span style="font-size: 15px; color: #666; position: relative; top: 5px;">*</span>';
+                            return '<span style="font-size: 15px; color: #666; position: relative; top: 5px;">*</span>';
                         } else {
-                        return '<span style="font-size: 10px;">' + this.y + '</span>';
+                            return '<span style="font-size: 10px;">' + this.y + '</span>';
                         }
                     },
                 },
             },
         },
         legend: {
-            layout: 'horizontal',
-            floating: true,
-            verticalAlign: 'top',
-            y: -20,
-            symbolRadius: 0,  // square swatches
-            itemStyle: {
-                fontSize: '16px', // Increase legend font size
-                fontWeight: 'bold',
-            },
+            enabled: false,
         },
         title: null,
         xAxis: {

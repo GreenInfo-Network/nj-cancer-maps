@@ -205,7 +205,7 @@
                         </div>
                     </div>
 
-                    <ul class="nav nav-pills nav-justified noprint mt-2 mb-2" role="tablist">
+                    <ul class="nav nav-pills nav-justified noprint mt-2 mb-2" role="tablist" id="map-or-table-tabs">
                         <li class="nav-item" role="presentation"><a class="nav-link active" data-toggle="tab" role="tab" aria-controls="map-or-table-map" href="#map-or-table-map" aria-selected="true">Map</a></li>
                         <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="tab" role="tab" aria-controls="map-or-table-table" href="#map-or-table-table" aria-selected="false">Table</a></li>
                     </ul>
@@ -245,12 +245,20 @@
             <p id="incidence-barchart-description"></p>
             <div id="incidence-barchart-status" class="visually-hidden"></div>
 
-            <ul class="nav nav-pills nav-justified noprint" role="tablist">
+            <ul class="nav nav-pills nav-justified noprint" role="tablist" id="incidence-barchart-tabs">
                 <li class="nav-item" role="presentation"><a class="nav-link active" data-toggle="tab" role="tab" aria-controls="incidence-barchart-chartmode" href="#incidence-barchart-chartmode" aria-selected="true">Bar Chart</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="tab" role="tab" aria-controls="incidence-barchart-tablemode" href="#incidence-barchart-tablemode" aria-selected="false">Table</a></li>
             </ul>
-            <div class="tab-content">
+            <div class="tab-content mt-3">
                 <div class="tab-pane container active" id="incidence-barchart-chartmode">
+                    <div class="center">
+                        <span class="aair-barchart-swatch aair-barchart-swatch-Both"></span> Male and Female
+                        &nbsp;
+                        <span class="aair-barchart-swatch aair-barchart-swatch-Female"></span> Female
+                        &nbsp;
+                        <span class="aair-barchart-swatch aair-barchart-swatch-Male"></span> Male
+                    </div>
+
                     <div id="incidence-barchart" aria-label="Chart of AAIR by race and sex for the selected filters"></div>
                 </div>
                 <div class="tab-pane container pl-0" id="incidence-barchart-tablemode">
