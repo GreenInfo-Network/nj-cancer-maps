@@ -45,6 +45,11 @@ table.table-colorscheme1 {
             border-right: 2px solid black;
         }
     }
+
+    tbody th *:focus,
+    tbody td *:focus {
+        box-shadow: 0 0 0 .2rem #293985;
+    }
 }
 
 table.table-colorscheme2 {
@@ -125,5 +130,10 @@ table.table-colorscheme2 {
         tr.selected-row td:last-child {
             border-right: 2px solid black;
         }
+    }
+
+    tbody th *:focus,
+    tbody td *:focus {
+        box-shadow: 0 0 0 .2rem #293985;
     }
 }

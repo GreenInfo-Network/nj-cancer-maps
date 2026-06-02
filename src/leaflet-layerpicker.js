@@ -16,6 +16,8 @@ L.Control.LayerPicker = L.Control.extend({
 
 		// create our container
 		this.container = L.DomUtil.create('div', 'leaflet-control leaflet-bar leaflet-layerpicker-control leaflet-layerpicker-collapsed');
+        this.container.role = 'group';
+        this.container.setAttribute('aria-labelledby', `${this.options.control_id}-heading`);
 
 		const opener = L.DomUtil.create('div', 'leaflet-layerpicker-button', this.container);
 		opener.innerHTML = '<button type="button" aria-label="Show layers to be displayed on the map"><i class="fa fa-layer-group"></i></button>';
@@ -24,17 +26,18 @@ L.Control.LayerPicker = L.Control.extend({
 
         // expanded content
 		this.content_expanded = L.DomUtil.create('div', 'leaflet-layerpicker-content', this.container);
-		this.content_expanded.id = "leaflet-control-layerpicker";
+		this.content_expanded.id = this.options.control_id;
 
         // close button
         const closer = L.DomUtil.create('div', 'leaflet-layerpicker-closebutton', this.content_expanded);
-        closer.innerHTML = '<button type="button" aria-label="Close this panel">&times;</button>';
+        closer.innerHTML = '<button type="button" aria-label="Close reference layers">&times;</button>';
         this.closebutton = closer.querySelector('button');
         this.closebutton.setAttribute('aria-controls', this.options.control_id);
 
         // head text
         this.headtext = L.DomUtil.create('h3', 'leaflet-layerpicker-headtext', this.content_expanded);
         this.headtext.innerHTML = 'Reference Layers';
+        this.headtext.id = `${this.options.control_id}-heading`;
 
         // layer checkboxes
         // create them, their labels, etc. and also a registry of these for random access e.g. toggleLayer()
@@ -45,6 +48,7 @@ L.Control.LayerPicker = L.Control.extend({
             const checkbox = L.DomUtil.create('input', 'leaflet-layerpicker-checkbox', entry);
             checkbox.type = 'checkbox';
             checkbox.value = layerinfo.id;
+            checkbox.setAttribute('aria-label', `Toggle map layer ${layerinfo.label}`);
 
             const label = L.DomUtil.create('span', 'leaflet-layerpicker-name', entry);
             label.innerHTML = layerinfo.label;
