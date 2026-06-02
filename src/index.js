@@ -1910,7 +1910,7 @@ function performSearchMap (searchparams) {
     })
 
     MAP.ctapolygonfills.eachLayer((layer) => { 
-        layer.setStyle(Object.assign({}, CHOROPLETH_STYLE_NODATA, { fillPattern: MAP.pattern_stripes }));
+        layer.setStyle(Object.assign({}, CHOROPLETH_STYLE_NODATA));
     })
 
     MAP.countypolygonfills.eachLayer((layer) => { 
@@ -2046,9 +2046,9 @@ function performSearchMap (searchparams) {
                 Object.assign(style, vizopt.colorramp[bucket]);
 
                 if (bucket == 'Q3') {
-                    Object.assign(style, { color: "white" });
+                    Object.assign(style, { color: "white", fillPattern: undefined });
                 } else {
-                    Object.assign(style, { color: "black" });
+                    Object.assign(style, { color: "black", fillPattern: undefined });
                 }
             }
 
@@ -2086,9 +2086,9 @@ function performSearchMap (searchparams) {
                 Object.assign(style, vizopt.colorramp[bucket]);
 
                 if (bucket == 'Q3') {
-                    Object.assign(style, { color: "white" });
+                    Object.assign(style, { color: "white", fillPattern: undefined });
                 } else {
-                    Object.assign(style, { color: "black" });
+                    Object.assign(style, { color: "black", fillPattern: undefined });
                 }
             }
 
