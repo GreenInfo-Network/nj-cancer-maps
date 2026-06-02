@@ -339,6 +339,7 @@ $(document).ready(function () {
         initFixZoneOverlay();
         initFixPlaceOverlay();
         initDemographicTables();
+        initChoroplethControl();
         initMapAndPolygonData();
         initMapTable();
         initDataFilters();
@@ -1001,6 +1002,25 @@ function initMapTable () {
 }
 
 
+function initChoroplethControl () {
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
+    const $choroplethlegend_minvalue = $choroplethlegend.find('.choropleth-legend-minvalue');
+    const $choroplethlegend_maxvalue = $choroplethlegend.find('.choropleth-legend-maxvalue');
+    const $choroplethlegend_gradient = $choroplethlegend.find('.choropleth-legend-legendgradient');
+
+    CHOROPLETH_OPTIONS.forEach((vizopt) => {
+        $('<option></option>').prop('value', vizopt.field).text(vizopt.label).appendTo($choroplethlegend_picker);
+    });
+
+    $choroplethlegend_picker.change(() => {
+        const picked = choroplethGetSelectionValue();
+        performSearch();
+        logGoogleAnalyticsEvent('map', 'choropleth', picked);
+    });
+}
+
+
 function initDataFilters () {
     // fill in the SELECT options from the configurable constants
     const $searchwidgets_site = $('div.data-filters select[name="site"]');
@@ -1011,10 +1031,8 @@ function initDataFilters () {
     const $searchwidgets_address = $('div.data-filters input[name="address"]');
     const $choroplethlegend_picker = $('div.data-filters select[name="whichchoropleth"]');
 
-    const $submitbutton1 = $('#data-filters-submit1');
-    const $submitbutton2 = $('#data-filters-submit2');
-    const $resetbutton1 = $('#data-filters-reset1');
-    const $resetbutton2 = $('#data-filters-reset2');
+    const $submitbutton = $('#data-filters-submit1');
+    const $resetbutton = $('#data-filters-reset1');
 
     SEARCHOPTIONS_CANCERSITE.forEach(function (option) {
         $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_site);
@@ -1058,7 +1076,7 @@ function initDataFilters () {
     });
 
     $searchwidgets_address.keydown(function () {
-        if (event.key == 'Enter') $submitbutton1.click();
+        if (event.key == 'Enter') $submitbutton.click();
     });
 
     // the anti-filters: Xs in the div.data-filters-summary which will clear a specific filter
@@ -1086,17 +1104,11 @@ function initDataFilters () {
     });
 
     // submit button and clear button
-    $submitbutton1.click(function () {
-        performSearch();
-    });
-    $submitbutton2.click(function () {
+    $submitbutton.click(function () {
         performSearch();
     });
 
-    $resetbutton1.click(function () {
-        resetFilters();
-    });
-    $resetbutton2.click(function () {
+    $resetbutton.click(function () {
         resetFilters();
     });
 }
@@ -2501,19 +2513,22 @@ function updateCandleChart($candlediv, subtitle, aair, lci, uci, minlci, maxuci)
 
 
 function choroplethSetSelection (whichone) {
-    const $choroplethlegend_picker = $('div.data-filters select[name="whichchoropleth"]');
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
     $choroplethlegend_picker.val(whichone).change();
 }
 
 
 function choroplethGetSelectionLabel () {
-    const $choroplethlegend_picker = $('div.data-filters select[name="whichchoropleth"]');
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
     return $choroplethlegend_picker.find('option:selected').text();
 }
 
 
 function choroplethGetSelectionValue () {
-    const $choroplethlegend_picker = $('div.data-filters select[name="whichchoropleth"]');
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
     return $choroplethlegend_picker.find('option:selected').prop('value');
 }
 
