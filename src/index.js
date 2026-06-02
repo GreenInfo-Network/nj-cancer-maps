@@ -185,7 +185,7 @@ var DEMOGRAPHIC_TABLES = [
 // then CHOROPLETH_BORDER_DEFAULT and CHOROPLETH_BORDER_SELECTED are added to form a thicker border for selected/highlighted state
 // then CHOROPLETH_STYLE_INCIDENCE and CHOROPLETH_STYLE_DEMOGRAPHIC are added to form the choropleth coloring
 // see performSearchMap() which calculates scoring and uses these color ramps, to implement the choropleth behavior
-var CHOROPLETH_STYLE_NODATA = { fillOpacity: 1, fillColor: '#cccccc', color: 'black', opacity: 0.2, weight: 1, interactive: false };
+var CHOROPLETH_STYLE_NODATA = { fillOpacity: 1, fillColor: '#cccccc', color: 'black', opacity: 0.75, weight: 1, interactive: false };  // used in conjunction with MAP.pattern_stripes
 var CHOROPLETH_STYLE_NODATA_CLEAR = { fillOpacity: 0, fillColor: '#cccccc', color: 'black', opacity: 0, weight: 0, interactive: false };
 var CHOROPLETH_BORDER_DEFAULT = { color: 'black', opacity: 1, weight: 1, fillColor: "transparent", interactive: false };
 var CHOROPLETH_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fillColor: "transparent", interactive: false };
@@ -2144,8 +2144,20 @@ function performSearchMap (searchparams) {
             if (searchparams.type == 'Zone') name = `${xrow.GeoName} (${xrow.GeoID})`;
         }
 
-        const score = row[rankthemby];
-        const scoretext = formatFieldValue(score, format);
+        // whatever the field was, including race filters, we stowed it as the choropleth score used on the map
+        const score = row.choropleth_score;
+
+        let bucket = 'Q3';
+        if (score <= q1brk) bucket = 'Q1';
+        else if (score <= q2brk) bucket = 'Q2';
+
+        let scoretext;
+        if (score == null || score == undefined || score == "") {
+            scoretext = "-";
+            bucket = null;
+        } else {
+            scoretext = formatFieldValue(score, format);
+        }
 
         let isselected;
         if (searchparams.type == 'Zone' && searchparams.ctaid == row.GeoID) isselected = true;
@@ -2157,19 +2169,24 @@ function performSearchMap (searchparams) {
         const $cell3 = $('<td class="center"></td>').appendTo($tr);
 
         // add a color swatch
-        let bucket = 'Q3';
-        if (score <= q1brk) bucket = 'Q1';
-        else if (score <= q2brk) bucket = 'Q2';
-
         const $swatch = $('<span></span>').css({
             'display': 'inline-block',
             'width': '1em',
             'height': '1em',
-            'opacity': vizopt.colorramp[bucket].fillOpacity,
-            'background-color': vizopt.colorramp[bucket].fillColor,
             'margin-left': '1em',
             'border': '1px solid black',
         });
+        if (bucket) {
+            $swatch.css({
+                'opacity': vizopt.colorramp[bucket].fillOpacity,
+                'background-color': vizopt.colorramp[bucket].fillColor,
+            });
+        } else {
+            $swatch.css({
+                'background-image': "url(./static/nodata.png)",
+                'background-size': "cover",
+            });
+        }
         $swatch.appendTo($cell2);
 
         // a button to find the area, find its center, and then fill in that latlng as an address
