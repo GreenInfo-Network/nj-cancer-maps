@@ -60,7 +60,7 @@
 </head>
 
 <body>
-    <header inert>
+    <main inert>
         <div class="container noprint">
             <nav class="navbar navbar-light">
                 <div id="logo-img" style="display:flex">
@@ -95,9 +95,7 @@
                 <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps is an interactive mapping tool of cancer data for <span class="numZones">[REPLACE NUM_ZONES]</span> cancer reporting zones in <span class="stateName">[REPLACE STATE/REGISTRY]</span>. You can map cancer incidence for the <span class="numOfCancerSites">[REPLACE NUM_CANCER_SITES]</span> most common invasive cancer sites and for all sites combined and filter by sex and race/ethnicity. <a class="btn btn-sm btn-alternate" id="visitlearn" href="#learn-text">Visit Learn</a> to review methodology, data sources, and more.
             </p>
         </div>
-    </header>
 
-    <main inert>
         <div class="container noprint" id="above-map">
             <div class="row">
                 <div class="col-md-4">
@@ -204,18 +202,19 @@
                             <div class="map" id="map" role="img" aria-label="Map of selected areas colored by the selected variable"></div>
                         </div>
                         <div class="tab-pane container px-0" id="map-or-table-table">
-                            <div class="input-group">
-                                <label for="map-table-textfilter" class="mb-0">Filter the table by area name:</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="map-table-textfilter" role="searchbox" aria-controls="map-table" />
-                                    <div class="input-group-append">
-                                        <button class="btn btn-alternate" type="button" id="map-table-textfilter-button">Filter</button>
-                                    </div>
-                                </div>
-                            </div>
-
+                            <div id="map-table-nodata" class="mb-3 warnmessage">Note: No areas have data for your selections.</div>
 
                             <div id="map-table-wrapper">
+                                <div class="input-group">
+                                    <label for="map-table-textfilter" class="mb-0">Filter the table by area name:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="map-table-textfilter" role="searchbox" aria-controls="map-table" />
+                                        <div class="input-group-append">
+                                            <button class="btn btn-alternate" type="button" id="map-table-textfilter-button">Filter</button>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <table class="table-sm table-colorscheme2 sortable" id="map-table" aria-live="polite" aria-atomic="true">
                                     <thead>
                                     </thead>

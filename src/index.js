@@ -859,13 +859,6 @@ function initMapAndPolygonData () {
         minZoom: SITE_CONSTANTS.MIN_ZOOM,
         maxZoom: SITE_CONSTANTS.MAX_ZOOM,
         attributionControl: false,
-        keyboard: false,
-        dragging: false,
-        scrollWheelZoom: false,
-        doubleClickZoom: false,
-        boxZoom: false,
-        touchZoom: false,
-        zoomControl: false,
     })
     .fitBounds(SITE_CONSTANTS.MAP_BBOX);
 
@@ -890,12 +883,13 @@ function initMapAndPolygonData () {
 
     // a pattern fill for No Data areas
     MAP.pattern_stripes = new L.StripePattern({
-        weight: 4, // width of the primary stripe
-        spaceWeight: 4, // width of the secondaty stripe, typically an empty space
-        color: "silver", // color of the primary stripe
+        weight: 2, // width of the primary stripe
+        spaceWeight: 6, // width of the secondaty stripe, typically an empty space
+        color: "black", // color of the primary stripe
         spaceColor: "white", // color of the secondary stripe
         opacity: 1.0, // opacity of the primary stripe
         spaceOpacity: 1.0, // opacity of the secondary stripe
+        angle: 45,  // rotate angle
     });
     MAP.pattern_stripes.addTo(MAP);
 
@@ -2104,6 +2098,7 @@ function performSearchMap (searchparams) {
     // purge and reload the rows
     // re-apply sorting and filtering
     const $readout_table = $('#map-table');
+    const $readout_message_nodata = $('#map-table-nodata');
     const $readout_table_thead = $readout_table.children('thead');
     const $readout_table_tbody = $readout_table.children('tbody');
 
@@ -2131,8 +2126,8 @@ function performSearchMap (searchparams) {
     const $th2 = $('<th class="right sortable-number"></th>').appendTo($thr);
     const $th3 = $('<th class="center"></th>').text("Select").appendTo($thr);
 
-    $('<button></button>').text(searchparams.type).append($('<span aria-hidden="true"></span>')).appendTo($th1);
-    $('<button></button>').text(rankthemby_text).append($('<span aria-hidden="true"></span>')).appendTo($th2);
+    $('<button></button>').text(searchparams.type).append($('<span aria-hidden="true"></span>')).appendTo($th1);  // why button? for sorting
+    $('<button></button>').text(rankthemby_text).append($('<span aria-hidden="true"></span>')).appendTo($th2);  // why button? for sorting
 
     tabularscores.forEach(function (row, rowindex) {
         let name = row.GeoName;
@@ -2153,7 +2148,7 @@ function performSearchMap (searchparams) {
 
         let scoretext;
         if (score == null || score == undefined || score == "") {
-            scoretext = "-";
+            scoretext = "Suppressed";
             bucket = null;
         } else {
             scoretext = formatFieldValue(score, format);
@@ -2237,7 +2232,7 @@ function performSearchMap (searchparams) {
     // see also initMapTable() and applyMapTableFiltering() which apply filtering to the table rows
     $('#map-table-textfilter').change();
 
-    // update the text describing the filter, to say the name ogf the selected area type
+    // update the text describing the filter, to say the name of the selected area type
     {
     const $searchwidgets_type = $('div.data-filters select[name="type"]');
     const $table_filter_text = $('label[for="map-table-textfilter"]');
@@ -2245,6 +2240,13 @@ function performSearchMap (searchparams) {
     const type_text = getLabelFor('type', type);
     const table_filter_text = `Filter the table by ${type_text.toLowerCase()} name:`;
     $table_filter_text.text(table_filter_text);
+    }
+
+    // if there are no rows at all, show this message
+    if (tabularscores.length) {
+        $readout_message_nodata.addClass('d-none');
+    } else {
+        $readout_message_nodata.removeClass('d-none');
     }
 }
 
