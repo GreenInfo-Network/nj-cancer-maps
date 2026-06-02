@@ -983,7 +983,7 @@ function initMapTable () {
     });
 
     $tablefilterapplybutton.click(function () {
-        applyMapTableFilteringAndStriping();
+        applyMapTableFiltering();
     });
     $tablefilter.keydown(function () {
         if (event.key == 'Enter') $tablefilterapplybutton.click();
@@ -2217,7 +2217,7 @@ function performSearchMap (searchparams) {
     }
 
     // re-apply filtering
-    // see also initMapTable() and applyMapTableFilteringAndStriping() which apply filtering to the table rows
+    // see also initMapTable() and applyMapTableFiltering() which apply filtering to the table rows
     $('#map-table-textfilter').change();
 
     // update the text describing the filter, to say the name ogf the selected area type
@@ -2330,7 +2330,7 @@ function getOptionCount (fieldname) {
 }
 
 
-function applyMapTableFilteringAndStriping () {
+function applyMapTableFiltering () {
     const $readout_table = $('#map-table');
     const $trs = $readout_table.find('tbody tr');
     const $tablefilter = $('#map-table-textfilter');
@@ -2739,8 +2739,8 @@ class SortableTable {
       tbodyNode.appendChild(tr);
     }
 
-    // apply our custom table filtering and striping
-    applyMapTableFilteringAndStriping();
+    // apply our custom table filtering
+    applyMapTableFiltering();
   }
 
   /* EVENT HANDLERS */
