@@ -92,17 +92,17 @@
 
         <div class="container noprint">
             <p class="intro-text">
-                <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps is an interactive mapping tool of cancer data for <span class="numZones">[REPLACE NUM_ZONES]</span> cancer reporting zones in <span class="stateName">[REPLACE STATE/REGISTRY]</span>. You can map cancer incidence for the <span class="numOfCancerSites">[REPLACE NUM_CANCER_SITES]</span> most common invasive cancer sites and for all sites combined and filter by sex and race/ethnicity. <a class="btn btn-sm btn-alternate" id="visitlearn" href="#learn-text">Visit Learn</a> to review methodology, data sources, and more.
+                <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Maps is an interactive mapping tool of cancer data for <span class="numZones">[REPLACE NUM_ZONES]</span> cancer reporting zones in <span class="stateName">[REPLACE STATE/REGISTRY]</span>. You can map cancer incidence for the <span class="numOfCancerSites">[REPLACE NUM_CANCER_SITES]</span> most common invasive cancer sites and for all sites combined and filter by sex and race/ethnicity. <a href="#learn-text">Visit Learn</a> to review methodology, data sources, and more.
             </p>
         </div>
 
         <div class="container noprint" id="above-map">
             <div class="row">
                 <div class="col-md-4">
-                    <h2 class="nomargin" tabindex="0"><span class="title">Cancer Incidence</span></h2>
+                    <h2 class="nomargin" tabindex="0">Cancer Incidence</h2>
                 </div>
                 <div class="col-md-8 right">
-                    <button class="btn" id="downloadbutton" aria-label="Show options for downloading the map and data" aria-haspopup="true" aria-controls="downloadoptions" aria-expanded="false">
+                    <button class="btn btn-alternate" id="downloadbutton" aria-label="Show options for downloading the map and data" aria-haspopup="true" aria-controls="downloadoptions" aria-expanded="false">
                         <i class="fa fa-download"></i> Downloads <i class="fa fa-caret-down"></i>
                     </button>
 
@@ -120,8 +120,6 @@
             <div class="row">
                 <div class="col-md noprint">
                     <div class="data-filters">
-                        <h3 class="title">Update Data Display</h3>
-
                         <div class="filter-control">
                             <label class="subtitle" for="data-filters-type">Area Type</label>
                             <select name="type" id="data-filters-type">
@@ -131,7 +129,7 @@
                             <label class="subtitle" for="data-filters-address">Location Search</label>
                             <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-describedby="data-filters-address-help data-filters-address-error" />
                             <div id="data-filters-address-error" class="warnmessage d-none" aria-live="assertive"></div>
-                            <p class="small mb-0" id="data-filters-address-help">Include street name and number and city, at a minimum. For example, &quot;258 Chapman Rd, Newark, NJ&quot;.</p>
+                            <p class="small mb-0" id="data-filters-address-help">Include street name and number and city, at a minimum. For example, &quot;920 Broad Street, Newark, NJ&quot;.</p>
                         </div>
                         <div class="filter-control">
                             <label class="subtitle" for="data-filters-time">Time Period</label>
@@ -229,7 +227,7 @@
         </div>
 
         <div class="container" id="filters-and-aairbarchart">
-            <span class="title" tabindex="0">Age-Adjusted Incidence Rates - <span data-statistics="ctaname"></span></span>
+            <h3>Age-Adjusted Incidence Rates - <span data-statistics="ctaname"></span></h3>
 
             <p id="incidence-barchart-description"></p>
             <div id="incidence-barchart-status" class="visually-hidden"></div>
@@ -303,7 +301,7 @@
         </div>
 
         <div class="container" id="incidence-title">
-            <span class="title" tabindex="0">Cancer Statistics - <span data-statistics="ctaname"></span></span>
+            <h2>Cancer Statistics - <span data-statistics="ctaname"></span></h2>
         </div>
         <div class="container" id="incidence-readouts">
             <p id="incidence-readouts-description"></p>
@@ -358,13 +356,13 @@
         </div>
 
         <div class="container" id="demographic-tables">
-            <span role="heading" aria-level="2">
-                <span class="title" tabindex="0" aria-label="Name of area reported">
+            <h2>
+                <span aria-label="Name of area reported">
                     Demographics - <span data-statistics="ctaname"></span>
                     <span data-statistics="ctaid"></span>
                 </span>
                 <br />
-            </span>
+            </h2>
             <div id="demographic-tables-status" class="visually-hidden"></div>
             <!-- tables inserted here via initDemographicTables() -->
         </div>
@@ -416,12 +414,12 @@
                     <p>
                         More information on how the maps were developed is available in Zaria Tatalovich et al.’s <a target="_blank" href="https://doi.org/10.1093/aje/kwac155">Developing Geographic Areas for Cancer Reporting Using Automated Zone Design” <i class="fa fa-external-link-alt"></i></a> (American Journal of Epidemiology, Volume 191, Issue 12, December 2022, Pages 2109–2119).
                     </p>
-                    <h3 class="title">Suggested Citation</h3>
+                    <h3>Suggested Citation</h3>
                     <p>
                         New Jersey Health Maps. Based on Nov 2024 New Jersey State Cancer Registry SEER Submission File. New Jersey State Cancer Registry. Retrieved Month Day, Year,
                         from <a target="_blank" href="https://njzonemap.njscr.org/"> https://njzonemap.njscr.org/ <i class="fa fa-external-link-alt"></i></a>.
                     </p>
-                    <h3 class="title">Project Team</h3>
+                    <h3>Project Team</h3>
                     <p>
                         <a target="_blank" href="https://www.nj.gov/health/ces/reporting-entities/njscr/"><span class="stateRegistry">[REPLACE REGISTRY]</span> <i class="fa fa-external-link-alt"></i></a>
                         <br />
@@ -432,16 +430,16 @@
                         <a target="_blank"
                             href="https://www.westat.com/">Westat, Inc. <i class="fa fa-external-link-alt"></i></a>
                     </p>
-                    <h3 class="title">Technical Notes</h3>
+                    <h3>Technical Notes</h3>
                     <p>
                         <a target="_blank" href="https://www.nj.gov/health/ces/documents/DataGuidelines%20FINAL%20v2025.0326.pdf">DataGuidelines FINAL v2025.0326.pdf <i class="fa fa-external-link-alt"></i></a>
                         <br />
                     </p>
-                    <h3 class="title">Contact Information</h3>
+                    <h3>Contact Information</h3>
                     <p>
                         <a target="_blank" href="https://www.nj.gov/health/ces/contact.shtml">https://www.nj.gov/health/ces/contact.shtml <i class="fa fa-external-link-alt"></i></a>
                     </p>
-                    <h3 class="title">Funding</h3>
+                    <h3>Funding</h3>
                     <p class="fundingSource">[REPLACE FUNDING SOURCE]</p>
                 </div><!--/tab-pane -->
                 <div class="tab-pane container" id="learn-method">
@@ -470,7 +468,7 @@
                         <a target="_blank" href=“https://doi.org/10.1093/aje/kwac155">"Developing Geographic Areas for Cancer Reporting
                         Using Automated Zone Design” <i class="fa fa-external-link-alt"></i></a> (American Journal of Epidemiology, Volume 191, Issue 12, December 2022, Pages 2109–2119).
                     </p>
-                    <h3 class="title">Zone Names</h3>
+                    <h3>Zone Names</h3>
                     <p>
                         Census Tract Aggregation Zone (CTAZ or “Zone”) names are given by the largest municipality in the Zone by population. Should a municipality straddle one or more CTAZs, then the population of the municipality is apportioned by the area within each CTAZ. For a hypothetical example, if Springfield has a population of 100,000 and 60% is in Zone A and 40% in Zone B, then 60,000 Springfield residents are assigned to Zone A and 40,000 residents to Zone B. If 60,000 was the largest municipality by population in Zone A then Zone A would be named Springfield.
                     </p>

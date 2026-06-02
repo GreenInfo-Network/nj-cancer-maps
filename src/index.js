@@ -794,7 +794,7 @@ function initDownloadButtons () {
 
 function initDemographicTables () {
     const $demographics_section = $('#demographic-tables');
-    DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
+    DEMOGRAPHIC_TABLES.forEach(function (tableinfo, index) {
         const $table = $(`
             <table class="table-sm table-colorscheme2">
                 <caption class="visually-hidden">${tableinfo.title} demographics</caption>
@@ -822,6 +822,10 @@ function initDemographicTables () {
                 </tr>
             `).appendTo($tbody);
         });
+
+        if (index > 0) {
+            $table.addClass('mt-3');
+        }
 
         $table.appendTo($demographics_section);
     });
@@ -1442,7 +1446,7 @@ function performSearchPlaces (searchparams) {
     counties.sort();
     cities.sort();
 
-    $("<h3 class='title'></h3>").text('Location Details').appendTo($placesslot);
+    $("<h3></h3>").text('Location Details').appendTo($placesslot);
 
     const places_summary = ['Location details updated.'];
     if (searchparams.ctaid) {

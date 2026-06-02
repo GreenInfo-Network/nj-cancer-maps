@@ -21,25 +21,16 @@ body, html {
 
 h1 {
     color: #293985;
-    font-size: 32px;
     font-weight: bold;
 }
 
 h2 {
     color: #6472B9;
-    font-size: 28px;
     font-weight: bold;
 }
 
-h2.title {  /* a special type of H2 that's smaller; used to be H3 but ARIA says no */
+h3 {
     color: #6472B9;
-    font-size: 24px;
-    font-weight: normal;
-}
-
-.title {
-    color: #6472B9;
-    font-size: 22px;
     font-weight: bold;
 }
 

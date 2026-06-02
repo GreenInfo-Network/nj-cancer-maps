@@ -6,7 +6,9 @@
     /* those UCI/LCI dot chart things, sort of like candle charts but they aren't */
     td.ucilcicandlechartcell {
         width: 40%;
-        padding-right: 10%;
+
+        padding-right: 3rem;
+        padding-left: 3rem;
     }
     span.ucilcicandlechart {
         width: 100%;
