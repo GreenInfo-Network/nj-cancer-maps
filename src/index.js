@@ -191,15 +191,15 @@ var CHOROPLETH_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fill
 var CHOROPLETH_BORDER_NONE = { color: null, opacity: 100, weight: 0, fillColor: "transparent", interactive: false };
 
 var CHOROPLETH_STYLE_INCIDENCE = {
-    Q1: { fillOpacity: 0.75, fillColor: '#FFFFEB', color: "transparent" },
-    Q2: { fillOpacity: 0.75, fillColor: '#D27700', color: "transparent" },
-    Q3: { fillOpacity: 0.75, fillColor: '#642D4E', color: "transparent" },
+    Q1: { fillOpacity: 1, fillColor: '#FFFFEB', color: "transparent" },
+    Q2: { fillOpacity: 1, fillColor: '#D27700', color: "transparent" },
+    Q3: { fillOpacity: 1, fillColor: '#642D4E', color: "transparent" },
 };
 
 var CHOROPLETH_STYLE_DEMOGRAPHIC = {
-    Q1: { fillOpacity: 0.75, fillColor: '#E6EAFF', color: "transparent" },
-    Q2: { fillOpacity: 0.75, fillColor: '#7683C2', color: "transparent" },
-    Q3: { fillOpacity: 0.75, fillColor: '#1B2B80', color: "transparent" },
+    Q1: { fillOpacity: 1, fillColor: '#E6EAFF', color: "transparent" },
+    Q2: { fillOpacity: 1, fillColor: '#7683C2', color: "transparent" },
+    Q3: { fillOpacity: 1, fillColor: '#1B2B80', color: "transparent" },
 };
 
 // options for the choropleth map (Color By)
@@ -249,7 +249,7 @@ var MAP_LAYERS = [
         id: 'labels',
         label: "Labels",
         checked: true,
-        layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}{r}.png', {
+        layer: L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}.png', {
             pane: 'popupPane',
             zIndex: 999,
             attribution: 'Map tiles by <a target="_blank" href="http://www.mapbox.com">MapBox</a>.<br />Data &copy; <a target="_blank" href="http://openstreetmap.org/copyright" target="_blank">OpenStreetMap contributings</a>',
@@ -952,21 +952,6 @@ function initMapTable () {
 
     // table sorting, see performSearchMap() where the table is re-populated
     // and class SortableTable; there are interactions between sorting and hiding rows
-
-    // on tab change, we will be showing Map or Table; update the submitbutton to have that word
-    $('ul.nav-pills a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
-        const targetid = event.target.ariaControlsElements[0].id;
-        const $submitbutton1 = $('#data-filters-submit1');
-
-        switch (targetid) {
-            case 'map-or-table-map':
-                $submitbutton1.text("Update Map");
-                break;
-            case 'map-or-table-table':
-                $submitbutton1.text("Update Table");
-                break;
-        }
-    });
 
     // on tab change, if the newly-visible tab is the Map tab, the map may be broken because it had 0x0 size
     $('ul.nav-pills a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
@@ -2333,9 +2318,6 @@ function applyMapTableFilteringAndStriping () {
             $tr.addClass('d-none');
         }
     });
-
-  $trs.removeClass('striped-odd').addClass('striped-even');
-  $trs.not('.d-none').filter(':odd').addClass('striped-odd').removeClass('striped-even');
 }
 
 

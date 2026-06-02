@@ -104,11 +104,11 @@
                     <h2 class="nomargin" tabindex="0"><span class="title">Cancer Incidence</span></h2>
                 </div>
                 <div class="col-md-8 right">
-                    <button class="btn" id="downloadbutton" aria-label="Show options for downloading the map and data" aria-haspopup="true" aria-controls="downloadoptions">
+                    <button class="btn" id="downloadbutton" aria-label="Show options for downloading the map and data" aria-haspopup="true" aria-controls="downloadoptions" aria-expanded="false">
                         <i class="fa fa-download"></i> Downloads <i class="fa fa-caret-down"></i>
                     </button>
 
-                    <div id="downloadoptions" class="d-none" aria-expanded="false">
+                    <div id="downloadoptions" class="d-none">
                         <a role="button" href="javascript:void(0);" data-export="map" title="Download a PNG image of the map"><i class="fa fa-map"></i> Map</a>
                         <a role="button" href="javascript:void(0);" data-export="data" title="Download data associated with the tool"><i class="fa fa-table"></i> Data</a>
                     </div>
@@ -156,7 +156,7 @@
                         </div>
 
                         <div class="filter-action">
-                            <button type="button" class="btn btn-alternate w-100" id="data-filters-submit1">Update Map</button>
+                            <button type="button" class="btn btn-alternate w-100" id="data-filters-submit1">Update Data</button>
                         </div>
                         <div class="filter-action">
                             <button type="button" class="btn btn-default w-100" id="data-filters-reset1">Reset Filters</button>
