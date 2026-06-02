@@ -971,12 +971,16 @@ function initMapTable () {
     const $tablefilterapplybutton = $('#map-table-textfilter-button');
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
 
-    // the Select buttons
-    $readout_table.on('click', 'button[data-lat][data-lng]', function () {
+    // the Select and Deselect buttons
+    $readout_table.on('click', 'button[data-selected="false"]', function () {
         const lat = $(this).attr('data-lat');
         const lng = $(this).attr('data-lng');
 
         $searchwidgets.filter('[name="address"]').val(`${lat},${lng}`);
+        performSearch();
+    });
+    $readout_table.on('click', 'button[data-selected="true"]', function () {
+        $searchwidgets.filter('[name="address"]').val("");
         performSearch();
     });
 
@@ -1254,7 +1258,7 @@ function resetFilters() {
 }
 
 
-function performSearch (announceResults = true) {
+function performSearch (announceResults=true) {
     toggleAddressSearchFailure(false);
     MAP.addressmarker.setLatLng([0, 0]).removeFrom(MAP);
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
@@ -2110,6 +2114,8 @@ function performSearchMap (searchparams) {
     const current_sorting_index = $current_sorting.index();
     const current_sorting_ascdesc = $current_sorting.attr('aria-sort');
 
+    const selected_geoid = $readout_table.find('button[data-selected="true"]').attr('data-geoid');
+
     $readout_table_thead.empty();
     $readout_table_tbody.empty();
 
@@ -2132,6 +2138,8 @@ function performSearchMap (searchparams) {
 
     $('<button></button>').text(searchparams.type).append($('<span aria-hidden="true"></span>')).appendTo($th1);  // why button? for sorting
     $('<button></button>').text(rankthemby_text).append($('<span aria-hidden="true"></span>')).appendTo($th2);  // why button? for sorting
+
+    let $focusthisbutton;
 
     tabularscores.forEach(function (row, rowindex) {
         let name = row.GeoName;
@@ -2190,20 +2198,29 @@ function performSearchMap (searchparams) {
 
         // a button to find the area, find its center, and then fill in that latlng as an address
         // these are all proper convex shapes, no weird horseshoes etc, so we can use the center
-        if (! isselected) {
-            let thefeature;
-            if (searchparams.type == 'Zone') {
-                thefeature = MAP.ctapolygonbounds.getLayers().filter(layer => layer.feature.properties.ZoneIDOrig == row.GeoID)[0];
-            } else if (searchparams.type == 'County') {
-                thefeature = MAP.countypolygonbounds.getLayers().filter(layer => layer.feature.properties.GEOID == row.GeoID)[0];
+        let thefeature;
+        if (searchparams.type == 'Zone') {
+            thefeature = MAP.ctapolygonbounds.getLayers().filter(layer => layer.feature.properties.ZoneIDOrig == row.GeoID)[0];
+        } else if (searchparams.type == 'County') {
+            thefeature = MAP.countypolygonbounds.getLayers().filter(layer => layer.feature.properties.GEOID == row.GeoID)[0];
+        }
+
+        if (thefeature) {
+            // see initMapTable() for delegated event handler on these buttons
+            const latlng = thefeature.getCenter();
+            const $selectbutton = $('<button class="btn btn-default py-0">XXX</button>').attr('data-lat', latlng.lat).attr('data-lng', latlng.lng).attr('data-geoid', row.GeoID);
+
+            if (isselected) {
+                $selectbutton.text("Clear Selection").attr('data-selected', 'true').attr('aria-label', `Stop selecting area ${name}`);;
+                $focusthisbutton = $selectbutton;
+            } else {
+                $selectbutton.text("Select").attr('data-selected', 'false').attr('aria-label', `Select area ${name}`);
+                if (row.GeoID == selected_geoid) {
+                    $focusthisbutton = $selectbutton;
+                }
             }
 
-            if (thefeature) {
-                const latlng = thefeature.getCenter();
-                const $selectbutton = $('<button class="btn btn-default py-0">Select</button>').attr('data-lat', latlng.lat).attr('data-lng', latlng.lng).appendTo($cell3);
-                $selectbutton.attr('aria-label', `Select ${name}`);
-                // see initMapTable() for delegated event handler on these buttons
-            }
+            $selectbutton.appendTo($cell3);
         }
 
         if (isselected) {
@@ -2213,6 +2230,12 @@ function performSearchMap (searchparams) {
         // done; add this row to the table
         $tr.appendTo($readout_table_tbody);
     });
+
+    if ($focusthisbutton) {
+        setTimeout(function () {
+            $focusthisbutton.focus();
+        }, 0.1 * 1000);
+    }
 
     if (optiontype == 'cancer') {
         $readout_table.addClass('table-colorscheme1').removeClass('table-colorscheme2');
