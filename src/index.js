@@ -1165,10 +1165,6 @@ function initTermsOfUse () {
     $acceptbutton.click(function () {
         document.cookie = "termsaccepted=true;max-age=31536000";
         $modal.modal('hide');
-        // unset inert from main and footer
-        $main.prop('inert', false);
-        $footer.prop('inert', false);
-        $header.prop('inert', false);
         window.setTimeout(function () {
             $('#data-filters-type').focus();
         }, 0);
@@ -1180,11 +1176,6 @@ function initTermsOfUse () {
         setTimeout(function () {
             $modal.modal('show');
         }, 0.5 * 1000);
-    } else {
-        // unset inert from main and footer        
-        $main.prop('inert', false);
-        $footer.prop('inert', false);
-        $header.prop('inert', false);
     }
 }
 

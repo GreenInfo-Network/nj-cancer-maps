@@ -60,7 +60,7 @@
 </head>
 
 <body>
-    <main inert>
+    <main>
         <div class="container noprint">
             <nav class="navbar navbar-light">
                 <div id="logo-img" style="display:flex">
@@ -153,16 +153,16 @@
                         </div>
 
                         <div class="filter-action">
-                            <button type="button" class="btn btn-alternate w-100" id="data-filters-submit1">Update Data</button>
+                            <button type="button" class="btn btn-alternate w-100" id="data-filters-submit1" aria-description="Apply the filters and update the statistics, the map, and the table of areas">Update Data</button>
                         </div>
                         <div class="filter-action">
-                            <button type="button" class="btn btn-default w-100" id="data-filters-reset1">Reset Filters</button>
+                            <button type="button" class="btn btn-default w-100" id="data-filters-reset1" aria-description="Reset the filters to default values and update the statistics, the map, and the table of areas">Reset Filters</button>
                         </div>
                     </div>
 
                     <div id="places-area"></div>
                     <div id="places-area-status" class="visually-hidden"></div>
-                    <div id="search-results-status" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+                    <div id="search-results-status" class="visually-hidden"></div>
                 </div>
                 <div class="col-md printonly" id="data-filters-summary">
                 </div>
@@ -213,7 +213,7 @@
                                     </div>
                                 </div>
 
-                                <table class="table-sm table-colorscheme2 sortable" id="map-table" aria-live="polite" aria-atomic="true">
+                                <table class="table-sm table-colorscheme2 sortable" id="map-table">
                                     <thead>
                                     </thead>
                                     <tbody>
@@ -721,9 +721,6 @@
                 </div><!--/tab-pane -->
             </div><!--/tab-content-->
         </div><!--/container section-->
-
-
-
     </main>
 
     <section>
@@ -763,7 +760,7 @@
     <!--
     section: footer
     -->
-    <footer class="footer noprint" inert>
+    <footer class="footer noprint">
         <div class="container">
             <div class="row">
                 <div class="col-sm-7 left small">
