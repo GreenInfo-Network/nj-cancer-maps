@@ -1,7 +1,8 @@
 .choropleth-legend {
 }
 
-.choropleth-legend .choropleth-legend-picker {
+.choropleth-legend .choropleth-legend-picker,
+.choropleth-legend .choropleth-legend-colortheme {
     border-radius: 5px;
     background-color: #fff;
     color: #000;
@@ -19,7 +20,7 @@
 }
 }
 
-.choropleth-legend .choroplethlegend-picker-wrapper {
+.choropleth-legend .choroplethlegend-picker-wrapper select {
     margin-bottom: 1em;
 }
 

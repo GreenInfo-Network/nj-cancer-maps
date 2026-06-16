@@ -192,15 +192,33 @@ var CHOROPLETH_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fill
 var CHOROPLETH_BORDER_NONE = { color: null, opacity: 100, weight: 0, fillColor: "transparent", interactive: false };
 
 var CHOROPLETH_STYLE_INCIDENCE = {
-    Q1: { fillOpacity: 1, fillColor: '#FFFFEB', color: "transparent" },
-    Q2: { fillOpacity: 1, fillColor: '#D27700', color: "transparent" },
-    Q3: { fillOpacity: 1, fillColor: '#642D4E', color: "transparent" },
+    accessible: [
+        { fillOpacity: 1, fillColor: '#FFFFEB', color: "black" },
+        { fillOpacity: 1, fillColor: '#D27700', color: "black" },
+        { fillOpacity: 1, fillColor: '#642D4E', color: "white" },
+    ],
+    colorful: [
+        { fillOpacity: 1, fillColor: '#ffffd4', color: "black" },
+        { fillOpacity: 1, fillColor: '#fec44f', color: "black" },
+        { fillOpacity: 1, fillColor: '#fe9929', color: "black" },
+        { fillOpacity: 1, fillColor: '#ec7014', color: "white" },
+        { fillOpacity: 1, fillColor: '#8c2d04', color: "white" },
+    ],
 };
 
 var CHOROPLETH_STYLE_DEMOGRAPHIC = {
-    Q1: { fillOpacity: 1, fillColor: '#E6EAFF', color: "transparent" },
-    Q2: { fillOpacity: 1, fillColor: '#7683C2', color: "transparent" },
-    Q3: { fillOpacity: 1, fillColor: '#1B2B80', color: "transparent" },
+    accessible: [
+        { fillOpacity: 1, fillColor: '#E6EAFF', color: "black" },
+        { fillOpacity: 1, fillColor: '#7683C2', color: "black" },
+        { fillOpacity: 1, fillColor: '#1B2B80', color: "white" },
+    ],
+    colorful: [
+        { fillOpacity: 1, fillColor: '#f1eef6', color: "black" },
+        { fillOpacity: 1, fillColor: '#a6bddb', color: "black" },
+        { fillOpacity: 1, fillColor: '#74a9cf', color: "black" },
+        { fillOpacity: 1, fillColor: '#3690c0', color: "white" },
+        { fillOpacity: 1, fillColor: '#034e7b', color: "white" },
+    ],
 };
 
 // options for the choropleth map (Color By)
@@ -511,6 +529,15 @@ function initLoadInitialState () {
 
     if (params.get('choropleth')) {
         choroplethSetSelection(params.get('choropleth'));
+        anythingchanged = true;
+    }
+    else {
+        choroplethSetSelection('AAIR');
+        anythingchanged = true;
+    }
+
+    if (params.get('colortheme')) {
+        choroplethSetColorTheme(params.get('colortheme'));
         anythingchanged = true;
     }
     else {
@@ -1017,6 +1044,7 @@ function initMapTable () {
 function initChoroplethControl () {
     const $choroplethlegend = $('#choroplethlegend');
     const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
+    const $choroplethlegend_colortheme = $choroplethlegend.find('.choropleth-legend-colortheme');
     const $choroplethlegend_minvalue = $choroplethlegend.find('.choropleth-legend-minvalue');
     const $choroplethlegend_maxvalue = $choroplethlegend.find('.choropleth-legend-maxvalue');
     const $choroplethlegend_gradient = $choroplethlegend.find('.choropleth-legend-legendgradient');
@@ -1029,6 +1057,10 @@ function initChoroplethControl () {
         const picked = choroplethGetSelectionValue();
         performSearch();
         logGoogleAnalyticsEvent('map', 'choropleth', picked);
+    });
+
+    $choroplethlegend_colortheme.change(() => {
+        performSearch();
     });
 }
 
@@ -1942,7 +1974,9 @@ function performSearchMap (searchparams) {
     const rankthemby = choroplethGetSelectionValue();
     const rankthemby_text = choroplethGetSelectionLabel();
     const vizopt = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0];
-    const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor];
+    const colortheme = choroplethGetColorTheme();
+    const colorramp = vizopt.colorramp[colortheme];
+    const colors = vizopt.colorramp[colortheme].map(t => t.fillColor);
 
     // make up a dict of CTA scores for all CTA Zones, ZoneID => score
     // also, since we'll use the results later keep a tabular listing as well with additional info such as the area name
@@ -2004,7 +2038,7 @@ function performSearchMap (searchparams) {
     // update the color ramp gradient in the control
     choroplethSetGradientColors(colors);
 
-    // find quantiles to make up 5 classes, for use in the choropleth assignments coming up
+    // find quantiles to make up X classes (X = length of colors), for use in the choropleth assignments coming up
     // thanks to buboh at https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
     const asc = arr => arr.sort((a, b) => a - b);
     const quantile = (arr, q) => {
@@ -2019,8 +2053,15 @@ function performSearchMap (searchparams) {
         }
     };
 
-    const q1brk = quantile(allscores, .333);
-    const q2brk = quantile(allscores, .666);
+    const scorebreaks = [];
+    for (let i=1; i<colors.length; i++) {
+        scorebreaks.push(quantile(allscores, i * (1.0 / colors.length)));
+    }
+
+    function getBucketForScore (score, scorebreaks) {
+        const bucket = scorebreaks.filter(b => score >= b).length + 1;
+        return bucket;
+    }
 
     if (searchparams.type == 'Zone') {
         // highlight the selected CTA
@@ -2042,17 +2083,9 @@ function performSearchMap (searchparams) {
                 Object.assign(style, CHOROPLETH_STYLE_NODATA, { fillPattern: MAP.pattern_stripes });
             }
             else {
-                let bucket = 'Q3';
-                if (score <= q1brk) bucket = 'Q1';
-                else if (score <= q2brk) bucket = 'Q2';
-
-                Object.assign(style, vizopt.colorramp[bucket]);
-
-                if (bucket == 'Q3') {
-                    Object.assign(style, { color: "white", fillPattern: undefined });
-                } else {
-                    Object.assign(style, { color: "black", fillPattern: undefined });
-                }
+                const bucket = getBucketForScore(score, scorebreaks);
+                const thisstyle = colorramp[bucket - 1];
+                Object.assign(style, thisstyle, { fillPattern: undefined });
             }
 
             layer.setStyle(style);
@@ -2082,17 +2115,9 @@ function performSearchMap (searchparams) {
                 Object.assign(style, CHOROPLETH_STYLE_NODATA, { fillPattern: MAP.pattern_stripes });
             }
             else {
-                let bucket = 'Q3';
-                if (score <= q1brk) bucket = 'Q1';
-                else if (score <= q2brk) bucket = 'Q2';
-
-                Object.assign(style, vizopt.colorramp[bucket]);
-
-                if (bucket == 'Q3') {
-                    Object.assign(style, { color: "white", fillPattern: undefined });
-                } else {
-                    Object.assign(style, { color: "black", fillPattern: undefined });
-                }
+                const bucket = getBucketForScore(score, scorebreaks);
+                const thisstyle = colorramp[bucket - 1];
+                Object.assign(style, thisstyle, { fillPattern: undefined });
             }
 
             layer.setStyle(style);
@@ -2154,10 +2179,8 @@ function performSearchMap (searchparams) {
 
         // whatever the field was, including race filters, we stowed it as the choropleth score used on the map
         const score = row.choropleth_score;
-
-        let bucket = 'Q3';
-        if (score <= q1brk) bucket = 'Q1';
-        else if (score <= q2brk) bucket = 'Q2';
+        let bucket = getBucketForScore(score, scorebreaks);
+        const thisstyle = colorramp[bucket - 1];
 
         let scoretext;
         if (score == null || score == undefined || score == "") {
@@ -2186,8 +2209,8 @@ function performSearchMap (searchparams) {
         });
         if (bucket) {
             $swatch.css({
-                'opacity': vizopt.colorramp[bucket].fillOpacity,
-                'background-color': vizopt.colorramp[bucket].fillColor,
+                'opacity': thisstyle.fillOpacity,
+                'background-color': thisstyle.fillColor,
             });
         } else {
             $swatch.css({
@@ -2420,6 +2443,7 @@ function compileParams (addextras=false) {
         if (! params.overlays) params.overlays = 'none';  // so we always have something, even if it's all layers off
 
         params.choropleth = choroplethGetSelectionValue();
+        params.colortheme = choroplethGetColorTheme();
     }
 
     // done
@@ -2577,6 +2601,20 @@ function choroplethGetSelectionValue () {
     const $choroplethlegend = $('#choroplethlegend');
     const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-picker');
     return $choroplethlegend_picker.find('option:selected').prop('value');
+}
+
+
+function choroplethGetColorTheme () {
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-colortheme');
+    return $choroplethlegend_picker.find('option:selected').prop('value');
+}
+
+
+function choroplethSetColorTheme (nnewtheme) {
+    const $choroplethlegend = $('#choroplethlegend');
+    const $choroplethlegend_picker = $choroplethlegend.find('.choropleth-legend-colortheme');
+    return $choroplethlegend_picker.val(nnewtheme);
 }
 
 

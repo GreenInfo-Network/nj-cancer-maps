@@ -168,9 +168,17 @@
                 <div class="col-md-7">
                     <div class="choropleth-legend" id="choroplethlegend">
                         <div class="choroplethlegend-picker-wrapper">
-                            <label for="choroplethlegend-picker" class="noprint mb-0">Select the variable to show on the map and table: </label>
-                            <select class="choropleth-legend-picker" id="choroplethlegend-picker">
-                            </select>
+                            <div>
+                                <label for="choroplethlegend-picker" class="noprint mb-0">Select the variable to show on the map and table: </label>
+                                <select class="choropleth-legend-picker" id="choroplethlegend-picker"><!-- see initChoroplethControl() --></select>
+                            </div>
+                            <div>
+                                <label for="choroplethlegend-colortheme" class="noprint mb-0">Select the color theme: </label>
+                                <select class="choropleth-legend-colortheme" id="choroplethlegend-colortheme">
+                                    <option value="accessible">Accessible</option>
+                                    <option value="colorful">Colorful</option>
+                                </select>
+                            </div>
                         </div>
                         <div>
                             Legend:
