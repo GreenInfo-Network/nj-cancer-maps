@@ -938,7 +938,6 @@ function initMapAndPolygonData () {
     // they decided later that they want to stick a tilelayer in between the fills and the boundary lines,
     // so there are in fact two JSON layers, and performSearchMap() manages both of them to highlight one, color the other, ...
     // the tilelayer then has a zindex within markerPane to fit it in between
-
     MAP.ctapolygonfills = L.topoJson(CTATOPOJSONDATA, {
         pane: 'shadowPane',
         style: CHOROPLETH_STYLE_NODATA,  // see performSearchMap() where these are reassigned based on filters
@@ -962,6 +961,17 @@ function initMapAndPolygonData () {
         style: CHOROPLETH_BORDER_NONE,  // see performSearchMap() where these are reassigned based on filters
     })
     .addTo(MAP);
+
+    // on map click, fill in the latlng coordinates as an address search and submit it
+    MAP.on('click', function (event) {
+        const lat = event.latlng.lat.toFixed(5);
+        const lng = event.latlng.lng.toFixed(5);
+        const address = `${lat},${lng}`;
+
+        const $addressbox = $('div.data-filters input[type="text"][name="address"]');
+        $addressbox.val(address);
+        performSearch();
+    });
 }
 
 
