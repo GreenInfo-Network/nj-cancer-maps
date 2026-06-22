@@ -193,31 +193,31 @@ var CHOROPLETH_BORDER_NONE = { color: null, opacity: 100, weight: 0, fillColor: 
 
 var CHOROPLETH_STYLE_INCIDENCE = {
     accessible: [
-        { fillOpacity: 1, fillColor: '#FFFFEB', color: "black" },
-        { fillOpacity: 1, fillColor: '#D27700', color: "black" },
-        { fillOpacity: 1, fillColor: '#642D4E', color: "white" },
+        { fillOpacity: 1, fillColor: '#D8FFEA', color: "black" },
+        { fillOpacity: 1, fillColor: '#258345', color: "black" },
+        { fillOpacity: 1, fillColor: '#081D18', color: "white" },
     ],
     colorful: [
-        { fillOpacity: 1, fillColor: '#ffffd4', color: "black" },
-        { fillOpacity: 1, fillColor: '#fec44f', color: "black" },
-        { fillOpacity: 1, fillColor: '#fe9929', color: "black" },
-        { fillOpacity: 1, fillColor: '#ec7014', color: "white" },
-        { fillOpacity: 1, fillColor: '#8c2d04', color: "white" },
+        { fillOpacity: 1, fillColor: '#D8FFEA', color: "#7F7F7F" },
+        { fillOpacity: 1, fillColor: '#7FC198', color: "#7F7F7F" },
+        { fillOpacity: 1, fillColor: '#258345', color: "#7F7F7F" },
+        { fillOpacity: 1, fillColor: '#17502F', color: "#7F7F7F" },
+        { fillOpacity: 1, fillColor: '#081D18', color: "#7F7F7F" },
     ],
 };
 
 var CHOROPLETH_STYLE_DEMOGRAPHIC = {
     accessible: [
-        { fillOpacity: 1, fillColor: '#E6EAFF', color: "black" },
-        { fillOpacity: 1, fillColor: '#7683C2', color: "black" },
-        { fillOpacity: 1, fillColor: '#1B2B80', color: "white" },
+        { fillOpacity: 1, fillColor: '#CFE8E5', color: "black" },
+        { fillOpacity: 1, fillColor: '#3E838A', color: "black" },
+        { fillOpacity: 1, fillColor: '#131A2D', color: "white" },
     ],
     colorful: [
-        { fillOpacity: 1, fillColor: '#f1eef6', color: "black" },
-        { fillOpacity: 1, fillColor: '#a6bddb', color: "black" },
-        { fillOpacity: 1, fillColor: '#74a9cf', color: "black" },
-        { fillOpacity: 1, fillColor: '#3690c0', color: "white" },
-        { fillOpacity: 1, fillColor: '#034e7b', color: "white" },
+        { fillOpacity: 1, fillColor: '#CFE8E5', color: "#7F7F7F" },
+        { fillOpacity: 1, fillColor: '#87B6B8', color: "#7F7F7F" },
+        { fillOpacity: 1, fillColor: '#3E838A', color: "#7F7F7F" },
+        { fillOpacity: 1, fillColor: '#294F5C', color: "#7F7F7F" },
+        { fillOpacity: 1, fillColor: '#131A2D', color: "#7F7F7F" },
     ],
 };
 
