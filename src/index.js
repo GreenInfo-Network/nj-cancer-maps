@@ -895,6 +895,10 @@ function initMapAndPolygonData () {
 
     L.control.scale().addTo(MAP);
 
+    // Custom pane above popupPane (700) so the address marker renders above the labels tile layer
+    MAP.createPane('markerAboveLabels');
+    MAP.getPane('markerAboveLabels').style.zIndex = 750;
+
     // a marker for address searches
     var blackIcon = L.icon({
         iconUrl: 'static/map_marker.svg',
@@ -904,7 +908,7 @@ function initMapAndPolygonData () {
     });
     
     MAP.addressmarker = L.marker([0, 0], {
-        pane: 'popupPane',
+        pane: 'markerAboveLabels',
         icon: blackIcon,
         title: "Searched address",
         interactive: false,
