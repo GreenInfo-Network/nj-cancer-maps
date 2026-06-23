@@ -1035,6 +1035,41 @@ function initMapTable () {
     // table sorting, see performSearchMap() where the table is re-populated
     // and class SortableTable; there are interactions between sorting and hiding rows
 
+
+	// ARIA tablist keyboard navigation: roving tabindex so Tab exits the list; left/right arrows move between tabs
+	$('[role="tablist"]').each(function () {
+		const $list = $(this);
+		// Initialize: active tab gets tabindex=0, all others get tabindex=-1
+		$list.find('a[role="tab"]').attr('tabindex', '-1');
+		$list.find('a[role="tab"][aria-selected="true"]').attr('tabindex', '0');
+
+		$list.on('keydown', 'a[role="tab"]', function (e) {
+			const $tabs = $list.find('a[role="tab"]');
+			const currentIndex = $tabs.index(this);
+			let nextIndex = null;
+			if (e.key === 'ArrowRight') nextIndex = (currentIndex + 1) % $tabs.length;
+			else if (e.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + $tabs.length) % $tabs.length;
+			if (nextIndex !== null) {
+				e.preventDefault();
+				$tabs.attr('tabindex', '-1');
+				$tabs.eq(nextIndex).attr('tabindex', '0').focus();
+			} else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+				e.preventDefault();
+			} else if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				$(this).tab('show');
+			}
+		});
+	});
+
+	// Keep roving tabindex in sync when a tab is activated by click
+	$('[role="tablist"]').on('shown.bs.tab', 'a[role="tab"]', function () {
+		const $list = $(this).closest('[role="tablist"]');
+		$list.find('a[role="tab"]').attr('tabindex', '-1');
+		$(this).attr('tabindex', '0');
+	});
+
+
     // on tab change, if the newly-visible tab is the Map tab, the map may be broken because it had 0x0 size
     $('ul.nav-pills a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
         const targetid = event.target.ariaControlsElements[0].id;

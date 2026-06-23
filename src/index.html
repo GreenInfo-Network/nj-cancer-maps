@@ -255,7 +255,7 @@
 
                     <div id="incidence-barchart" aria-label="Chart of AAIR by race and sex for the selected filters"></div>
                 </div>
-                <div class="tab-pane container pl-0" id="incidence-barchart-tablemode">
+                <div class="tab-pane container pl-0" id="incidence-barchart-tablemode" tabindex=0>
                     <table class="table-sm table-colorscheme1" id="incidence-barchart-table">
                         <thead>
                             <tr>
@@ -381,7 +381,7 @@
         <div class="container learn-text noprint" id="learn-text">
             <h2>Learn</h2>
 
-            <ul class="nav nav-pills nav-justified" role="tablist">
+            <ul class="nav nav-pills nav-justified" role="tablist" id="learn-tabs">
                 <li class="nav-item" role="presentation"><a class="nav-link active" data-toggle="tab" role="tab" aria-controls="learn-about" href="#learn-about" aria-selected="true">About</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="tab" role="tab" aria-controls="learn-method" href="#learn-method" aria-selected="false">Methodology</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="tab" role="tab" aria-controls="learn-faq" href="#learn-faq" aria-selected="false">FAQs</a></li>
@@ -389,7 +389,7 @@
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane container active" id="learn-about">
+                <div class="tab-pane container active" id="learn-about" tabindex=0>
                     <p>
                         The <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Atlas project aims to provide data
                         for geographies beyond county-level statistics to better serve cancer control, public health, and
@@ -449,7 +449,7 @@
                     <h3>Funding</h3>
                     <p class="fundingSource">[REPLACE FUNDING SOURCE]</p>
                 </div><!--/tab-pane -->
-                <div class="tab-pane container" id="learn-method">
+                <div class="tab-pane container" id="learn-method" tabindex=0>
                     <p>
                         On this website, data are shown by cancer reporting zone. These zones have been designed so that they have a minimum population, have similar demographic and socioeconomic characteristics, and are geographically compact (they minimize the distance between different parts of the zone). The minimum population for each zone is 50,000 people.
                     </p>
@@ -619,7 +619,7 @@
                         </div>
                     </div><!--/accordion-->
                 </div><!--/tab-pane -->
-                <div class="tab-pane container" id="learn-glossary">
+                <div class="tab-pane container" id="learn-glossary" tabindex=0>
                     <p>
                         <b>Aggregation:</b>
                         The process of combining smaller units into a single, summarized value  for statistical reporting. See Methodology for more information.
