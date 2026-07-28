@@ -246,9 +246,12 @@ var CHOROPLETH_OPTIONS = [
 ];
 
 // the style to use for the MAP_LAYERS.county GeoJSON overlay
-var COUNTYBOUNDS_STYLE = { fill: false, color: 'black', weight: 5 };
-var ZONEBOUNDS_STYLE = { fill: false, color: 'black', weight: 1 };
-var PLACEBOUNDS_STYLE = { fill: false, color: 'black', weight: 2 };
+var COUNTYBOUNDS_STYLE1 = { fill: false, color: 'black', weight: 9 };
+var COUNTYBOUNDS_STYLE2 = { fill: false, color: 'white', weight: 5 };
+var ZONEBOUNDS_STYLE1 = { fill: false, color: 'black', weight: 3 };
+var ZONEBOUNDS_STYLE2 = { fill: false, color: 'white', weight: 1 };
+var PLACEBOUNDS_STYLE1 = { fill: false, color: 'black', weight: 4 };
+var PLACEBOUNDS_STYLE2 = { fill: false, color: 'white', weight: 2 };
 
 // map layers to be offered in the lower-right Map Layers control
 // we have some complicated desires for layer stacking, such as labels and streets (L.TileLayer raster tiles) showing above CTA Zones (L.GeoJSON paths in overlayPane)
@@ -701,30 +704,51 @@ function initValidateDemographicDataset () {
 
 function initFixCountyOverlay () {
     const maplayerinfo = MAP_LAYERS.filter(function (maplayerinfo) { return maplayerinfo.id == 'counties'; })[0];
-    maplayerinfo.layer = L.topoJson(COUNTYTOPOJSONDATA, {
-        pane: 'tooltipPane',
-        zIndex: 500,
-        style: COUNTYBOUNDS_STYLE,  // see performSearchMap() where these are reassigned based on filters
-    });
+    maplayerinfo.layer = L.featureGroup([
+        L.topoJson(COUNTYTOPOJSONDATA, {
+            pane: 'tooltipPane',
+            zIndex: 500,
+            style: COUNTYBOUNDS_STYLE1,  // see performSearchMap() where these are reassigned based on filters
+        }),
+        L.topoJson(COUNTYTOPOJSONDATA, {
+            pane: 'tooltipPane',
+            zIndex: 500,
+            style: COUNTYBOUNDS_STYLE2,  // see performSearchMap() where these are reassigned based on filters
+        }),
+    ]);
 }
 
 function initFixZoneOverlay () {
     const maplayerinfo = MAP_LAYERS.filter(function (maplayerinfo) { return maplayerinfo.id == 'zones'; })[0];
-    maplayerinfo.layer = L.topoJson(CTATOPOJSONDATA, {
-        pane: 'tooltipPane',
-        zIndex: 500,
-        style: ZONEBOUNDS_STYLE,  // see performSearchMap() where these are reassigned based on filters
-    });
+    maplayerinfo.layer = L.featureGroup([
+        L.topoJson(CTATOPOJSONDATA, {
+            pane: 'tooltipPane',
+            zIndex: 500,
+            style: ZONEBOUNDS_STYLE1,  // see performSearchMap() where these are reassigned based on filters
+        }),
+        L.topoJson(CTATOPOJSONDATA, {
+            pane: 'tooltipPane',
+            zIndex: 500,
+            style: ZONEBOUNDS_STYLE2,  // see performSearchMap() where these are reassigned based on filters
+        }),
+    ]);
 }
 
 
 function initFixPlaceOverlay () {
     const maplayerinfo = MAP_LAYERS.filter(function (maplayerinfo) { return maplayerinfo.id == 'places'; })[0];
-    maplayerinfo.layer = L.topoJson(PLACETOPOJSONDATA, {
-        pane: 'tooltipPane',
-        zIndex: 500,
-        style: PLACEBOUNDS_STYLE,  // see performSearchMap() where these are reassigned based on filters
-    });
+    maplayerinfo.layer = L.featureGroup([
+        L.topoJson(PLACETOPOJSONDATA, {
+            pane: 'tooltipPane',
+            zIndex: 500,
+            style: PLACEBOUNDS_STYLE1  // see performSearchMap() where these are reassigned based on filters
+        }),
+        L.topoJson(PLACETOPOJSONDATA, {
+            pane: 'tooltipPane',
+            zIndex: 500,
+            style: PLACEBOUNDS_STYLE2  // see performSearchMap() where these are reassigned based on filters
+        }),
+    ]);
 }
 
 
