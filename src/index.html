@@ -98,7 +98,7 @@
         <div class="container noprint" id="above-map">
             <div class="row">
                 <div class="col-md-4">
-                    <h2 class="nomargin" tabindex="0">Cancer Incidence</h2>
+                    <h2 class="nomargin">Cancer Incidence</h2>
                 </div>
                 <div class="col-md-8 right">
                     <button class="btn btn-alternate" id="downloadbutton" aria-label="Show options for downloading the map and data" aria-haspopup="true" aria-controls="downloadoptions" aria-expanded="false">
@@ -125,10 +125,10 @@
                             </select>
                         </div>
                         <div class="filter-control">
-                            <label class="subtitle" for="data-filters-address">Location Search</label>
+                            <label class="subtitle" for="data-filters-address">Location Search for Area Type Selection</label>
                             <input type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-describedby="data-filters-address-help data-filters-address-error" />
                             <div id="data-filters-address-error" class="warnmessage d-none" aria-live="assertive"></div>
-                            <p class="small mb-0" id="data-filters-address-help">Include street name and number and city, at a minimum. For example, &quot;920 Broad Street, Newark, NJ&quot;.</p>
+                            <p class="small mb-0" id="data-filters-address-help">Search for an address to select and summarize an area type. Include street name and number and city, at a minimum. For example, &quot;920 Broad Street, Newark, NJ&quot;.</p>
                         </div>
                         <div class="filter-control">
                             <label class="subtitle" for="data-filters-time">Time Period</label>
@@ -161,11 +161,11 @@
 
                     <div id="places-area"></div>
                     <div id="places-area-status" class="visually-hidden"></div>
-                    <div id="search-results-status" class="visually-hidden"></div>
                 </div>
                 <div class="col-md printonly" id="data-filters-summary">
                 </div>
                 <div class="col-md-7">
+                    <div id="search-results-status" class="visually-hidden"></div>
                     <div class="choropleth-legend" id="choroplethlegend">
                         <div class="choroplethlegend-picker-wrapper">
                             <div>
@@ -175,8 +175,8 @@
                             <div>
                                 <label for="choroplethlegend-colortheme" class="noprint mb-0">Select the color theme: </label>
                                 <select class="choropleth-legend-colortheme" id="choroplethlegend-colortheme">
-                                    <option value="accessible">Accessible</option>
-                                    <option value="colorful">Colorful</option>
+                                    <option value="accessible">3-color palette (accessible)</option>
+                                    <option value="colorful">5-color palette</option>
                                 </select>
                             </div>
                         </div>
@@ -244,7 +244,7 @@
                 <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="tab" role="tab" aria-controls="incidence-barchart-tablemode" href="#incidence-barchart-tablemode" aria-selected="false">Table</a></li>
             </ul>
             <div class="tab-content mt-3">
-                <div class="tab-pane container active" id="incidence-barchart-chartmode">
+                <div role="tabpanel" class="tab-pane container active" id="incidence-barchart-chartmode">
                     <div class="center">
                         <span class="aair-barchart-swatch aair-barchart-swatch-Both"></span> Male and Female
                         &nbsp;
@@ -255,7 +255,7 @@
 
                     <div id="incidence-barchart" aria-label="Chart of AAIR by race and sex for the selected filters"></div>
                 </div>
-                <div class="tab-pane container pl-0" id="incidence-barchart-tablemode">
+                <div role="tabpanel" class="tab-pane container pl-0" id="incidence-barchart-tablemode">
                     <table class="table-sm table-colorscheme1" id="incidence-barchart-table">
                         <thead>
                             <tr>
@@ -381,7 +381,7 @@
         <div class="container learn-text noprint" id="learn-text">
             <h2>Learn</h2>
 
-            <ul class="nav nav-pills nav-justified" role="tablist">
+            <ul class="nav nav-pills nav-justified" role="tablist" id="learn-tabs">
                 <li class="nav-item" role="presentation"><a class="nav-link active" data-toggle="tab" role="tab" aria-controls="learn-about" href="#learn-about" aria-selected="true">About</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="tab" role="tab" aria-controls="learn-method" href="#learn-method" aria-selected="false">Methodology</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="tab" role="tab" aria-controls="learn-faq" href="#learn-faq" aria-selected="false">FAQs</a></li>
@@ -389,7 +389,7 @@
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane container active" id="learn-about">
+                <div role="tabpanel" class="tab-pane container active" id="learn-about">
                     <p>
                         The <span class="stateName">[REPLACE STATE/REGISTRY]</span> Cancer Atlas project aims to provide data
                         for geographies beyond county-level statistics to better serve cancer control, public health, and
@@ -449,7 +449,7 @@
                     <h3>Funding</h3>
                     <p class="fundingSource">[REPLACE FUNDING SOURCE]</p>
                 </div><!--/tab-pane -->
-                <div class="tab-pane container" id="learn-method">
+                <div role="tabpanel" class="tab-pane container" id="learn-method">
                     <p>
                         On this website, data are shown by cancer reporting zone. These zones have been designed so that they have a minimum population, have similar demographic and socioeconomic characteristics, and are geographically compact (they minimize the distance between different parts of the zone). The minimum population for each zone is 50,000 people.
                     </p>
@@ -483,7 +483,7 @@
                         In the case of large cities such as Newark, the Zone names are assigned based on the predominant neighborhood within the Zone.
                     </p>
                 </div><!--/tab-pane -->
-                <div class="tab-pane container" id="learn-faq">
+                <div role="tabpanel" class="tab-pane container" id="learn-faq">
                     <div class="faqs_toggle"><button class="pointer">Expand all FAQs</button></div>
                     <p>
                         More Detailed information about the New Jersey Cancer Registry (NJSCR) and the cancer data can be found through the following links:
@@ -619,7 +619,7 @@
                         </div>
                     </div><!--/accordion-->
                 </div><!--/tab-pane -->
-                <div class="tab-pane container" id="learn-glossary">
+                <div role="tabpanel" class="tab-pane container" id="learn-glossary">
                     <p>
                         <b>Aggregation:</b>
                         The process of combining smaller units into a single, summarized value  for statistical reporting. See Methodology for more information.
