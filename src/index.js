@@ -155,7 +155,7 @@ var DEMOGRAPHIC_TABLES = [
             { field: 'PctMinority', label: "% Minority (other than non-Hispanic White)", format: 'percent' },
             { field: 'PctHispanic', label: "% Hispanic", format: 'percent' },
             { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent' },
-            // { field: 'PctAPINH', label: "% Asian/Pacific Islander(non-Hispanic)", format: 'percent' },
+            { field: 'PctAPINH', label: "% Asian/Pacific Islander(non-Hispanic)", format: 'percent' },
             { field: 'Pct_forborn', label: "% Foreign Born", format: 'percent' },
         ],
     },
@@ -252,7 +252,7 @@ var CHOROPLETH_OPTIONS = [
     { field: 'PctMinority', label: "% Minority (other than non-Hispanic White)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctHispanic', label: "% Hispanic", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    // { field: 'PctAPINH', label: "% Asian/Pacific Islander (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctAPINH', label: "% Asian/Pacific Islander (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'Pct_forborn', label: "% Foreign Born", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'Pct100Pov', label: "% Below Poverty", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
     { field: 'PctNoHealthIns', label: "% Without Health Insurance", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
