@@ -179,6 +179,8 @@ var DEMOGRAPHIC_TABLES = [
             { field: 'N_LPA', label: "% Physical Inactivity", format: 'percent' }, 
             { field: 'N_MAMMOUSE', label: "% Mammography", format: 'percent' }, 
             { field: 'N_OBESITY', label: "% Obese", format: 'percent' }, 
+            { field: 'RPL_EJI', label: "Environmental Justice Index", format: 'float' }, 
+            { field: 'RPL_SVI', label: "Social Vulnerability Index", format: 'float' }, 
         ],
     },
     {
@@ -266,6 +268,8 @@ var CHOROPLETH_OPTIONS = [
     { field: 'N_LPA', label: "% Physical Inactivity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'N_MAMMOUSE', label: "% Mammography", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'N_OBESITY', label: "% Obese", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'RPL_EJI', label: "Environmental Justice Index", format: 'float', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'RPL_SVI', label: "Social Vulnerability Index", format: 'float', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctDisabled', label: "% With a Disability", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
