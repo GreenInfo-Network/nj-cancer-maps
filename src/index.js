@@ -147,6 +147,7 @@ var DEMOGRAPHIC_TABLES = [
         rows: [
             { field: 'TotalPop', label: "Total Population", format: 'integer' },
             { field: 'PctRural', label: "% Living in Rural Area", format: 'percent' },
+            { field: 'PctAge65plus', label: "% Age 65+", format: 'percent' },
         ],
     },
     {
@@ -160,6 +161,19 @@ var DEMOGRAPHIC_TABLES = [
         ],
     },
     {
+        title: "Disability Status",
+        rows: [
+            { field: 'PctDisabled', label: "% With a Disability", format: 'percent' }, 
+        ],
+    },
+    {
+        title: "Education",
+        rows: [
+            { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent' },
+            { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", format: 'percent' },
+        ],
+    },
+    {
         title: "Income",
         rows: [
             { field: 'Pct100Pov', label: "% Below Poverty", format: 'percent' }, 
@@ -170,30 +184,22 @@ var DEMOGRAPHIC_TABLES = [
         title: "Health and Health Care",
         rows: [
             { field: 'N_BINGE', label: "% Binge Drinking", format: 'percent' }, 
+            { field: 'N_CSMOKING', label: "% Current Smoking", format: 'percent' }, 
+            { field: 'N_LPA', label: "% Physical Inactivity", format: 'percent' }, 
+            { field: 'N_OBESITY', label: "% Obese", format: 'percent' }, 
             { field: 'N_CERVICAL', label: "% Cervical Cancer Screening", format: 'percent' }, 
-            { field: 'N_CHECKUP', label: "% Annual Checkup", format: 'percent' }, 
+            { field: 'N_MAMMOUSE', label: "% Mammography", format: 'percent' }, 
             { field: 'N_COLON_SCREEN', label: "% Colorectal Cancer Screening", format: 'percent' }, 
             { field: 'N_COREM', label: "% Preventive Care (Men 65+)", format: 'percent' }, 
             { field: 'N_COREW', label: "% Preventive Care (Women 65+)", format: 'percent' }, 
-            { field: 'N_CSMOKING', label: "% Current Smoking", format: 'percent' }, 
-            { field: 'N_LPA', label: "% Physical Inactivity", format: 'percent' }, 
-            { field: 'N_MAMMOUSE', label: "% Mammography", format: 'percent' }, 
-            { field: 'N_OBESITY', label: "% Obese", format: 'percent' }, 
+            { field: 'N_CHECKUP', label: "% Annual Checkup", format: 'percent' }, 
+        ],
+    },
+    {
+        title: "Socioenvironmental",
+        rows: [
             { field: 'RPL_EJI', label: "Environmental Justice Index", format: 'float' }, 
             { field: 'RPL_SVI', label: "Social Vulnerability Index", format: 'float' }, 
-        ],
-    },
-    {
-        title: "Education",
-        rows: [
-            { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", format: 'percent' },
-            { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent' },
-        ],
-    },
-    {
-        title: "Disability Status",
-        rows: [
-            { field: 'PctDisabled', label: "% With a Disability", format: 'percent' }, 
         ],
     },
 ];
@@ -251,28 +257,29 @@ var CHOROPLETH_OPTIONS = [
     // demographic data; customize this to suit your preferences
     { field: 'TotalPop', label: "Total Population", format: 'integer', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctRural', label: "% Living in Rural Area", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctAge65plus', label: "% Age 65+", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctMinority', label: "% Minority (other than non-Hispanic White)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctHispanic', label: "% Hispanic", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctAPINH', label: "% Asian/Pacific Islander (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'Pct_forborn', label: "% Foreign Born", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctDisabled', label: "% With a Disability", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
+    { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'Pct100Pov', label: "% Below Poverty", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
     { field: 'PctNoHealthIns', label: "% Without Health Insurance", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'N_BINGE', label: "% Binge Drinking", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_CSMOKING', label: "% Current Smoking", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_LPA', label: "% Physical Inactivity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_OBESITY', label: "% Obese", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'N_CERVICAL', label: "% Cervical Cancer Screening", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_CHECKUP', label: "% Annual Checkup", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_MAMMOUSE', label: "% Mammography", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'N_COLON_SCREEN', label: "% Colorectal Cancer Screening", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'N_COREM', label: "% Preventive Care (Men 65+)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'N_COREW', label: "% Preventive Care (Women 65+)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_CSMOKING', label: "% Current Smoking", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_LPA', label: "% Physical Inactivity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_MAMMOUSE', label: "% Mammography", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_OBESITY', label: "% Obese", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_CHECKUP', label: "% Annual Checkup", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'RPL_EJI', label: "Environmental Justice Index", format: 'float', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'RPL_SVI', label: "Social Vulnerability Index", format: 'float', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctDisabled', label: "% With a Disability", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
 ];
 
 // the style to use for the MAP_LAYERS.county GeoJSON overlay
