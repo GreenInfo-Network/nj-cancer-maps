@@ -2362,9 +2362,9 @@ function performSearchMap (searchparams) {
     }
 
     if (optiontype == 'cancer') {
-        $readout_table.addClass('table-colorscheme1').removeClass('table-colorscheme2');
+        $readout_table.removeClass('map-table-demographic').addClass('map-table-cancer');
     } else {
-        $readout_table.removeClass('table-colorscheme1').addClass('table-colorscheme2');
+        $readout_table.addClass('map-table-demographic').removeClass('map-table-cancer');
     }
 
     $readout_table.attr('aria-rowcount', tabularscores.length);

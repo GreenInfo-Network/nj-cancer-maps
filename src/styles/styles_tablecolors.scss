@@ -32,18 +32,6 @@ table.table-colorscheme1 {
             color: #000;
             font-size: 16px;
         }
-
-        tr.selected-row th,
-        tr.selected-row td {
-            border-bottom: 2px solid black;
-            border-top: 2px solid black;
-        }
-        tr.selected-row th:first-child {
-            border-left: 2px solid black;
-        }
-        tr.selected-row td:last-child {
-            border-right: 2px solid black;
-        }
     }
 
     tbody th *:focus,
@@ -117,18 +105,6 @@ table.table-colorscheme2 {
             border-bottom: 2px solid #fff;
             border-top: 2px solid #fff;
             border-left: 2px solid #fff
-        }
-
-        tr.selected-row th,
-        tr.selected-row td {
-            border-bottom: 2px solid black;
-            border-top: 2px solid black;
-        }
-        tr.selected-row th:first-child {
-            border-left: 2px solid black;
-        }
-        tr.selected-row td:last-child {
-            border-right: 2px solid black;
         }
     }
 
