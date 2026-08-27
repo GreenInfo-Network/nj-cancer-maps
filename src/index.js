@@ -298,7 +298,7 @@ var MAP_LAYERS = [
         id: 'basemap',
         label: "Base Map",
         checked: true,
-        layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
+        layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?key=cb1_29ez_1_e6053c92a428e94dd47b54ee', {
             pane: 'tilePane',
             zIndex: 0,
             attribution: 'Map tiles by <a target="_blank" href="http://www.mapbox.com">MapBox</a>.<br />Data &copy; <a target="_blank" href="http://openstreetmap.org/copyright" target="_blank">OpenStreetMap contributings</a>',
@@ -950,7 +950,6 @@ function initMapAndPolygonData () {
     MAP = L.map('map', {
         minZoom: SITE_CONSTANTS.MIN_ZOOM,
         maxZoom: SITE_CONSTANTS.MAX_ZOOM,
-        attributionControl: false,
     })
     .fitBounds(SITE_CONSTANTS.MAP_BBOX);
 
