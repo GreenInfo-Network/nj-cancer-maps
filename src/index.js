@@ -1151,17 +1151,15 @@ function initChoroplethControl () {
     const $choropleth_groups = {};
     CHOROPLETH_OPTIONS.forEach((vizopt) => {
         const $option = $('<option></option>').prop('value', vizopt.field).text(vizopt.label);
-        if (!vizopt.group) {
+        if (! vizopt.group) {
             $option.appendTo($choroplethlegend_picker);
-            return;
         }
-
-        if (!$choropleth_groups[vizopt.group]) {
-            $choropleth_groups[vizopt.group] = $('<optgroup></optgroup>')
-                .prop('label', vizopt.group)
-                .appendTo($choroplethlegend_picker);
+        else {
+            if (! $choropleth_groups[vizopt.group]) {
+                $choropleth_groups[vizopt.group] = $('<optgroup></optgroup>').prop('label', vizopt.group).appendTo($choroplethlegend_picker);
+            }
+            $option.appendTo($choropleth_groups[vizopt.group]);
         }
-        $option.appendTo($choropleth_groups[vizopt.group]);
     });
 
     $choroplethlegend_picker.change(() => {
