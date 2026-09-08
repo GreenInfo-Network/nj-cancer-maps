@@ -24,7 +24,6 @@ const SITE_CONSTANTS = {
         "non-Hispanic White",
         "non-Hispanic Black",
         "non-Hispanic Asian/Pacific Islander",
-        "non-Hispanic American Indian/Alaska Native",
         "Hispanic"
     ], // A list of the races/ethnicities by which data may be displayed. This should reflect the SEARCHOPTIONS_RACE entries.
     reportingMinCases: "15", // The minimum number of cancer cases in a zone to be reported (i.e., suppression threshold).
@@ -301,7 +300,7 @@ var MAP_LAYERS = [
         layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?key=cb1_29ez_1_e6053c92a428e94dd47b54ee', {
             pane: 'tilePane',
             zIndex: 0,
-            attribution: 'Map tiles by <a target="_blank" href="http://www.mapbox.com">MapBox</a>.<br />Data &copy; <a target="_blank" href="http://openstreetmap.org/copyright" target="_blank">OpenStreetMap contributings</a>',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         }),
     },
     {
@@ -311,7 +310,7 @@ var MAP_LAYERS = [
         layer: L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}.png', {
             pane: 'popupPane',
             zIndex: 999,
-            attribution: 'Map tiles by <a target="_blank" href="http://www.mapbox.com">MapBox</a>.<br />Data &copy; <a target="_blank" href="http://openstreetmap.org/copyright" target="_blank">OpenStreetMap contributings</a>',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         }),
     },
     {
