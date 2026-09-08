@@ -1414,7 +1414,7 @@ function performSearch (announceResults=true) {
             const cta = findCTAById(ctaid);
             if (cta) {
                 params.ctaid = cta.feature.properties.ZoneIDOrig;
-                params.ctaname = cta.feature.properties.ZoneName.replace(/\_\d+$/, '');
+                params.ctaname = getAreaNameByGeoId(params.ctaid);
                 params.bbox = cta.getBounds();
                 performSearchReally(params, announceResults);
             }
@@ -1430,11 +1430,11 @@ function performSearch (announceResults=true) {
                 const county = findCountyContainingLatLng(searchlatlng);
                 if (zone) {
                     params.ctaid = zone.feature.properties.ZoneIDOrig;
-                    params.ctaname = zone.feature.properties.ZoneName.replace(/\_\d+$/, '');
+                    params.ctaname = getAreaNameByGeoId(params.ctaid);
                     params.latlng = searchlatlng;
                     params.bbox = zone.getBounds();
                     params.countyId = county.feature.properties.GEOID;
-                    params.countyName = county.feature.properties.Name;
+                    params.countyName = getAreaNameByGeoId(county.feature.properties.GEOID);
                     performSearchReally(params, announceResults);
                 }
                 else {
@@ -2276,14 +2276,8 @@ function performSearchMap (searchparams) {
     let $focusthisbutton;
 
     tabularscores.forEach(function (row, rowindex) {
-        let name = row.GeoName;
-        if (searchparams.type == 'Zone') name = `${row.GeoName} (${row.GeoID})`;
-
-        if (optiontype == 'demographic') {
-            const xrow = DATA_CANCER.filter(x => x.GeoID == row.GeoID)[0];
-            name = xrow.GeoName;
-            if (searchparams.type == 'Zone') name = `${xrow.GeoName} (${xrow.GeoID})`;
-        }
+        let name = getAreaNameByGeoId(row.GeoID);
+        if (searchparams.type == 'Zone') name = `${name} (${row.GeoID})`;
 
         // whatever the field was, including race filters, we stowed it as the choropleth score used on the map
         const score = row.choropleth_score;
@@ -2587,6 +2581,13 @@ function findCTAById (ctaid) {
         return layer.feature.properties.ZoneIDOrig == ctaid;
     });
     return targetcta[0];
+}
+
+
+// the zones' names in the GeoJSON file are not maintained as well as the ones in the incidence CSV,, so query the CSV to get a zone's name
+function getAreaNameByGeoId (geoid) {
+    const row = DATA_CANCER.filter(x => x.GeoID == geoid)[0];
+    return row ? row.GeoName : "Unknown";
 }
 
 
