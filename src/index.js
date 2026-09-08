@@ -255,31 +255,31 @@ var CHOROPLETH_OPTIONS = [
     { field: 'Cases', label: "Cases", format: 'integer', colorramp: CHOROPLETH_STYLE_INCIDENCE },
     { field: 'AAIR', label: "Incidence", format: 'float', colorramp: CHOROPLETH_STYLE_INCIDENCE },
     // demographic data; customize this to suit your preferences
-    { field: 'TotalPop', label: "Total Population", format: 'integer', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctRural', label: "% Living in Rural Area", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctAge65plus', label: "% Age 65+", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctMinority', label: "% Minority (other than non-Hispanic White)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctHispanic', label: "% Hispanic", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctAPINH', label: "% Asian/Pacific Islander (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'Pct_forborn', label: "% Foreign Born", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctDisabled', label: "% With a Disability", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
-    { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'Pct100Pov', label: "% Below Poverty", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
-    { field: 'PctNoHealthIns', label: "% Without Health Insurance", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_BINGE', label: "% Binge Drinking", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_CSMOKING', label: "% Current Smoking", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_LPA', label: "% Physical Inactivity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_OBESITY', label: "% Obese", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_CERVICAL', label: "% Cervical Cancer Screening", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_MAMMOUSE', label: "% Mammography", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_COLON_SCREEN', label: "% Colorectal Cancer Screening", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_COREM', label: "% Preventive Care (Men 65+)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_COREW', label: "% Preventive Care (Women 65+)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'N_CHECKUP', label: "% Annual Checkup", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'RPL_EJI', label: "Environmental Justice Index", format: 'float', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'RPL_SVI', label: "Social Vulnerability Index", format: 'float', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'TotalPop', label: "Total Population", group: "Population", format: 'integer', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctRural', label: "% Living in Rural Area", group: "Population", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctAge65plus', label: "% Age 65+", group: "Population", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctMinority', label: "% Minority (other than non-Hispanic White)", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctHispanic', label: "% Hispanic", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctBlackNH', label: "% Black (non-Hispanic)", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctAPINH', label: "% Asian/Pacific Islander(non-Hispanic)", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'Pct_forborn', label: "% Foreign Born", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctDisabled', label: "% With a Disability", group: "Disability Status", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
+    { field: 'PctEducLHS', label: "% Did Not Finish High School", group: "Education", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", group: "Education", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'Pct100Pov', label: "% Below Poverty", group: "Income", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
+    { field: 'PctNoHealthIns', label: "% Without Health Insurance", group: "Income", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_BINGE', label: "% Binge Drinking", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_CSMOKING', label: "% Current Smoking", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_LPA', label: "% Physical Inactivity", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_OBESITY', label: "% Obese", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_CERVICAL', label: "% Cervical Cancer Screening", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_MAMMOUSE', label: "% Mammography", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_COLON_SCREEN', label: "% Colorectal Cancer Screening", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_COREM', label: "% Preventive Care (Men 65+)", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_COREW', label: "% Preventive Care (Women 65+)", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'N_CHECKUP', label: "% Annual Checkup", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'RPL_EJI', label: "Environmental Justice Index", group: "Socio-environmental", format: 'float', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'RPL_SVI', label: "Social Vulnerability Index", group: "Socio-environmental", format: 'float', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
 ];
 
 // the style to use for the MAP_LAYERS.county GeoJSON overlay
@@ -1148,8 +1148,20 @@ function initChoroplethControl () {
     const $choroplethlegend_maxvalue = $choroplethlegend.find('.choropleth-legend-maxvalue');
     const $choroplethlegend_gradient = $choroplethlegend.find('.choropleth-legend-legendgradient');
 
+    const $choropleth_groups = {};
     CHOROPLETH_OPTIONS.forEach((vizopt) => {
-        $('<option></option>').prop('value', vizopt.field).text(vizopt.label).appendTo($choroplethlegend_picker);
+        const $option = $('<option></option>').prop('value', vizopt.field).text(vizopt.label);
+        if (!vizopt.group) {
+            $option.appendTo($choroplethlegend_picker);
+            return;
+        }
+
+        if (!$choropleth_groups[vizopt.group]) {
+            $choropleth_groups[vizopt.group] = $('<optgroup></optgroup>')
+                .prop('label', vizopt.group)
+                .appendTo($choroplethlegend_picker);
+        }
+        $option.appendTo($choropleth_groups[vizopt.group]);
     });
 
     $choroplethlegend_picker.change(() => {
