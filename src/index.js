@@ -155,7 +155,7 @@ var DEMOGRAPHIC_TABLES = [
             { field: 'PctMinority', label: "% Minority (other than non-Hispanic White)", format: 'percent' },
             { field: 'PctHispanic', label: "% Hispanic", format: 'percent' },
             { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent' },
-            { field: 'PctAPINH', label: "% Asian/Pacific Islander(non-Hispanic)", format: 'percent' },
+            { field: 'PctAPINH', label: "% Asian/Pacific Islander (non-Hispanic)", format: 'percent' },
             { field: 'Pct_forborn', label: "% Foreign Born", format: 'percent' },
         ],
     },
@@ -169,7 +169,7 @@ var DEMOGRAPHIC_TABLES = [
         title: "Education",
         rows: [
             { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent' },
-            { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", format: 'percent' },
+            { field: 'PctEducBchPlus', label: "% With Bachelor's Degree or Higher", format: 'percent' },
         ],
     },
     {
@@ -260,11 +260,11 @@ var CHOROPLETH_OPTIONS = [
     { field: 'PctMinority', label: "% Minority (other than non-Hispanic White)", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctHispanic', label: "% Hispanic", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctBlackNH', label: "% Black (non-Hispanic)", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctAPINH', label: "% Asian/Pacific Islander(non-Hispanic)", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctAPINH', label: "% Asian/Pacific Islander (non-Hispanic)", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'Pct_forborn', label: "% Foreign Born", group: "Race & Ethnicity", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctDisabled', label: "% With a Disability", group: "Disability Status", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
     { field: 'PctEducLHS', label: "% Did Not Finish High School", group: "Education", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctEducBchPlus', label: "% With Bachelors Degree or Higher", group: "Education", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctEducBchPlus', label: "% With Bachelor's Degree or Higher", group: "Education", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'Pct100Pov', label: "% Below Poverty", group: "Income", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC }, // cht comment out because not in data causes error
     { field: 'PctNoHealthIns', label: "% Without Health Insurance", group: "Income", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'N_BINGE', label: "% Binge Drinking", group: "Health and Health Care", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
@@ -2187,7 +2187,7 @@ function performSearchMap (searchparams) {
                 Object.assign(style, CHOROPLETH_BORDER_DEFAULT);
             }
 
-            if (score == null || score == undefined || score == "") {
+            if (optiontype == 'cancer' && (score == null || score == undefined || score == "")) {
                 Object.assign(style, CHOROPLETH_STYLE_NODATA, { fillPattern: MAP.pattern_stripes });
             }
             else {
@@ -2219,7 +2219,7 @@ function performSearchMap (searchparams) {
                 Object.assign(style, CHOROPLETH_BORDER_DEFAULT);
             }
 
-            if (score == null || score == undefined || score == "") {
+            if (optiontype == 'cancer' && (score == null || score == undefined || score == "")) {
                 Object.assign(style, CHOROPLETH_STYLE_NODATA, { fillPattern: MAP.pattern_stripes });
             }
             else {
@@ -2285,7 +2285,7 @@ function performSearchMap (searchparams) {
         const thisstyle = colorramp[bucket - 1];
 
         let scoretext;
-        if (score == null || score == undefined || score == "") {
+        if (optiontype == 'cancer' && (score == null || score == undefined || score == "")) {
             scoretext = "Suppressed";
             bucket = null;
         } else {
